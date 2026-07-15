@@ -1,6 +1,5 @@
 .env
 *.db
-app/cache.json
 subscribers.csv
 app/server.log
 __pycache__/
