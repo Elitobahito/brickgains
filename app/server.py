@@ -262,6 +262,11 @@ class H(BaseHTTPRequestHandler):
         if path in ("/pricing","/terms","/privacy","/refunds","/cookies"): path += ".html"
         if path == "/blog": path = "/blog/index.html"
         elif path.startswith("/blog/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
+        # --- French locale ---
+        if path in ("/fr", "/fr/"): path = "/fr/index.html"
+        elif path in ("/fr/pricing","/fr/terms","/fr/privacy","/fr/refunds","/fr/cookies"): path += ".html"
+        elif path == "/fr/blog": path = "/fr/blog/index.html"
+        elif path.startswith("/fr/blog/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
         fp = os.path.join(STATIC, path.lstrip("/"))
         if not os.path.isfile(fp): return self._send(404, "Not found", "text/plain")
         ext = fp.rsplit(".", 1)[-1]
