@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BrickGains · What is your LEGO really worth?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<meta name="description" content="Type any LEGO set number and instantly see its real resale value, how much it has gained since retail, and whether it is time to sell.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="topbar"><i></i><i></i><i></i><i></i></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+    <nav class="links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="navcta">
+      <button class="acct" id="accountBtn" aria-label="Account" title="Sign in">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </button>
+      <a class="btn" href="#hero" onclick="document.getElementById('setInput').focus()">Check a set free</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <span class="brick b1"></span><span class="brick b2"></span>
+  <span class="brick b3"></span><span class="brick b4"></span>
+  <div class="wrap">
+    <span class="pill">🧱 Real prices from the LEGO marketplace, not guesses</span>
+    <h1>What is your LEGO <span class="hl">really worth?</span></h1>
+    <p class="sub">Type any set number and see its real resale value, its gain since retail, and whether it's time to sell.</p>
+    <div class="searchbar">
+      <input id="setInput" placeholder="Set number or name (e.g. 10276)" autocomplete="off"
+             onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn" onclick="doSearch()">Check value</button>
+    </div>
+    <div class="freehint" id="freehint"><b id="freeLeft">3</b> free checks left · no signup</div>
+    <div class="trychips">Popular:
+      <button onclick="quick('10276')">Colosseum</button>
+      <button onclick="quick('75192')">Millennium Falcon</button>
+      <button onclick="quick('10281')">Bonsai Tree</button>
+    </div>
+    <div class="trustrow">
+      <span>🧱 Live BrickLink prices</span>
+      <span>📈 Retirement dates tracked</span>
+      <span>⚡ No signup to start</span>
+    </div>
+    <div id="result"></div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">How it works</span>
+      <div class="h2">From guesswork to data in seconds</div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h4>Search your set</h4><p>Enter a set number or name. We pull the real catalog, retail price and retirement date.</p></div>
+      <div class="step"><div class="num">02</div><h4>See its true value</h4><p>Live resale prices (new and used) from the LEGO marketplace, plus your gain vs retail price.</p></div>
+      <div class="step"><div class="num">03</div><h4>Track and get sell alerts</h4><p>Add your sets, watch your portfolio grow, and get pinged the moment it's time to buy or sell.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Features</span>
+      <div class="h2">Everything you need to invest in LEGO</div>
+      <p class="sec-sub">Real market data, a full portfolio dashboard and email alerts. The complete toolkit, in your browser.</p>
+    </div>
+    <div class="feats">
+      <div class="feat"><div class="ic">💰</div><h4>Real resale value</h4><p>New and used BrickLink prices, updated daily. What sets actually sell for, not an estimate.</p></div>
+      <div class="feat"><div class="ic">📈</div><h4>Gain since retail</h4><p>See the exact percentage a set has appreciated versus its original retail price, per set and portfolio-wide.</p></div>
+      <div class="feat"><div class="ic">📧</div><h4>Email price alerts</h4><p>Get an email the moment a set jumps, drops or hits your target price. Never sit in front of a screen again.</p></div>
+      <div class="feat"><div class="ic">⏰</div><h4>Retirement radar</h4><p>See what is retiring soon and get alerted before a set disappears, the window where value climbs fastest.</p></div>
+      <div class="feat"><div class="ic">📊</div><h4>Portfolio and ROI</h4><p>Track what you paid vs what it is worth, gains by 1D / 7D / 30D, and your total return across everything.</p></div>
+      <div class="feat"><div class="ic">🧩</div><h4>Price-per-piece index</h4><p>Spot underpriced sets instantly with price-per-piece analysis and our Brick 500 market index.</p></div>
+      <div class="feat"><div class="ic">🏆</div><h4>Movers and rankings</h4><p>Biggest gainers, top performers and surging themes, so you always know where value is moving.</p></div>
+      <div class="feat"><div class="ic">💵</div><h4>eBay profit calculator</h4><p>Your real profit after seller fees, plus auto-generated listing descriptions ready to paste.</p></div>
+      <div class="feat"><div class="ic">📄</div><h4>Reports and export</h4><p>One-click insurance PDF, CSV bulk import and export, sealed vs opened condition tracking.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES -->
+<section id="examples">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Proof</span>
+      <div class="h2">Sets that quietly made money</div>
+      <p class="sec-sub">Live values, pulled right now from the marketplace.</p>
+    </div>
+    <div class="excards" id="exampleCards">
+      <div class="loading">Loading live examples...</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Reviews</span>
+      <div class="h2">Collectors who stopped guessing</div>
+      <p class="rev-sub"><b>4.8 / 5</b> from early users tracking their sets</p>
+    </div>
+    <div class="revwrap">
+      <div class="revslider" id="revSlider">
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>I had 40 sets in the loft with no idea what they were worth. In ten minutes I saw my collection was up over $3,000. Sold two retired sets that week.</q>
+          <div class="who"><div class="ava" style="background:var(--red)">M</div><div><div class="nm">Marcus T.</div><div class="rl">Casual collector, 40+ sets</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>The retirement alerts are the killer feature. I buy sets before they retire and the value jumps. This paid for itself the first month.</q>
+          <div class="who"><div class="ava" style="background:var(--blue)">S</div><div><div class="nm">Sofia R.</div><div class="rl">Reseller</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★☆</div>
+          <q>Finally real BrickLink prices instead of made-up estimates. Clean, fast, and the ROI view makes it obvious what to hold and what to flip.</q>
+          <div class="who"><div class="ava" style="background:var(--green)">D</div><div><div class="nm">Daniel K.</div><div class="rl">LEGO investor</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>I flip Star Wars sets on the side. The eBay profit calculator alone saves me an hour a week and I finally know my real margins.</q>
+          <div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">J</div><div><div class="nm">Jonas P.</div><div class="rl">Side-hustle reseller</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>My wife thought my LEGO habit was a waste of money. Then I showed her the dashboard: up 34% in two years. Now she picks sets too.</q>
+          <div class="who"><div class="ava" style="background:var(--blue)">A</div><div><div class="nm">Andrew M.</div><div class="rl">Collector, 90+ sets</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★☆</div>
+          <q>The price-per-piece index is genius for spotting a deal at retail before everyone else does. Bagged two sets that already climbed.</q>
+          <div class="who"><div class="ava" style="background:var(--red)">P</div><div><div class="nm">Priya S.</div><div class="rl">Deal hunter</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>I run a small shop and the multi-copy tracking plus PDF report is exactly what I needed for inventory and insurance. Huge time saver.</q>
+          <div class="who"><div class="ava" style="background:var(--green)">L</div><div><div class="nm">Lucas B.</div><div class="rl">Shop owner</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>Got an email the day the Bonsai retired, sold my spare for double what I paid. That one alert was worth a year of the subscription.</q>
+          <div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">E</div><div><div class="nm">Emma W.</div><div class="rl">Casual investor</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★☆</div>
+          <q>Simple, fast, no fluff. I check my portfolio value every Sunday with coffee. It's become my little market ritual.</q>
+          <div class="who"><div class="ava" style="background:var(--blue)">T</div><div><div class="nm">Tomás R.</div><div class="rl">Collector</div></div></div>
+        </div>
+        <div class="review">
+          <div class="stars">★★★★★</div>
+          <q>Tried three other trackers. This is the only one with real sold prices and it works right in the browser, no clunky app. Switched for good.</q>
+          <div class="who"><div class="ava" style="background:var(--red)">N</div><div><div class="nm">Nadia K.</div><div class="rl">Long-time collector</div></div></div>
+        </div>
+      </div>
+      <div class="revnav">
+        <button aria-label="Previous" onclick="revScroll(-1)">‹</button>
+        <button aria-label="Next" onclick="revScroll(1)">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Pricing</span>
+      <div class="h2">Start free. Upgrade when you're hooked.</div>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Free</h3><div class="price">$0</div>
+        <ul>
+          <li>3 value checks per day</li>
+          <li>Track up to 10 sets</li>
+          <li>Live value + retirement status</li>
+          <li>Appreciation vs retail</li>
+          <li class="off">Email price alerts</li>
+          <li class="off">Full portfolio dashboard</li>
+        </ul>
+        <a class="btn ghost" href="/app">Start free</a>
+      </div>
+      <div class="plan pop">
+        <div class="tag">MOST POPULAR</div>
+        <h3>Pro</h3><div class="price">$4.99<span>/mo</span></div>
+        <ul>
+          <li>Unlimited value checks</li>
+          <li>Full portfolio dashboard + ROI</li>
+          <li>Gains by 1D / 7D / 30D</li>
+          <li>Email price + retirement alerts</li>
+          <li>Price-per-piece + Brick 500 index</li>
+          <li>Biggest movers + theme analytics</li>
+          <li>Daily price-history charts</li>
+          <li>Wishlist + buy signals</li>
+        </ul>
+        <a class="btn" href="/app">Go Pro</a>
+      </div>
+      <div class="plan">
+        <h3>Investor</h3><div class="price">$12.99<span>/mo</span></div>
+        <ul>
+          <li>Everything in Pro</li>
+          <li>eBay profit calc + listing generator</li>
+          <li>Bulk CSV import and export</li>
+          <li>Insurance PDF reports</li>
+          <li>Sealed / opened condition grading</li>
+          <li>Sold-set profit and loss</li>
+          <li>Multi-copy tracking for resellers</li>
+          <li>Priority daily data refresh</li>
+        </ul>
+        <a class="btn dark" href="/app">Go Investor</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">FAQ</span>
+      <div class="h2">Good questions</div>
+    </div>
+    <div class="faq">
+      <details class="qa"><summary>Where do the prices come from?</summary><p>Live listings from the BrickLink marketplace (the world's biggest LEGO secondary market), plus official retail prices and retirement dates. Updated daily.</p></details>
+      <details class="qa"><summary>Is it accurate?</summary><p>We show real market prices (new and used, min, average and max), not a black-box estimate. You always see the range.</p></details>
+      <details class="qa"><summary>How do "sell now" alerts work?</summary><p>When a set you own retires or hits a new price high, we ping you. That's usually the best window to sell.</p></details>
+      <details class="qa"><summary>Can I import my whole collection?</summary><p>Yes. Bulk CSV import is available on the Investor plan, with multi-copy tracking for resellers.</p></details>
+      <details class="qa"><summary>Can I cancel anytime?</summary><p>Anytime, in one click. No lock-in.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><a class="logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a></div>
+      <div><a href="#how">How it works</a> · <a href="#features">Features</a> · <a href="#pricing">Pricing</a> · <a href="#faq">FAQ</a> · <a href="/app">Open app</a></div>
+    </div>
+    <div class="disc">BrickGains is an independent tool and is not affiliated with, endorsed by, or sponsored by the LEGO Group. LEGO® is a trademark of the LEGO Group. Prices are indicative and based on marketplace data.</div>
+  </div>
+</footer>
+
+<!-- PAYWALL MODAL -->
+<div class="modal-bg" id="wall">
+  <div class="modal">
+    <span class="x" onclick="closeWall()">✕</span>
+    <h3>You've used your 3 free checks 🧱</h3>
+    <p>Go unlimited: check any set, track your whole collection and get "sell now" alerts from $4.99/mo.</p>
+    <button class="btn lg" onclick="goPricing()">See plans &amp; subscribe</button>
+    <a class="altlink" href="/app">Or start free with limited tracking</a>
+  </div>
+</div>
+
+<script src="/auth.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>

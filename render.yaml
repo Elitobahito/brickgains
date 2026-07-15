@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: brickgains
+    runtime: python
+    plan: free
+    buildCommand: "echo no-deps"
+    startCommand: "python app/server.py"
+    autoDeploy: true

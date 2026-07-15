@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BrickGains · My Portfolio</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="appbar">
+  <div class="wrap nav">
+    <a class="logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+    <nav class="links" style="margin-left:auto;display:flex;align-items:center;gap:18px">
+      <a href="/" style="color:#cfccc3">&larr; Home</a>
+      <button class="acct light" id="accountBtn" aria-label="Account" title="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap" style="padding-top:36px;padding-bottom:72px">
+  <h1 style="font-size:34px;font-weight:800;letter-spacing:-.6px">My LEGO Portfolio</h1>
+  <p style="color:var(--slate);font-weight:500;margin-top:6px">Add your sets and the price you paid. We fetch the real market value and your ROI.</p>
+
+  <div class="portfolio-head">
+    <div class="stat"><div class="k">Sets tracked</div><div class="v" id="stCount">0</div></div>
+    <div class="stat"><div class="k">Paid total</div><div class="v" id="stPaid">$0</div></div>
+    <div class="stat"><div class="k">Current value</div><div class="v" id="stValue">$0</div></div>
+    <div class="stat"><div class="k">Total ROI</div><div class="v" id="stRoi">0%</div></div>
+  </div>
+
+  <div class="add-row">
+    <input id="pset" placeholder="Set number (e.g. 10276)" onkeydown="if(event.key==='Enter')addSet()">
+    <input id="pprice" type="number" placeholder="Price paid ($)" onkeydown="if(event.key==='Enter')addSet()">
+    <button class="btn" onclick="addSet()">Add to portfolio</button>
+  </div>
+
+  <div id="tableWrap"></div>
+</div>
+
+<script src="/auth.js"></script>
+<script src="/portfolio.js"></script>
+</body>
+</html>
