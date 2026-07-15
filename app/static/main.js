@@ -106,5 +106,16 @@ async function loadExamples(){
   }catch(e){ wrap.innerHTML='<div class="loading">Examples unavailable right now.</div>'; }
 }
 
+async function loadDemo(){
+  const box = document.getElementById('result');
+  if(!box || box.innerHTML.trim()) return;
+  try{
+    const d = await fetch('/api/value?set=10276').then(r=>r.json());
+    if(d.error) return;
+    box.innerHTML = `<div class="demo-tag">👇 Example: search any set to get yours</div>` + cardHTML(d);
+  }catch(e){}
+}
+
 refreshFree();
 loadExamples();
+loadDemo();

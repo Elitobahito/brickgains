@@ -132,6 +132,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 
 /* ---- value card ---- */
 #result{max-width:660px;margin:30px auto 0;text-align:left}
+.demo-tag{text-align:center;font-weight:700;font-size:13.5px;color:var(--slate);margin-bottom:12px}
 .vcard{background:var(--card);border:3px solid var(--ink);border-radius:var(--radius);box-shadow:var(--sh-lg);overflow:hidden;animation:pop .22s ease}
 @keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 .vcard .top{display:flex;gap:18px;padding:22px;border-bottom:3px solid var(--ink)}
@@ -319,10 +320,17 @@ table.pf td.num{font-weight:800;text-align:right;font-variant-numeric:tabular-nu
 
 @media(max-width:820px){
   .nav .links{display:none}
+  .navcta .btn{display:none}
   .steps,.feats,.excards,.plans,.reviews{grid-template-columns:1fr}
   .alertbox{grid-template-columns:1fr;padding:28px}
   .plan.pop{transform:none;margin-top:0}
   .vcard .top{flex-direction:column;align-items:center;text-align:center}
   .hero .brick{display:none!important}
+}
+@media(max-width:560px){
+  .searchbar{flex-direction:column;padding:12px;gap:12px}
+  .searchbar input{text-align:center}
+  .searchbar .btn{width:100%}
+  .hero{padding:52px 0 48px}
 }
 @media(min-width:1000px){ .hero .brick{display:block} }
