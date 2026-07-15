@@ -259,6 +259,7 @@ class H(BaseHTTPRequestHandler):
         path = u.path
         if path == "/" : path = "/index.html"
         if path == "/app": path = "/app.html"
+        if path == "/pricing": path = "/pricing.html"
         fp = os.path.join(STATIC, path.lstrip("/"))
         if not os.path.isfile(fp): return self._send(404, "Not found", "text/plain")
         ext = fp.rsplit(".", 1)[-1]
