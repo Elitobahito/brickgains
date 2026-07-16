@@ -37,35 +37,51 @@ def save_cache():
     try: json.dump(CACHE, open(CACHE_FILE, "w"))
     except Exception: pass
 
-# ---------- DB / auth (SQLite, stdlib) ----------
+# ---------- DB / auth (Postgres in prod via DATABASE_URL, SQLite locally) ----------
 DB_FILE = os.path.join(BASE, "brickgains.db")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+PG = bool(DATABASE_URL)
+if PG:
+    import psycopg2, psycopg2.extras
 
-def db():
-    c = sqlite3.connect(DB_FILE)
-    c.row_factory = sqlite3.Row
+def _conn():
+    if PG:
+        return psycopg2.connect(DATABASE_URL, sslmode="require")
+    c = sqlite3.connect(DB_FILE); c.row_factory = sqlite3.Row
     return c
 
+def _conv(sql):
+    return sql.replace("?", "%s") if PG else sql
+
+def q1(sql, params=()):
+    c = _conn()
+    try:
+        cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
+        cur.execute(_conv(sql), params); r = cur.fetchone()
+        return dict(r) if r else None
+    finally: c.close()
+
+def qx(sql, params=(), returning=False):
+    c = _conn()
+    try:
+        cur = c.cursor()
+        if returning and PG: sql = sql + " RETURNING id"
+        cur.execute(_conv(sql), params)
+        val = (cur.fetchone()[0] if PG else cur.lastrowid) if returning else None
+        c.commit(); return val
+    finally: c.close()
+
 def db_init():
-    c = db()
-    c.execute("""CREATE TABLE IF NOT EXISTS users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        pw_hash TEXT NOT NULL,
-        provider TEXT DEFAULT 'password',
-        plan TEXT DEFAULT 'free',
-        created TEXT DEFAULT CURRENT_TIMESTAMP)""")
-    c.execute("""CREATE TABLE IF NOT EXISTS sessions(
-        token TEXT PRIMARY KEY,
-        user_id INTEGER NOT NULL,
-        created TEXT DEFAULT CURRENT_TIMESTAMP)""")
-    c.execute("""CREATE TABLE IF NOT EXISTS portfolio(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        set_num TEXT NOT NULL,
-        paid REAL,
-        condition TEXT DEFAULT 'sealed',
-        added TEXT DEFAULT CURRENT_TIMESTAMP)""")
-    c.commit(); c.close()
+    ai = "SERIAL PRIMARY KEY" if PG else "INTEGER PRIMARY KEY AUTOINCREMENT"
+    ts = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if PG else "TEXT DEFAULT CURRENT_TIMESTAMP"
+    qx(f"""CREATE TABLE IF NOT EXISTS users(
+        id {ai}, email TEXT UNIQUE NOT NULL, pw_hash TEXT NOT NULL,
+        provider TEXT DEFAULT 'password', plan TEXT DEFAULT 'free', created {ts})""")
+    qx(f"""CREATE TABLE IF NOT EXISTS sessions(
+        token TEXT PRIMARY KEY, user_id INTEGER NOT NULL, created {ts})""")
+    qx(f"""CREATE TABLE IF NOT EXISTS portfolio(
+        id {ai}, user_id INTEGER NOT NULL, set_num TEXT NOT NULL,
+        paid REAL, condition TEXT DEFAULT 'sealed', added {ts})""")
 
 def hash_pw(pw, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -90,18 +106,14 @@ def rate_ok(key, limit, window):
 
 def make_session(user_id):
     tok = secrets.token_urlsafe(32)
-    c = db()
-    c.execute("DELETE FROM sessions WHERE created < datetime('now','-30 days')")
-    c.execute("INSERT INTO sessions(token,user_id) VALUES(?,?)", (tok, user_id)); c.commit(); c.close()
+    qx("DELETE FROM sessions WHERE created < " + ("now() - interval '30 days'" if PG else "datetime('now','-30 days')"))
+    qx("INSERT INTO sessions(token,user_id) VALUES(?,?)", (tok, user_id))
     return tok
 
 def user_by_token(tok):
     if not tok: return None
-    c = db()
-    row = c.execute("""SELECT u.id,u.email,u.plan FROM sessions s JOIN users u ON u.id=s.user_id
-                       WHERE s.token=?""", (tok,)).fetchone()
-    c.close()
-    return dict(row) if row else None
+    return q1("""SELECT u.id,u.email,u.plan FROM sessions s JOIN users u ON u.id=s.user_id
+                 WHERE s.token=?""", (tok,))
 
 def _norm(sn):
     sn = str(sn).strip().lower().replace("lego", "").strip()
@@ -245,11 +257,9 @@ class H(BaseHTTPRequestHandler):
                 return self._send(400, json.dumps({"ok": False, "error": "Enter a valid email."}))
             if len(pw) < 8:
                 return self._send(400, json.dumps({"ok": False, "error": "Password must be at least 8 characters."}))
-            c = db()
-            if c.execute("SELECT 1 FROM users WHERE email=?", (email,)).fetchone():
-                c.close(); return self._send(409, json.dumps({"ok": False, "error": "An account with this email already exists."}))
-            cur = c.execute("INSERT INTO users(email,pw_hash) VALUES(?,?)", (email, hash_pw(pw)))
-            c.commit(); uid = cur.lastrowid; c.close()
+            if q1("SELECT 1 AS x FROM users WHERE email=?", (email,)):
+                return self._send(409, json.dumps({"ok": False, "error": "An account with this email already exists."}))
+            uid = qx("INSERT INTO users(email,pw_hash) VALUES(?,?)", (email, hash_pw(pw)), returning=True)
             tok = make_session(uid)
             return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": "free"}}),
                               cookie=self._sess_cookie(tok))
@@ -260,9 +270,7 @@ class H(BaseHTTPRequestHandler):
             d = self._body()
             email = (d.get("email") or "").strip().lower()
             pw = d.get("password") or ""
-            c = db()
-            row = c.execute("SELECT id,pw_hash,plan FROM users WHERE email=?", (email,)).fetchone()
-            c.close()
+            row = q1("SELECT id,pw_hash,plan FROM users WHERE email=?", (email,))
             if not row or not verify_pw(pw, row["pw_hash"]):
                 return self._send(401, json.dumps({"ok": False, "error": "Wrong email or password."}))
             tok = make_session(row["id"])
@@ -272,7 +280,7 @@ class H(BaseHTTPRequestHandler):
         if u.path == "/api/logout":
             tok = self._cookie("bg_session")
             if tok:
-                c = db(); c.execute("DELETE FROM sessions WHERE token=?", (tok,)); c.commit(); c.close()
+                qx("DELETE FROM sessions WHERE token=?", (tok,))
             return self._send(200, json.dumps({"ok": True}), cookie=self._sess_cookie("", clear=True))
 
         return self._send(404, "Not found", "text/plain")

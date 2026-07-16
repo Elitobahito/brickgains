@@ -1,1 +1,1 @@
-# BrickGains runs on the Python standard library only. No third-party deps.
+psycopg2-binary==2.9.9
