@@ -66,6 +66,22 @@
    "retired": "2018-12-05"
   },
   {
+   "set": "8258-1",
+   "name": "Crane Truck",
+   "year": 2009,
+   "theme": "Technic",
+   "image": "https://cdn.rebrickable.com/media/sets/8258-1/7423.jpg",
+   "rrp": 149.99,
+   "newMin": 346,
+   "newAvg": 462.1771,
+   "newMax": 569.16,
+   "usedMin": 175,
+   "usedAvg": 275.8866,
+   "usedMax": 536.16,
+   "appreciation": 208,
+   "retired": "2010-12-25"
+  },
+  {
    "set": "76422-1",
    "name": "Diagon Alley: Weasleys' Wizard Wheezes",
    "year": 2023,
