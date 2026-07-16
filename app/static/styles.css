@@ -467,6 +467,17 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .vbadge.watch{background:#fff;color:var(--ink)}
 .vbadge.sell{background:var(--red);color:#fff}
 
+/* portfolio add tools: condition select, import, sync note */
+.add-row select{border:3px solid var(--ink);border-radius:12px;padding:0 12px;font-size:15px;font-weight:700;box-shadow:3px 3px 0 var(--ink);background:#fff;cursor:pointer}
+.add-tools{display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap}
+.linkish{background:none;border:none;color:var(--blue-d);font-weight:700;font-size:14px;cursor:pointer;text-decoration:underline;padding:0}
+.sync-note{color:var(--slate);font-weight:600;font-size:13px}
+.import-box{margin-top:14px;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:16px}
+.import-box textarea{width:100%;min-height:88px;border:3px solid var(--ink);border-radius:12px;padding:12px 14px;font-size:15px;font-weight:600;font-family:inherit;resize:vertical;margin-bottom:12px}
+.cond{display:inline-block;border:2px solid var(--ink);border-radius:7px;font-size:11px;font-weight:800;padding:2px 8px}
+.cond.sealed{background:var(--green);color:#fff}
+.cond.opened{background:#e9e5da;color:var(--ink)}
+
 /* verdict card on set pages */
 .verdict-card{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:26px 28px;margin:26px 0;border-left-width:12px}
 .verdict-card.buy{border-left-color:var(--green)}

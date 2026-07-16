@@ -6,7 +6,7 @@ qui fusionne Rebrickable + Brickset + Apify (BrickLink) avec cache 24h.
 
 Lancer :  python3 app/server.py   puis ouvrir http://localhost:8000
 """
-import json, os, time, urllib.request, urllib.parse
+import json, os, time, re, urllib.request, urllib.parse
 import sqlite3, hashlib, secrets, hmac
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -304,6 +304,42 @@ class H(BaseHTTPRequestHandler):
                 except Exception: pass
             return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day}))
 
+        if u.path.startswith("/api/portfolio"):
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            uid = me["id"]
+            d = self._body()
+            if u.path == "/api/portfolio/add":
+                sn = str(d.get("set", "")).strip().lower().replace("lego", "").replace("-1", "").strip()
+                if not sn:
+                    return self._send(400, json.dumps({"ok": False, "error": "set manquant"}))
+                paid = d.get("paid")
+                try: paid = float(paid) if paid not in (None, "") else None
+                except Exception: paid = None
+                cond = "opened" if str(d.get("condition", "sealed")).lower().startswith("open") else "sealed"
+                rid = qx("INSERT INTO portfolio(user_id,set_num,paid,condition) VALUES(?,?,?,?)",
+                         (uid, sn, paid, cond), returning=True)
+                return self._send(200, json.dumps({"ok": True, "id": rid}))
+            if u.path == "/api/portfolio/remove":
+                rid = d.get("id")
+                qx("DELETE FROM portfolio WHERE id=? AND user_id=?", (rid, uid))
+                return self._send(200, json.dumps({"ok": True}))
+            if u.path == "/api/portfolio/import":
+                raw = d.get("raw") or ""
+                toks = re.split(r"[\s,;\n]+", str(raw))
+                seen, n = set(), 0
+                for t in toks:
+                    sn = t.strip().lower().replace("lego", "").replace("-1", "").strip()
+                    if not sn or sn in seen: continue
+                    seen.add(sn)
+                    qx("INSERT INTO portfolio(user_id,set_num,paid,condition) VALUES(?,?,?,?)",
+                       (uid, sn, None, "sealed"))
+                    n += 1
+                    if n >= 200: break
+                return self._send(200, json.dumps({"ok": True, "added": n}))
+            return self._send(404, json.dumps({"ok": False}))
+
         return self._send(404, "Not found", "text/plain")
 
     def do_GET(self):
@@ -311,6 +347,19 @@ class H(BaseHTTPRequestHandler):
         if u.path == "/api/me":
             me = self._me()
             return self._send(200, json.dumps({"user": me}))
+        if u.path == "/api/portfolio":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            rows = []
+            try:
+                c = _conn()
+                cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
+                cur.execute(_conv("SELECT id,set_num,paid,condition FROM portfolio WHERE user_id=? ORDER BY id DESC"), (me["id"],))
+                rows = [dict(r) for r in cur.fetchall()]
+                c.close()
+            except Exception: pass
+            return self._send(200, json.dumps({"ok": True, "items": rows}))
         if u.path == "/api/value":
             q = urllib.parse.parse_qs(u.query).get("set", [""])[0]
             if not q: return self._send(400, json.dumps({"error": "set manquant"}))

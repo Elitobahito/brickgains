@@ -1,22 +1,76 @@
-function load(){ try{return JSON.parse(localStorage.getItem('bb_pf')||'[]')}catch(e){return[]} }
-function save(a){ localStorage.setItem('bb_pf', JSON.stringify(a)); }
 function money(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); }
+
+// account state: ME=null => local (localStorage) mode; ME set => server (DB) mode
+let ME = null;
+function lload(){ try{return JSON.parse(localStorage.getItem('bb_pf')||'[]')}catch(e){return[]} }
+function lsave(a){ localStorage.setItem('bb_pf', JSON.stringify(a)); }
+
+async function initPortfolio(){
+  try{ ME = (await fetch('/api/me').then(r=>r.json())).user || null; }catch(e){ ME=null; }
+  const note = document.getElementById('syncNote');
+  if(ME){
+    note.textContent = '✓ Synced to your account ('+ME.email+')';
+    // one-time migration of any device portfolio into the account
+    const local = lload();
+    if(local.length){
+      for(const it of local){
+        try{ await fetch('/api/portfolio/add',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({set:it.set,paid:it.paid,condition:it.condition||'sealed'})}); }catch(e){}
+      }
+      localStorage.removeItem('bb_pf');
+    }
+  } else {
+    note.textContent = 'Saved on this device. Log in to sync across devices.';
+  }
+  render();
+}
+
+// returns unified list [{key, set, paid, condition, sid(server id|null)}]
+async function getPF(){
+  if(ME){
+    try{
+      const items = (await fetch('/api/portfolio').then(r=>r.json())).items||[];
+      return items.map(r=>({sid:r.id, set:r.set_num, paid:r.paid, condition:r.condition||'sealed'}));
+    }catch(e){ return []; }
+  }
+  return lload().map(it=>({sid:null, set:it.set, paid:it.paid, condition:it.condition||'sealed'}));
+}
 
 async function addSet(){
   const set = document.getElementById('pset').value.trim();
   const price = parseFloat(document.getElementById('pprice').value);
+  const cond = document.getElementById('pcond').value;
   if(!set) return;
-  const pf = load();
-  pf.push({set, paid: isNaN(price)?null:price});
-  save(pf);
+  const paid = isNaN(price)?null:price;
+  if(ME){
+    await fetch('/api/portfolio/add',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({set,paid,condition:cond})});
+  } else { const pf=lload(); pf.push({set,paid,condition:cond}); lsave(pf); }
   document.getElementById('pset').value=''; document.getElementById('pprice').value='';
   render();
 }
 
-function removeSet(i){ const pf=load(); pf.splice(i,1); save(pf); render(); }
+async function removeSet(sid, set){
+  if(ME && sid){ await fetch('/api/portfolio/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:sid})}); }
+  else { const pf=lload(); const i=pf.findIndex(x=>x.set===set); if(i>=0){pf.splice(i,1); lsave(pf);} }
+  render();
+}
+
+function toggleImport(){ const b=document.getElementById('importBox'); b.style.display = b.style.display==='none'?'block':'none'; }
+async function doImport(){
+  const raw = document.getElementById('importRaw').value.trim();
+  if(!raw) return;
+  if(ME){ await fetch('/api/portfolio/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw})}); }
+  else {
+    const pf=lload(); const seen=new Set(pf.map(x=>x.set));
+    raw.split(/[\s,;\n]+/).forEach(t=>{const s=t.trim().replace('-1',''); if(s&&!seen.has(s)){seen.add(s); pf.push({set:s,paid:null,condition:'sealed'});}});
+    lsave(pf);
+  }
+  document.getElementById('importRaw').value=''; toggleImport(); render();
+}
 
 async function render(){
-  const pf = load();
+  const pf = await getPF();
   const wrap = document.getElementById('tableWrap');
   document.getElementById('stCount').textContent = pf.length;
   if(!pf.length){
@@ -27,10 +81,10 @@ async function render(){
     return;
   }
   wrap.innerHTML = `<table class="pf"><thead><tr>
-    <th>Set</th><th>Status</th><th style="text-align:right">Paid</th>
+    <th>Set</th><th>Condition</th><th>Status</th><th style="text-align:right">Paid</th>
     <th style="text-align:right">Value (new)</th><th style="text-align:right">Gain</th><th></th>
     </tr></thead><tbody id="tb">
-    ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="6" style="color:#999">Loading…</td></tr>`).join('')}
+    ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="7" style="color:#999">Loading…</td></tr>`).join('')}
     </tbody></table>`;
 
   let paidTot=0, valTot=0;
@@ -38,22 +92,26 @@ async function render(){
     const item = pf[i];
     let d={};
     try{ d = await fetch('/api/value?set='+encodeURIComponent(item.set)).then(r=>r.json()); }catch(e){ d={error:1}; }
-    const val = d.newAvg;
+    // used value applies when the set is opened
+    const val = item.condition==='opened' ? (d.usedAvg||d.newAvg) : d.newAvg;
     const paid = item.paid;
     if(paid) paidTot += paid;
     if(val) valTot += val;
     let gain='-', gcls='';
     if(paid && val){ const g=val-paid; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
     const status = d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`;
+    const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?'Opened':'Sealed'}</span>`;
+    const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
     const row = document.getElementById('r'+i);
-    if(row) row.innerHTML = d.error
-      ? `<td>${item.set}</td><td colspan="4" style="color:#999">Not found</td><td><button class="del" onclick="removeSet(${i})">✕</button></td>`
+    if(row) row.innerHTML = (d.error||!d.name)
+      ? `<td>${item.set}</td><td colspan="5" style="color:#999">Not found</td><td><button class="del" onclick="${rm}">✕</button></td>`
       : `<td><b>${d.name}</b><br><span style="color:#999;font-size:13px">${d.set}</span></td>
+         <td>${cond}</td>
          <td>${status}</td>
          <td class="num">${money(paid)}</td>
          <td class="num">${money(val)}</td>
          <td class="num ${gcls}">${gain}</td>
-         <td><button class="del" onclick="removeSet(${i})">✕</button></td>`;
+         <td><button class="del" onclick="${rm}">✕</button></td>`;
   }
   document.getElementById('stPaid').textContent = money(paidTot);
   document.getElementById('stValue').textContent = money(valTot);
@@ -65,7 +123,7 @@ async function render(){
   } else roiEl.textContent='0%';
 }
 
-render();
+initPortfolio();
 
 // ---- Market Movers ----
 let MV = [];

@@ -38,7 +38,16 @@
   <div class="add-row">
     <input id="pset" placeholder="Set number (e.g. 10276)" onkeydown="if(event.key==='Enter')addSet()">
     <input id="pprice" type="number" placeholder="Price paid ($)" onkeydown="if(event.key==='Enter')addSet()">
+    <select id="pcond" title="Condition"><option value="sealed">Sealed</option><option value="opened">Opened</option></select>
     <button class="btn" onclick="addSet()">Add to portfolio</button>
+  </div>
+  <div class="add-tools">
+    <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
+    <span class="sync-note" id="syncNote"></span>
+  </div>
+  <div id="importBox" class="import-box" style="display:none">
+    <textarea id="importRaw" placeholder="Paste set numbers, any separator: 10276, 10307 42115&#10;75192"></textarea>
+    <div><button class="btn" onclick="doImport()">Import all</button> <button class="linkish" onclick="toggleImport()">Cancel</button></div>
   </div>
 
   <div id="tableWrap"></div>
