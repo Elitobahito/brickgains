@@ -2,7 +2,10 @@
 (function(){
   let me = null;
   const FRA = (window.LANG === 'fr');
-  const S = FRA ? {
+  const LANG = window.LANG || 'en';
+  const HOME = (LANG && LANG !== 'en') ? '/' + LANG : '/';
+  const SP = {
+  fr: {
     welcome:"Bon retour", loginSub:"Connectez-vous pour suivre votre collection.",
     createTitle:"Créez votre compte", createSub:"Commencez à suivre vos LEGO en quelques secondes.",
     google:"Continuer avec Google", or:"ou", email:"Email", pass:"Mot de passe (8+ caractères)",
@@ -16,7 +19,8 @@
     promoP:"Inscrivez-vous et débloquez estimations illimitées, tableau de bord et alertes de prix, 10 % moins cher.",
     claim:"Obtenir mon code -10 %", code:(c)=>`Votre code : <b>${c}</b>, appliqué au paiement. <a onclick="BG.goPricing()">Voir les tarifs &rarr;</a>`,
     nospam:"Pas de spam. Désinscription à tout moment.", seePlans:"Voir les tarifs &amp; s'abonner"
-  } : {
+  },
+  en: {
     welcome:"Welcome back", loginSub:"Log in to track your collection.",
     createTitle:"Create your account", createSub:"Start tracking your LEGO in seconds.",
     google:"Continue with Google", or:"or", email:"Email", pass:"Password (8+ characters)",
@@ -30,7 +34,99 @@
     promoP:"Join now and unlock unlimited checks, your portfolio dashboard and price alerts, 10% cheaper.",
     claim:"Claim my 10% code", code:(c)=>`Your code: <b>${c}</b>, applied at checkout. <a onclick="BG.goPricing()">See plans &rarr;</a>`,
     nospam:"No spam. Unsubscribe anytime.", seePlans:"See plans &amp; subscribe"
+  },
+  de: {
+    welcome:"Willkommen zurück", loginSub:"Melde dich an, um deine Sammlung zu verfolgen.",
+    createTitle:"Konto erstellen", createSub:"Verfolge deine LEGO in Sekunden.",
+    google:"Mit Google fortfahren", or:"oder", email:"E-Mail", pass:"Passwort (8+ Zeichen)",
+    login:"Anmelden", create:"Konto erstellen", newHere:"Neu hier?", already:"Schon ein Konto?",
+    doCreate:"Konto erstellen", doLogin:"Anmelden",
+    acct:"Dein Konto", openPf:"Mein Portfolio öffnen", logout:"Abmelden",
+    plan:"Tarif: ", wait:"Bitte warten...", success:"✅ Erfolg! Weiterleitung...",
+    err:"Etwas ist schiefgelaufen.", net:"Netzwerkfehler. Bitte erneut versuchen.",
+    gsoon:"Die Google-Anmeldung wird eingerichtet, nutze vorerst die E-Mail.",
+    limited:"🧱 Begrenztes Angebot", off10a:"Erhalte", off10b:"10 % Rabatt", off10c:"im ersten Monat",
+    promoP:"Jetzt registrieren und unbegrenzte Checks, dein Portfolio-Dashboard und Preisalarme freischalten, 10 % günstiger.",
+    claim:"Meinen 10-%-Code sichern", code:(c)=>`Dein Code: <b>${c}</b>, wird an der Kasse angewendet. <a onclick="BG.goPricing()">Tarife ansehen &rarr;</a>`,
+    nospam:"Kein Spam. Jederzeit abmelden.", seePlans:"Tarife ansehen &amp; abonnieren"
+  },
+  es: {
+    welcome:"Bienvenido de nuevo", loginSub:"Inicia sesión para seguir tu colección.",
+    createTitle:"Crea tu cuenta", createSub:"Empieza a seguir tus LEGO en segundos.",
+    google:"Continuar con Google", or:"o", email:"Correo electrónico", pass:"Contraseña (8+ caracteres)",
+    login:"Iniciar sesión", create:"Crear cuenta", newHere:"¿Nuevo por aquí?", already:"¿Ya tienes una cuenta?",
+    doCreate:"Crear una cuenta", doLogin:"Iniciar sesión",
+    acct:"Tu cuenta", openPf:"Abrir mi cartera", logout:"Cerrar sesión",
+    plan:"Plan: ", wait:"Espera un momento...", success:"✅ ¡Listo! Redirigiendo...",
+    err:"Algo salió mal.", net:"Error de red. Inténtalo de nuevo.",
+    gsoon:"El inicio de sesión con Google se está configurando, usa el correo por ahora.",
+    limited:"🧱 Oferta limitada", off10a:"Consigue un", off10b:"10 % de descuento", off10c:"en tu primer mes",
+    promoP:"Únete ahora y desbloquea estimaciones ilimitadas, tu panel de cartera y alertas de precios, 10 % más barato.",
+    claim:"Conseguir mi código -10 %", code:(c)=>`Tu código: <b>${c}</b>, aplicado al pagar. <a onclick="BG.goPricing()">Ver planes &rarr;</a>`,
+    nospam:"Sin spam. Cancela cuando quieras.", seePlans:"Ver planes &amp; suscribirse"
+  },
+  it: {
+    welcome:"Bentornato", loginSub:"Accedi per seguire la tua collezione.",
+    createTitle:"Crea il tuo account", createSub:"Inizia a seguire i tuoi LEGO in pochi secondi.",
+    google:"Continua con Google", or:"o", email:"Email", pass:"Password (8+ caratteri)",
+    login:"Accedi", create:"Crea account", newHere:"Nuovo qui?", already:"Hai già un account?",
+    doCreate:"Crea un account", doLogin:"Accedi",
+    acct:"Il tuo account", openPf:"Apri il mio portafoglio", logout:"Esci",
+    plan:"Piano: ", wait:"Attendi...", success:"✅ Fatto! Reindirizzamento...",
+    err:"Qualcosa è andato storto.", net:"Errore di rete. Riprova.",
+    gsoon:"L'accesso con Google è in fase di configurazione, per ora usa l'email.",
+    limited:"🧱 Offerta limitata", off10a:"Ottieni il", off10b:"10% di sconto", off10c:"sul tuo primo mese",
+    promoP:"Iscriviti ora e sblocca stime illimitate, la dashboard del tuo portafoglio e gli avvisi sui prezzi, 10% in meno.",
+    claim:"Ottieni il mio codice -10%", code:(c)=>`Il tuo codice: <b>${c}</b>, applicato al pagamento. <a onclick="BG.goPricing()">Vedi i piani &rarr;</a>`,
+    nospam:"Niente spam. Disiscriviti quando vuoi.", seePlans:"Vedi i piani &amp; abbonati"
+  },
+  nl: {
+    welcome:"Welkom terug", loginSub:"Log in om je collectie bij te houden.",
+    createTitle:"Maak je account aan", createSub:"Begin binnen enkele seconden met het bijhouden van je LEGO.",
+    google:"Doorgaan met Google", or:"of", email:"E-mail", pass:"Wachtwoord (8+ tekens)",
+    login:"Inloggen", create:"Account aanmaken", newHere:"Nieuw hier?", already:"Heb je al een account?",
+    doCreate:"Een account aanmaken", doLogin:"Inloggen",
+    acct:"Je account", openPf:"Mijn portefeuille openen", logout:"Uitloggen",
+    plan:"Abonnement: ", wait:"Even geduld...", success:"✅ Gelukt! Doorsturen...",
+    err:"Er ging iets mis.", net:"Netwerkfout. Probeer opnieuw.",
+    gsoon:"Google-inloggen wordt ingesteld, gebruik voorlopig e-mail.",
+    limited:"🧱 Beperkte aanbieding", off10a:"Krijg", off10b:"10% korting", off10c:"op je eerste maand",
+    promoP:"Meld je nu aan en ontgrendel onbeperkte checks, je portefeuille-dashboard en prijsmeldingen, 10% goedkoper.",
+    claim:"Mijn code van -10% claimen", code:(c)=>`Je code: <b>${c}</b>, toegepast bij het afrekenen. <a onclick="BG.goPricing()">Bekijk abonnementen &rarr;</a>`,
+    nospam:"Geen spam. Altijd uit te schrijven.", seePlans:"Bekijk abonnementen &amp; abonneer"
+  },
+  sv: {
+    welcome:"Välkommen tillbaka", loginSub:"Logga in för att följa din samling.",
+    createTitle:"Skapa ditt konto", createSub:"Börja följa dina LEGO på några sekunder.",
+    google:"Fortsätt med Google", or:"eller", email:"E-post", pass:"Lösenord (8+ tecken)",
+    login:"Logga in", create:"Skapa konto", newHere:"Ny här?", already:"Har du redan ett konto?",
+    doCreate:"Skapa ett konto", doLogin:"Logga in",
+    acct:"Ditt konto", openPf:"Öppna min portfölj", logout:"Logga ut",
+    plan:"Plan: ", wait:"Vänta...", success:"✅ Klart! Omdirigerar...",
+    err:"Något gick fel.", net:"Nätverksfel. Försök igen.",
+    gsoon:"Google-inloggning håller på att ställas in, använd e-post tills vidare.",
+    limited:"🧱 Begränsat erbjudande", off10a:"Få", off10b:"10 % rabatt", off10c:"på din första månad",
+    promoP:"Gå med nu och lås upp obegränsade kontroller, din portföljöversikt och prisvarningar, 10 % billigare.",
+    claim:"Hämta min 10 %-kod", code:(c)=>`Din kod: <b>${c}</b>, tillämpas i kassan. <a onclick="BG.goPricing()">Se planer &rarr;</a>`,
+    nospam:"Ingen spam. Avsluta när som helst.", seePlans:"Se planer &amp; prenumerera"
+  },
+  da: {
+    welcome:"Velkommen tilbage", loginSub:"Log ind for at følge din samling.",
+    createTitle:"Opret din konto", createSub:"Begynd at følge dine LEGO på få sekunder.",
+    google:"Fortsæt med Google", or:"eller", email:"E-mail", pass:"Adgangskode (8+ tegn)",
+    login:"Log ind", create:"Opret konto", newHere:"Ny her?", already:"Har du allerede en konto?",
+    doCreate:"Opret en konto", doLogin:"Log ind",
+    acct:"Din konto", openPf:"Åbn min portefølje", logout:"Log ud",
+    plan:"Abonnement: ", wait:"Vent venligst...", success:"✅ Færdig! Omdirigerer...",
+    err:"Noget gik galt.", net:"Netværksfejl. Prøv igen.",
+    gsoon:"Google-login er ved at blive sat op, brug e-mail indtil videre.",
+    limited:"🧱 Begrænset tilbud", off10a:"Få", off10b:"10 % rabat", off10c:"på din første måned",
+    promoP:"Tilmeld dig nu og lås op for ubegrænsede tjek, dit porteføljeoverblik og prisadvarsler, 10 % billigere.",
+    claim:"Hent min 10 %-kode", code:(c)=>`Din kode: <b>${c}</b>, anvendes ved betaling. <a onclick="BG.goPricing()">Se abonnementer &rarr;</a>`,
+    nospam:"Ingen spam. Afmeld når som helst.", seePlans:"Se abonnementer &amp; abonnér"
+  }
   };
+  const S = SP[LANG] || SP.en;
 
   const authHTML = `
   <div class="modal-bg" id="authWall">
@@ -118,10 +214,10 @@
       }catch(err){ msg.className='authmsg err'; msg.textContent=S.net; }
     },
     google(){ el('authMsg').className='authmsg'; el('authMsg').textContent=S.gsoon; },
-    async logout(){ try{ await fetch('/api/logout',{method:'POST'}); }catch(e){} me=null; BG.closeAcct(); BG.renderIcon(); if(location.pathname==='/app') location.href = FRA ? '/fr' : '/'; },
+    async logout(){ try{ await fetch('/api/logout',{method:'POST'}); }catch(e){} me=null; BG.closeAcct(); BG.renderIcon(); if(location.pathname==='/app') location.href = HOME; },
     renderIcon(){
       const btn = el('accountBtn'); if(!btn) return;
-      btn.title = me ? (me.email) : (FRA ? 'Se connecter' : 'Sign in');
+      btn.title = me ? (me.email) : S.login;
       btn.classList.toggle('in', !!me);
     },
     async refreshMe(){ try{ const r=await fetch('/api/me'); me=(await r.json()).user; }catch(e){ me=null; } BG.renderIcon(); return me; },
