@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BrickGains · Quanto valgono davvero i tuoi LEGO?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<meta name="description" content="Inserisci il numero di un set LEGO e scopri all'istante il suo vero valore di rivendita, la plusvalenza dal prezzo di lancio e se è il momento di vendere.">
+<link rel="canonical" href="https://brickgains.com/it">
+<link rel="alternate" hreflang="en" href="https://brickgains.com/">
+<link rel="alternate" hreflang="fr" href="https://brickgains.com/fr">
+<link rel="alternate" hreflang="de" href="https://brickgains.com/de">
+<link rel="alternate" hreflang="es" href="https://brickgains.com/es">
+<link rel="alternate" hreflang="it" href="https://brickgains.com/it">
+<link rel="alternate" hreflang="nl" href="https://brickgains.com/nl">
+<link rel="alternate" hreflang="sv" href="https://brickgains.com/sv">
+<link rel="alternate" hreflang="da" href="https://brickgains.com/da">
+<link rel="alternate" hreflang="x-default" href="https://brickgains.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="topbar"><i></i><i></i><i></i><i></i></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="/it"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+    <nav class="links">
+      <a href="#how">Come funziona</a>
+      <a href="#features">Funzioni</a>
+      <a href="#reviews">Recensioni</a>
+      <a href="/it/blog">Blog</a>
+      <a href="#pricing">Prezzi</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="navcta">
+      <button class="acct" id="accountBtn" aria-label="Account" title="Accedi">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </button>
+      <a class="btn" href="#hero" onclick="document.getElementById('setInput').focus()">Valuta un set</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <span class="brick b1"></span><span class="brick b2"></span>
+  <span class="brick b3"></span><span class="brick b4"></span>
+  <div class="wrap">
+    <span class="pill">🧱 Prezzi reali del mercato LEGO, non stime</span>
+    <h1>Quanto valgono <span class="hl">davvero i tuoi LEGO?</span></h1>
+    <p class="sub">Inserisci il numero di un set e scopri il suo vero valore di rivendita, la plusvalenza dal lancio e se è il momento di vendere.</p>
+    <div class="searchbar">
+      <input id="setInput" placeholder="Numero o nome del set (es. 10276)" autocomplete="off"
+             onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn" onclick="doSearch()">Valuta</button>
+    </div>
+    <div class="freehint" id="freehint"><b id="freeLeft">3</b> valutazioni gratuite rimaste · senza registrazione</div>
+    <div class="trychips">Popolari:
+      <button onclick="quick('10276')">Colosseo</button>
+      <button onclick="quick('75192')">Millennium Falcon</button>
+      <button onclick="quick('10281')">Bonsai</button>
+    </div>
+    <div class="trustrow">
+      <span>Prezzi BrickLink reali</span>
+      <span>Date di ritiro monitorate</span>
+      <span>Senza registrazione</span>
+    </div>
+    <div id="result"></div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Come funziona</span>
+      <div class="h2">Dal tirare a indovinare ai dati, in pochi secondi</div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h4>Cerca il tuo set</h4><p>Inserisci un numero o un nome di set. Recuperiamo il vero catalogo, il prezzo di lancio e la data di ritiro.</p></div>
+      <div class="step"><div class="num">02</div><h4>Scopri il suo vero valore</h4><p>Prezzo di rivendita in tempo reale (nuovo e usato) dal mercato LEGO, più la tua plusvalenza rispetto al prezzo di lancio.</p></div>
+      <div class="step"><div class="num">03</div><h4>Monitora e ricevi avvisi</h4><p>Aggiungi i tuoi set, guarda crescere il tuo portafoglio e ricevi una notifica al momento giusto per comprare o vendere.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Funzioni</span>
+      <div class="h2">Tutto per investire nei LEGO</div>
+      <p class="sec-sub">Dati di mercato reali, una dashboard di portafoglio completa e avvisi via email. La cassetta degli attrezzi completa, nel tuo browser.</p>
+    </div>
+    <div class="feats">
+      <div class="feat"><div class="ic">💰</div><h4>Vero valore di rivendita</h4><p>Prezzi BrickLink nuovo e usato, aggiornati ogni giorno. A quanto si vendono davvero i set, non una stima.</p></div>
+      <div class="feat"><div class="ic">📈</div><h4>Plusvalenza dal lancio</h4><p>Scopri la percentuale esatta di cui un set è cresciuto rispetto al prezzo di lancio, per singolo set e sull'intero portafoglio.</p></div>
+      <div class="feat"><div class="ic">📧</div><h4>Avvisi di prezzo via email</h4><p>Ricevi un'email non appena un set sale, scende o raggiunge il tuo prezzo obiettivo. Basta fissare uno schermo.</p></div>
+      <div class="feat"><div class="ic">⏰</div><h4>Radar dei ritiri</h4><p>Scopri cosa sta per essere ritirato e ricevi un avviso prima che un set sparisca, la finestra in cui il valore sale più in fretta.</p></div>
+      <div class="feat"><div class="ic">📊</div><h4>Portafoglio e ROI</h4><p>Monitora quanto hai pagato rispetto a quanto vale, i guadagni a 1G / 7G / 30G e il tuo rendimento totale.</p></div>
+      <div class="feat"><div class="ic">🧩</div><h4>Indice prezzo per pezzo</h4><p>Individua all'istante i set sottovalutati con l'analisi del prezzo per pezzo e il nostro indice di mercato Brick 500.</p></div>
+      <div class="feat"><div class="ic">🏆</div><h4>Movimenti e classifiche</h4><p>Maggiori rialzi, migliori performer e temi di tendenza, per sapere sempre dove si sposta il valore.</p></div>
+      <div class="feat"><div class="ic">💵</div><h4>Calcolatore profitto eBay</h4><p>Il tuo profitto reale al netto delle commissioni di vendita, più descrizioni di annuncio generate e pronte da incollare.</p></div>
+      <div class="feat"><div class="ic">📄</div><h4>Report ed esportazione</h4><p>PDF assicurativo in un clic, import/export CSV in massa, monitoraggio dello stato sigillato o aperto.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES -->
+<section id="examples">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Prove</span>
+      <div class="h2">Set che hanno reso in silenzio</div>
+      <p class="sec-sub">Valori in tempo reale, presi in questo istante dal mercato.</p>
+    </div>
+    <div class="excards" id="exampleCards">
+      <div class="loading">Caricamento degli esempi...</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Recensioni</span>
+      <div class="h2">Collezionisti che hanno smesso di tirare a indovinare</div>
+      <p class="rev-sub"><b>4,8 / 5</b> dai primi utenti che monitorano i loro set</p>
+    </div>
+    <div class="revwrap">
+      <div class="revslider" id="revSlider">
+        <div class="review"><div class="stars">★★★★★</div><q>Avevo 40 set in soffitta senza idea del loro valore. In dieci minuti ho visto che la mia collezione era cresciuta di oltre 3.000 $. Ho venduto due set ritirati nel giro di una settimana.</q><div class="who"><div class="ava" style="background:var(--red)">M</div><div><div class="nm">Marcus T.</div><div class="rl">Collezionista, 40+ set</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Gli avvisi di ritiro sono la funzione top. Compro i set prima del ritiro e il valore schizza. Si è ripagato già dal primo mese.</q><div class="who"><div class="ava" style="background:var(--blue)">S</div><div><div class="nm">Sofia R.</div><div class="rl">Rivenditrice</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Finalmente veri prezzi BrickLink invece di stime inventate. Pulito, veloce, e la vista ROI rende ovvio cosa tenere e cosa rivendere.</q><div class="who"><div class="ava" style="background:var(--green)">D</div><div><div class="nm">Daniel K.</div><div class="rl">Investitore LEGO</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Rivendo set Star Wars come attività secondaria. Il solo calcolatore di profitto eBay mi fa risparmiare un'ora a settimana e finalmente conosco i miei veri margini.</q><div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">J</div><div><div class="nm">Jonas P.</div><div class="rl">Rivenditore</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Mia moglie pensava che i miei LEGO fossero soldi buttati. Poi le ho mostrato la dashboard: +34% in due anni. Ora sceglie i set anche lei.</q><div class="who"><div class="ava" style="background:var(--blue)">A</div><div><div class="nm">Andrew M.</div><div class="rl">Collezionista, 90+ set</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>L'indice prezzo per pezzo è geniale per fiutare un affare in negozio prima di tutti gli altri. Ho preso due set che sono già saliti.</q><div class="who"><div class="ava" style="background:var(--red)">P</div><div><div class="nm">Priya S.</div><div class="rl">Cacciatrice di affari</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Gestisco un piccolo negozio e il monitoraggio multi-copia più il report PDF sono esattamente ciò che mi serviva per inventario e assicurazione. Un enorme risparmio di tempo.</q><div class="who"><div class="ava" style="background:var(--green)">L</div><div><div class="nm">Lucas B.</div><div class="rl">Titolare di negozio</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Ho ricevuto un'email il giorno in cui il Bonsai è stato ritirato, ho venduto la mia copia in più al doppio del prezzo pagato. Quell'avviso valeva un anno di abbonamento.</q><div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">E</div><div><div class="nm">Emma W.</div><div class="rl">Investitrice occasionale</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Semplice, veloce, senza fronzoli. Controllo il valore del mio portafoglio ogni domenica con un caffè. È diventato il mio piccolo rito di mercato.</q><div class="who"><div class="ava" style="background:var(--blue)">T</div><div><div class="nm">Tomás R.</div><div class="rl">Collezionista</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Ho provato altri tre tracker. Questo è l'unico con veri prezzi di vendita, e funziona direttamente nel browser, senza app pesanti. Ho cambiato definitivamente.</q><div class="who"><div class="ava" style="background:var(--red)">N</div><div><div class="nm">Nadia K.</div><div class="rl">Collezionista di lunga data</div></div></div></div>
+      </div>
+      <div class="revnav">
+        <button aria-label="Precedente" onclick="revScroll(-1)">‹</button>
+        <button aria-label="Successivo" onclick="revScroll(1)">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Prezzi</span>
+      <div class="h2">Inizia gratis. Passa al livello superiore quando sei conquistato.</div>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Gratuito</h3><div class="price">0 $</div>
+        <ul>
+          <li>3 valutazioni al giorno</li>
+          <li>Monitoraggio fino a 10 set</li>
+          <li>Valore in tempo reale + stato di ritiro</li>
+          <li>Plusvalenza vs prezzo di lancio</li>
+          <li class="off">Avvisi di prezzo via email</li>
+          <li class="off">Dashboard completa</li>
+        </ul>
+        <a class="btn ghost" href="/app">Inizia gratis</a>
+      </div>
+      <div class="plan pop">
+        <div class="tag">IL PIÙ POPOLARE</div>
+        <h3>Pro</h3><div class="price">4,99 $<span>/mese</span></div>
+        <ul>
+          <li>Valutazioni illimitate</li>
+          <li>Dashboard completa + ROI</li>
+          <li>Guadagni a 1G / 7G / 30G</li>
+          <li>Avvisi prezzo + ritiro via email</li>
+          <li>Prezzo per pezzo + indice Brick 500</li>
+          <li>Maggiori rialzi + analisi per tema</li>
+          <li>Grafici dello storico giornaliero</li>
+          <li>Lista dei desideri + segnali d'acquisto</li>
+        </ul>
+        <a class="btn" href="/app">Passa a Pro</a>
+      </div>
+      <div class="plan">
+        <h3>Investitore</h3><div class="price">12,99 $<span>/mese</span></div>
+        <ul>
+          <li>Tutto il piano Pro</li>
+          <li>Calcolo profitto eBay + generatore di annunci</li>
+          <li>Import/export CSV in massa</li>
+          <li>Report PDF assicurativi</li>
+          <li>Valutazione stato sigillato / aperto</li>
+          <li>Profitti e perdite dei set venduti</li>
+          <li>Monitoraggio multi-copia per rivenditori</li>
+          <li>Aggiornamento prioritario dei dati</li>
+        </ul>
+        <a class="btn dark" href="/app">Passa a Investitore</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">FAQ</span>
+      <div class="h2">Domande giuste</div>
+    </div>
+    <div class="faq">
+      <details class="qa"><summary>Da dove arrivano i prezzi?</summary><p>Dagli annunci in tempo reale del mercato BrickLink (il più grande mercato secondario LEGO al mondo), più i prezzi di lancio ufficiali e le date di ritiro. Aggiornati ogni giorno.</p></details>
+      <details class="qa"><summary>È affidabile?</summary><p>Mostriamo veri prezzi di mercato (nuovo e usato, minimo, medio e massimo), non una stima opaca. Vedi sempre la fascia di prezzo.</p></details>
+      <details class="qa"><summary>Come funzionano gli avvisi «vendere»?</summary><p>Quando un set che possiedi viene ritirato o raggiunge un nuovo massimo, ti avvisiamo. In genere è la migliore finestra per vendere.</p></details>
+      <details class="qa"><summary>Posso importare tutta la mia collezione?</summary><p>Sì. L'import CSV in massa è disponibile nel piano Investitore, con il monitoraggio multi-copia per i rivenditori.</p></details>
+      <details class="qa"><summary>Posso annullare in qualsiasi momento?</summary><p>In qualsiasi momento, con un clic. Nessun vincolo.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="logo" href="/it"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+        <p>Scopri quanto valgono davvero i tuoi LEGO. Prezzi BrickLink reali, monitoraggio del portafoglio e avvisi di rivendita, direttamente nel tuo browser.</p>
+        <div class="foot-langs"><a href="/">🇬🇧 EN</a><a href="/fr">🇫🇷 FR</a><a href="/de">🇩🇪 DE</a><a href="/es">🇪🇸 ES</a><a href="/it" class="active">🇮🇹 IT</a><a href="/nl">🇳🇱 NL</a><a href="/sv">🇸🇪 SV</a><a href="/da">🇩🇰 DA</a></div>
+      </div>
+      <div class="foot-col">
+        <h5>Prodotto</h5>
+        <a href="/it#how">Come funziona</a>
+        <a href="/it#features">Funzioni</a>
+        <a href="/it/pricing">Prezzi</a>
+        <a href="/app">Apri l'app</a>
+      </div>
+      <div class="foot-col">
+        <h5>Legale</h5>
+        <a href="/it/terms">Termini di utilizzo</a>
+        <a href="/it/privacy">Privacy</a>
+        <a href="/it/refunds">Rimborsi</a>
+        <a href="/it/cookies">Cookie</a>
+      </div>
+      <div class="foot-col">
+        <h5>Risorse</h5>
+        <a href="/it/blog">Blog</a>
+        <a href="mailto:support@brickgains.com">Contatti</a>
+        <a href="/it#faq">FAQ</a>
+      </div>
+    </div>
+    <div class="disc">BrickGains è un prodotto di Mint Technology LLC (Rio Rancho, NM, USA). BrickGains è uno strumento indipendente, non affiliato, approvato né sponsorizzato dal gruppo LEGO. LEGO® è un marchio registrato del gruppo LEGO. I prezzi sono indicativi e basati sui dati di mercato.</div>
+  </div>
+</footer>
+
+<!-- PAYWALL MODAL -->
+<div class="modal-bg" id="wall">
+  <div class="modal">
+    <span class="x" onclick="closeWall()">✕</span>
+    <h3>Hai usato le tue 3 valutazioni gratuite 🧱</h3>
+    <p>Passa a illimitato: valuta qualsiasi set, monitora tutta la tua collezione e ricevi avvisi «vendere» a partire da 4,99 $/mese.</p>
+    <button class="btn lg" onclick="goPricing()">Vedi i prezzi &amp; abbonati</button>
+    <a class="altlink" href="/app">Oppure inizia gratis (monitoraggio limitato)</a>
+  </div>
+</div>
+
+<script>window.LANG='it';</script>
+<script src="/auth.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>

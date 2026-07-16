@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BrickGains · Vad är dina LEGO egentligen värda?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<meta name="description" content="Skriv in numret på ett LEGO-set och se direkt dess verkliga andrahandsvärde, värdeökningen sedan lanseringspriset och om det är dags att sälja.">
+<link rel="canonical" href="https://brickgains.com/sv">
+<link rel="alternate" hreflang="en" href="https://brickgains.com/">
+<link rel="alternate" hreflang="fr" href="https://brickgains.com/fr">
+<link rel="alternate" hreflang="de" href="https://brickgains.com/de">
+<link rel="alternate" hreflang="es" href="https://brickgains.com/es">
+<link rel="alternate" hreflang="it" href="https://brickgains.com/it">
+<link rel="alternate" hreflang="nl" href="https://brickgains.com/nl">
+<link rel="alternate" hreflang="sv" href="https://brickgains.com/sv">
+<link rel="alternate" hreflang="da" href="https://brickgains.com/da">
+<link rel="alternate" hreflang="x-default" href="https://brickgains.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="topbar"><i></i><i></i><i></i><i></i></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="/sv"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+    <nav class="links">
+      <a href="#how">Så fungerar det</a>
+      <a href="#features">Funktioner</a>
+      <a href="#reviews">Omdömen</a>
+      <a href="/sv/blog">Blogg</a>
+      <a href="#pricing">Priser</a>
+      <a href="#faq">Vanliga frågor</a>
+    </nav>
+    <div class="navcta">
+      <button class="acct" id="accountBtn" aria-label="Konto" title="Logga in">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </button>
+      <a class="btn" href="#hero" onclick="document.getElementById('setInput').focus()">Värdera ett set</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <span class="brick b1"></span><span class="brick b2"></span>
+  <span class="brick b3"></span><span class="brick b4"></span>
+  <div class="wrap">
+    <span class="pill">🧱 Riktiga marknadspriser för LEGO, inte gissningar</span>
+    <h1>Vad är dina <span class="hl">LEGO egentligen värda?</span></h1>
+    <p class="sub">Skriv in ett setnummer och se dess verkliga andrahandsvärde, värdeökningen sedan lanseringen och om det är dags att sälja.</p>
+    <div class="searchbar">
+      <input id="setInput" placeholder="Setnummer eller namn (t.ex. 10276)" autocomplete="off"
+             onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn" onclick="doSearch()">Värdera</button>
+    </div>
+    <div class="freehint" id="freehint"><b id="freeLeft">3</b> gratis värderingar kvar · utan registrering</div>
+    <div class="trychips">Populära:
+      <button onclick="quick('10276')">Colosseum</button>
+      <button onclick="quick('75192')">Millennium Falcon</button>
+      <button onclick="quick('10281')">Bonsaiträd</button>
+    </div>
+    <div class="trustrow">
+      <span>Riktiga BrickLink-priser</span>
+      <span>Bevakade utgångsdatum</span>
+      <span>Utan registrering</span>
+    </div>
+    <div id="result"></div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Så fungerar det</span>
+      <div class="h2">Från magkänsla till data, på några sekunder</div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h4>Sök upp ditt set</h4><p>Skriv in ett setnummer eller namn. Vi hämtar den riktiga katalogen, lanseringspriset och utgångsdatumet.</p></div>
+      <div class="step"><div class="num">02</div><h4>Se dess verkliga värde</h4><p>Andrahandspriser i realtid (nytt och begagnat) från LEGO-marknaden, plus din värdeökning jämfört med lanseringspriset.</p></div>
+      <div class="step"><div class="num">03</div><h4>Bevaka och få aviseringar</h4><p>Lägg till dina set, se din portfölj växa och bli notifierad vid rätt tillfälle att köpa eller sälja.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Funktioner</span>
+      <div class="h2">Allt du behöver för att investera i LEGO</div>
+      <p class="sec-sub">Riktig marknadsdata, en komplett portföljöversikt och e-postaviseringar. Hela verktygslådan, direkt i din webbläsare.</p>
+    </div>
+    <div class="feats">
+      <div class="feat"><div class="ic">💰</div><h4>Verkligt andrahandsvärde</h4><p>BrickLink-priser för nytt och begagnat, uppdaterade varje dag. Vad seten faktiskt säljs för, inte en gissning.</p></div>
+      <div class="feat"><div class="ic">📈</div><h4>Värdeökning sedan lansering</h4><p>Se exakt hur många procent ett set har stigit jämfört med sitt lanseringspris, per set och för hela portföljen.</p></div>
+      <div class="feat"><div class="ic">📧</div><h4>Prisaviseringar via e-post</h4><p>Få ett mejl så fort ett set stiger, faller eller når ditt målpris. Slut på att bevaka en skärm.</p></div>
+      <div class="feat"><div class="ic">⏰</div><h4>Utgångsradar</h4><p>Se vad som snart utgår ur sortimentet och bli varnad innan ett set försvinner – fönstret då värdet stiger som snabbast.</p></div>
+      <div class="feat"><div class="ic">📊</div><h4>Portfölj och ROI</h4><p>Bevaka vad du betalat mot vad det är värt, vinsten på 1D / 7D / 30D och din totala avkastning.</p></div>
+      <div class="feat"><div class="ic">🧩</div><h4>Pris per bit-index</h4><p>Hitta undervärderade set direkt med analys av pris per bit och vårt marknadsindex Brick 500.</p></div>
+      <div class="feat"><div class="ic">🏆</div><h4>Rörelser och topplistor</h4><p>Största uppgångarna, bästa presterarna och teman på uppgång, så att du alltid vet vart värdet flyttar sig.</p></div>
+      <div class="feat"><div class="ic">💵</div><h4>eBay-vinstkalkylator</h4><p>Din verkliga vinst efter försäljningsavgifter, plus färdiggenererade annonsbeskrivningar redo att klistra in.</p></div>
+      <div class="feat"><div class="ic">📄</div><h4>Rapporter och export</h4><p>Försäkrings-PDF med ett klick, CSV-import/export i bulk och spårning av förseglat eller öppnat skick.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES -->
+<section id="examples">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Bevis</span>
+      <div class="h2">Set som i tysthet har gett avkastning</div>
+      <p class="sec-sub">Värden i realtid, hämtade direkt från marknaden.</p>
+    </div>
+    <div class="excards" id="exampleCards">
+      <div class="loading">Laddar exempel...</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Omdömen</span>
+      <div class="h2">Samlare som slutat gissa</div>
+      <p class="rev-sub"><b>4,8 / 5</b> av de första användarna som bevakar sina set</p>
+    </div>
+    <div class="revwrap">
+      <div class="revslider" id="revSlider">
+        <div class="review"><div class="stars">★★★★★</div><q>Jag hade 40 set på vinden utan aning om deras värde. På tio minuter såg jag att min samling stigit med över 3 000 $. Jag sålde två utgångna set inom en vecka.</q><div class="who"><div class="ava" style="background:var(--red)">M</div><div><div class="nm">Marcus T.</div><div class="rl">Samlare, 40+ set</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Utgångsaviseringarna är stjärnfunktionen. Jag köper seten innan de utgår och värdet skjuter i höjden. Det betalade sig redan första månaden.</q><div class="who"><div class="ava" style="background:var(--blue)">S</div><div><div class="nm">Sofia R.</div><div class="rl">Återförsäljare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Äntligen riktiga BrickLink-priser istället för påhittade gissningar. Rent, snabbt, och ROI-vyn gör det uppenbart vad man ska behålla eller sälja.</q><div class="who"><div class="ava" style="background:var(--green)">D</div><div><div class="nm">Daniel K.</div><div class="rl">LEGO-investerare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Jag säljer Star Wars-set vid sidan av. Bara eBay-vinstkalkylatorn sparar mig en timme i veckan och nu vet jag äntligen mina verkliga marginaler.</q><div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">J</div><div><div class="nm">Jonas P.</div><div class="rl">Återförsäljare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Min fru tyckte att mina LEGO var bortkastade pengar. Sen visade jag henne översikten: +34 % på två år. Nu väljer hon också ut set.</q><div class="who"><div class="ava" style="background:var(--blue)">A</div><div><div class="nm">Andrew M.</div><div class="rl">Samlare, 90+ set</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Pris per bit-indexet är fantastiskt för att hitta ett fynd i butiken före alla andra. Jag snappade upp två set som redan stigit.</q><div class="who"><div class="ava" style="background:var(--red)">P</div><div><div class="nm">Priya S.</div><div class="rl">Fyndjägare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Jag driver en liten butik och spårningen av flera exemplar plus PDF-rapporten är precis vad jag behövde för lager och försäkring. En enorm tidsbesparing.</q><div class="who"><div class="ava" style="background:var(--green)">L</div><div><div class="nm">Lucas B.</div><div class="rl">Butiksägare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Jag fick ett mejl den dag Bonsaiträdet utgick och sålde mitt extra exemplar för dubbla priset jag betalat. Den aviseringen var värd ett års prenumeration.</q><div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">E</div><div><div class="nm">Emma W.</div><div class="rl">Tillfällig investerare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Enkelt, snabbt, inget krångel. Jag kollar mitt portföljvärde varje söndag med en kopp kaffe. Det har blivit min lilla marknadsrutin.</q><div class="who"><div class="ava" style="background:var(--blue)">T</div><div><div class="nm">Tomás R.</div><div class="rl">Samlare</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Jag testade tre andra bevakningsverktyg. Det här är det enda med riktiga försäljningspriser, och det funkar direkt i webbläsaren, utan tung app. Jag har bytt för gott.</q><div class="who"><div class="ava" style="background:var(--red)">N</div><div><div class="nm">Nadia K.</div><div class="rl">Långvarig samlare</div></div></div></div>
+      </div>
+      <div class="revnav">
+        <button aria-label="Föregående" onclick="revScroll(-1)">‹</button>
+        <button aria-label="Nästa" onclick="revScroll(1)">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Priser</span>
+      <div class="h2">Börja gratis. Uppgradera när du är övertygad.</div>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Gratis</h3><div class="price">0 $</div>
+        <ul>
+          <li>3 värderingar per dag</li>
+          <li>Bevaka upp till 10 set</li>
+          <li>Värde i realtid + utgångsstatus</li>
+          <li>Värdeökning vs lanseringspris</li>
+          <li class="off">Prisaviseringar via e-post</li>
+          <li class="off">Komplett översikt</li>
+        </ul>
+        <a class="btn ghost" href="/app">Börja gratis</a>
+      </div>
+      <div class="plan pop">
+        <div class="tag">MEST POPULÄR</div>
+        <h3>Pro</h3><div class="price">4,99 $<span>/mån</span></div>
+        <ul>
+          <li>Obegränsade värderingar</li>
+          <li>Komplett översikt + ROI</li>
+          <li>Vinst på 1D / 7D / 30D</li>
+          <li>Pris- och utgångsaviseringar via e-post</li>
+          <li>Pris per bit + Brick 500-index</li>
+          <li>Största uppgångarna + temaanalys</li>
+          <li>Diagram över daglig historik</li>
+          <li>Önskelista + köpsignaler</li>
+        </ul>
+        <a class="btn" href="/app">Uppgradera till Pro</a>
+      </div>
+      <div class="plan">
+        <h3>Investerare</h3><div class="price">12,99 $<span>/mån</span></div>
+        <ul>
+          <li>Allt i Pro-planen</li>
+          <li>eBay-vinstberäkning + annonsgenerator</li>
+          <li>CSV-import/export i bulk</li>
+          <li>Försäkrings-PDF-rapporter</li>
+          <li>Skickbetyg för förseglat / öppnat</li>
+          <li>Vinst och förlust på sålda set</li>
+          <li>Spårning av flera exemplar för återförsäljare</li>
+          <li>Prioriterad datauppdatering</li>
+        </ul>
+        <a class="btn dark" href="/app">Uppgradera till Investerare</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Vanliga frågor</span>
+      <div class="h2">Bra frågor</div>
+    </div>
+    <div class="faq">
+      <details class="qa"><summary>Var kommer priserna ifrån?</summary><p>Från annonser i realtid på BrickLink-marknaden (världens största andrahandsmarknad för LEGO), plus officiella lanseringspriser och utgångsdatum. Uppdaterat varje dag.</p></details>
+      <details class="qa"><summary>Är det pålitligt?</summary><p>Vi visar riktiga marknadspriser (nytt och begagnat, lägsta, snitt och högsta), inte en dold gissning. Du ser alltid intervallet.</p></details>
+      <details class="qa"><summary>Hur fungerar "sälj"-aviseringarna?</summary><p>När ett set du äger utgår eller når en ny toppnotering hör vi av oss. Det är oftast det bästa tillfället att sälja.</p></details>
+      <details class="qa"><summary>Kan jag importera hela min samling?</summary><p>Ja. CSV-import i bulk ingår i Investerare-planen, med spårning av flera exemplar för återförsäljare.</p></details>
+      <details class="qa"><summary>Kan jag avsluta när som helst?</summary><p>När som helst, med ett klick. Ingen bindningstid.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="logo" href="/sv"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+        <p>Ta reda på vad dina LEGO egentligen är värda. Riktiga BrickLink-priser, portföljbevakning och säljaviseringar, direkt i din webbläsare.</p>
+        <div class="foot-langs"><a href="/">🇬🇧 EN</a><a href="/fr">🇫🇷 FR</a><a href="/de">🇩🇪 DE</a><a href="/es">🇪🇸 ES</a><a href="/it">🇮🇹 IT</a><a href="/nl">🇳🇱 NL</a><a href="/sv" class="active">🇸🇪 SV</a><a href="/da">🇩🇰 DA</a></div>
+      </div>
+      <div class="foot-col">
+        <h5>Produkt</h5>
+        <a href="/sv#how">Så fungerar det</a>
+        <a href="/sv#features">Funktioner</a>
+        <a href="/sv/pricing">Priser</a>
+        <a href="/app">Öppna appen</a>
+      </div>
+      <div class="foot-col">
+        <h5>Juridik</h5>
+        <a href="/sv/terms">Användarvillkor</a>
+        <a href="/sv/privacy">Integritetspolicy</a>
+        <a href="/sv/refunds">Återbetalningar</a>
+        <a href="/sv/cookies">Cookies</a>
+      </div>
+      <div class="foot-col">
+        <h5>Resurser</h5>
+        <a href="/sv/blog">Blogg</a>
+        <a href="mailto:support@brickgains.com">Kontakt</a>
+        <a href="/sv#faq">Vanliga frågor</a>
+      </div>
+    </div>
+    <div class="disc">BrickGains är en produkt från Mint Technology LLC (Rio Rancho, NM, USA). BrickGains är ett oberoende verktyg som varken är anslutet till, godkänt av eller sponsrat av LEGO-gruppen. LEGO® är ett registrerat varumärke som tillhör LEGO-gruppen. Priserna är vägledande och baseras på marknadsdata.</div>
+  </div>
+</footer>
+
+<!-- PAYWALL MODAL -->
+<div class="modal-bg" id="wall">
+  <div class="modal">
+    <span class="x" onclick="closeWall()">✕</span>
+    <h3>Du har använt dina 3 gratis värderingar 🧱</h3>
+    <p>Gå obegränsat: värdera vilket set som helst, bevaka hela din samling och få "sälj"-aviseringar från 4,99 $/mån.</p>
+    <button class="btn lg" onclick="goPricing()">Se priser &amp; prenumerera</button>
+    <a class="altlink" href="/app">Eller börja gratis (begränsad bevakning)</a>
+  </div>
+</div>
+
+<script>window.LANG='sv';</script>
+<script src="/auth.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>

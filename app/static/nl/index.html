@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BrickGains · Wat zijn jouw LEGO écht waard?</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<meta name="description" content="Voer het nummer van een LEGO-set in en zie meteen de echte wederverkoopwaarde, de waardestijging sinds de uitgifteprijs, en of het tijd is om te verkopen.">
+<link rel="canonical" href="https://brickgains.com/nl">
+<link rel="alternate" hreflang="en" href="https://brickgains.com/">
+<link rel="alternate" hreflang="fr" href="https://brickgains.com/fr">
+<link rel="alternate" hreflang="de" href="https://brickgains.com/de">
+<link rel="alternate" hreflang="es" href="https://brickgains.com/es">
+<link rel="alternate" hreflang="it" href="https://brickgains.com/it">
+<link rel="alternate" hreflang="nl" href="https://brickgains.com/nl">
+<link rel="alternate" hreflang="sv" href="https://brickgains.com/sv">
+<link rel="alternate" hreflang="da" href="https://brickgains.com/da">
+<link rel="alternate" hreflang="x-default" href="https://brickgains.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<div class="topbar"><i></i><i></i><i></i><i></i></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="/nl"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+    <nav class="links">
+      <a href="#how">Hoe het werkt</a>
+      <a href="#features">Functies</a>
+      <a href="#reviews">Reviews</a>
+      <a href="/nl/blog">Blog</a>
+      <a href="#pricing">Prijzen</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="navcta">
+      <button class="acct" id="accountBtn" aria-label="Account" title="Inloggen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      </button>
+      <a class="btn" href="#hero" onclick="document.getElementById('setInput').focus()">Set taxeren</a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <span class="brick b1"></span><span class="brick b2"></span>
+  <span class="brick b3"></span><span class="brick b4"></span>
+  <div class="wrap">
+    <span class="pill">🧱 Echte marktprijzen van de LEGO-markt, geen schattingen</span>
+    <h1>Wat zijn jouw <span class="hl">LEGO écht waard?</span></h1>
+    <p class="sub">Voer een setnummer in en zie de echte wederverkoopwaarde, de waardestijging sinds de uitgifte, en of het tijd is om te verkopen.</p>
+    <div class="searchbar">
+      <input id="setInput" placeholder="Setnummer of naam (bijv. 10276)" autocomplete="off"
+             onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn" onclick="doSearch()">Taxeren</button>
+    </div>
+    <div class="freehint" id="freehint"><b id="freeLeft">3</b> gratis taxaties over · zonder registratie</div>
+    <div class="trychips">Populair:
+      <button onclick="quick('10276')">Colosseum</button>
+      <button onclick="quick('75192')">Millennium Falcon</button>
+      <button onclick="quick('10281')">Bonsai</button>
+    </div>
+    <div class="trustrow">
+      <span>Echte BrickLink-prijzen</span>
+      <span>Uit-productie-data gevolgd</span>
+      <span>Zonder registratie</span>
+    </div>
+    <div id="result"></div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Hoe het werkt</span>
+      <div class="h2">Van nattevingerwerk naar data, in enkele seconden</div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><h4>Zoek je set</h4><p>Voer een setnummer of naam in. Wij halen de echte catalogus, de uitgifteprijs en de uit-productie-datum op.</p></div>
+      <div class="step"><div class="num">02</div><h4>Zie de echte waarde</h4><p>Live wederverkoopprijzen (nieuw en tweedehands) van de LEGO-markt, plus je waardestijging ten opzichte van de uitgifteprijs.</p></div>
+      <div class="step"><div class="num">03</div><h4>Volg en ontvang meldingen</h4><p>Voeg je sets toe, zie je portefeuille groeien, en word op het juiste moment gewaarschuwd om te kopen of te verkopen.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Functies</span>
+      <div class="h2">Alles om in LEGO te investeren</div>
+      <p class="sec-sub">Echte marktdata, een compleet portefeuille-dashboard en e-mailmeldingen. De volledige gereedschapskist, in je browser.</p>
+    </div>
+    <div class="feats">
+      <div class="feat"><div class="ic">💰</div><h4>Echte wederverkoopwaarde</h4><p>BrickLink-prijzen nieuw en tweedehands, elke dag bijgewerkt. Waarvoor sets écht verkocht worden, geen schatting.</p></div>
+      <div class="feat"><div class="ic">📈</div><h4>Waardestijging sinds uitgifte</h4><p>Zie het exacte percentage dat een set is gestegen ten opzichte van de uitgifteprijs, per set en over de hele portefeuille.</p></div>
+      <div class="feat"><div class="ic">📧</div><h4>Prijsmeldingen per e-mail</h4><p>Ontvang een e-mail zodra een set stijgt, daalt of je streefprijs bereikt. Geen scherm meer in de gaten houden.</p></div>
+      <div class="feat"><div class="ic">⏰</div><h4>Uit-productie-radar</h4><p>Zie wat binnenkort uit productie gaat en word gewaarschuwd voordat een set verdwijnt, het moment waarop de waarde het snelst stijgt.</p></div>
+      <div class="feat"><div class="ic">📊</div><h4>Portefeuille en ROI</h4><p>Volg wat je hebt betaald versus wat het waard is, de winst over 1D / 7D / 30D, en je totale rendement.</p></div>
+      <div class="feat"><div class="ic">🧩</div><h4>Prijs-per-steen-index</h4><p>Spot ondergewaardeerde sets meteen met de prijs-per-steen-analyse en onze Brick 500-marktindex.</p></div>
+      <div class="feat"><div class="ic">🏆</div><h4>Stijgers en ranglijsten</h4><p>Sterkste stijgers, best presterende sets en populaire thema's, zodat je altijd weet waar de waarde naartoe beweegt.</p></div>
+      <div class="feat"><div class="ic">💵</div><h4>eBay-winstcalculator</h4><p>Je echte winst na verkoopkosten, plus gegenereerde advertentiebeschrijvingen, klaar om te plakken.</p></div>
+      <div class="feat"><div class="ic">📄</div><h4>Rapporten en export</h4><p>Verzekerings-PDF met één klik, CSV-import/export in bulk, tracking van verzegelde of geopende staat.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES -->
+<section id="examples">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Bewijs</span>
+      <div class="h2">Sets die stilletjes geld opleverden</div>
+      <p class="sec-sub">Live waarden, zojuist opgehaald van de markt.</p>
+    </div>
+    <div class="excards" id="exampleCards">
+      <div class="loading">Voorbeelden laden...</div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Reviews</span>
+      <div class="h2">Verzamelaars die zijn gestopt met gokken</div>
+      <p class="rev-sub"><b>4,8 / 5</b> door de eerste gebruikers die hun sets volgen</p>
+    </div>
+    <div class="revwrap">
+      <div class="revslider" id="revSlider">
+        <div class="review"><div class="stars">★★★★★</div><q>Ik had 40 sets op zolder liggen zonder idee van hun waarde. In tien minuten zag ik dat mijn collectie meer dan $3.000 was gestegen. Ik heb binnen de week twee uit-productie-sets verkocht.</q><div class="who"><div class="ava" style="background:var(--red)">M</div><div><div class="nm">Marcus T.</div><div class="rl">Verzamelaar, 40+ sets</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>De uit-productie-meldingen zijn dé topfunctie. Ik koop sets vlak voor ze uit productie gaan en de waarde schiet omhoog. Het verdiende zich in de eerste maand terug.</q><div class="who"><div class="ava" style="background:var(--blue)">S</div><div><div class="nm">Sofia R.</div><div class="rl">Doorverkoper</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Eindelijk echte BrickLink-prijzen in plaats van verzonnen schattingen. Overzichtelijk, snel, en de ROI-weergave maakt meteen duidelijk wat je moet houden of verkopen.</q><div class="who"><div class="ava" style="background:var(--green)">D</div><div><div class="nm">Daniel K.</div><div class="rl">LEGO-investeerder</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Ik verkoop er Star Wars-sets bij. Alleen al de eBay-winstcalculator bespaart me een uur per week en ik ken eindelijk mijn echte marges.</q><div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">J</div><div><div class="nm">Jonas P.</div><div class="rl">Doorverkoper</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Mijn vrouw dacht dat mijn LEGO weggegooid geld was. Toen liet ik haar het dashboard zien: +34% in twee jaar. Nu kiest zij ook sets uit.</q><div class="who"><div class="ava" style="background:var(--blue)">A</div><div><div class="nm">Andrew M.</div><div class="rl">Verzamelaar, 90+ sets</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>De prijs-per-steen-index is geweldig om een koopje in de winkel te spotten voordat iedereen dat doet. Ik heb twee sets bemachtigd die al gestegen zijn.</q><div class="who"><div class="ava" style="background:var(--red)">P</div><div><div class="nm">Priya S.</div><div class="rl">Koopjesjager</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Ik heb een kleine winkel en de tracking van meerdere exemplaren plus het PDF-rapport zijn precies wat ik nodig had voor voorraad en verzekering. Een enorme tijdsbesparing.</q><div class="who"><div class="ava" style="background:var(--green)">L</div><div><div class="nm">Lucas B.</div><div class="rl">Winkelbeheerder</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Ik kreeg een e-mail op de dag dat de Bonsai uit productie ging, en verkocht mijn extra exemplaar voor het dubbele van wat ik betaalde. Die melding was een jaar abonnement waard.</q><div class="who"><div class="ava" style="background:var(--yellow);color:var(--ink)">E</div><div><div class="nm">Emma W.</div><div class="rl">Gelegenheidsinvesteerder</div></div></div></div>
+        <div class="review"><div class="stars">★★★★☆</div><q>Simpel, snel, zonder poespas. Ik check elke zondag de waarde van mijn portefeuille bij een kop koffie. Het is mijn kleine marktritueel geworden.</q><div class="who"><div class="ava" style="background:var(--blue)">T</div><div><div class="nm">Tomás R.</div><div class="rl">Verzamelaar</div></div></div></div>
+        <div class="review"><div class="stars">★★★★★</div><q>Ik heb drie andere trackers geprobeerd. Dit is de enige met echte verkoopprijzen, en het werkt direct in de browser, zonder zware app. Ik ben definitief overgestapt.</q><div class="who"><div class="ava" style="background:var(--red)">N</div><div><div class="nm">Nadia K.</div><div class="rl">Verzamelaar van het eerste uur</div></div></div></div>
+      </div>
+      <div class="revnav">
+        <button aria-label="Vorige" onclick="revScroll(-1)">‹</button>
+        <button aria-label="Volgende" onclick="revScroll(1)">›</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">Prijzen</span>
+      <div class="h2">Begin gratis. Ga een niveau hoger zodra je overtuigd bent.</div>
+    </div>
+    <div class="plans">
+      <div class="plan">
+        <h3>Gratis</h3><div class="price">$0</div>
+        <ul>
+          <li>3 taxaties per dag</li>
+          <li>Tot 10 sets volgen</li>
+          <li>Live waarde + uit-productie-status</li>
+          <li>Waardestijging vs uitgifteprijs</li>
+          <li class="off">Prijsmeldingen per e-mail</li>
+          <li class="off">Volledig dashboard</li>
+        </ul>
+        <a class="btn ghost" href="/app">Gratis beginnen</a>
+      </div>
+      <div class="plan pop">
+        <div class="tag">MEEST POPULAIR</div>
+        <h3>Pro</h3><div class="price">$4.99<span>/maand</span></div>
+        <ul>
+          <li>Onbeperkte taxaties</li>
+          <li>Volledig dashboard + ROI</li>
+          <li>Winst over 1D / 7D / 30D</li>
+          <li>Prijs- + uit-productie-meldingen per e-mail</li>
+          <li>Prijs per steen + Brick 500-index</li>
+          <li>Sterkste stijgers + analyse per thema</li>
+          <li>Grafieken van dagelijkse historie</li>
+          <li>Verlanglijst + koopsignalen</li>
+        </ul>
+        <a class="btn" href="/app">Word Pro</a>
+      </div>
+      <div class="plan">
+        <h3>Investeerder</h3><div class="price">$12.99<span>/maand</span></div>
+        <ul>
+          <li>Alles uit het Pro-plan</li>
+          <li>eBay-winstberekening + advertentiegenerator</li>
+          <li>CSV-import/export in bulk</li>
+          <li>Verzekerings-PDF-rapporten</li>
+          <li>Beoordeling verzegelde / geopende staat</li>
+          <li>Winst en verlies van verkochte sets</li>
+          <li>Tracking van meerdere exemplaren voor doorverkopers</li>
+          <li>Prioritaire dataverversing</li>
+        </ul>
+        <a class="btn dark" href="/app">Word Investeerder</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="head-c">
+      <span class="eyebrow">FAQ</span>
+      <div class="h2">Goede vragen</div>
+    </div>
+    <div class="faq">
+      <details class="qa"><summary>Waar komen de prijzen vandaan?</summary><p>Van live advertenties op de BrickLink-markt (de grootste tweedehands LEGO-markt ter wereld), plus de officiële uitgifteprijzen en uit-productie-data. Elke dag bijgewerkt.</p></details>
+      <details class="qa"><summary>Is het betrouwbaar?</summary><p>We tonen echte marktprijzen (nieuw en tweedehands, min, gemiddeld en max), geen ondoorzichtige schatting. Je ziet altijd de prijsvork.</p></details>
+      <details class="qa"><summary>Hoe werken de "verkopen"-meldingen?</summary><p>Wanneer een set die je bezit uit productie gaat of een nieuwe hoogste waarde bereikt, waarschuwen we je. Dat is meestal het beste moment om te verkopen.</p></details>
+      <details class="qa"><summary>Kan ik mijn hele collectie importeren?</summary><p>Ja. CSV-import in bulk is beschikbaar in het Investeerder-plan, met tracking van meerdere exemplaren voor doorverkopers.</p></details>
+      <details class="qa"><summary>Kan ik op elk moment opzeggen?</summary><p>Op elk moment, met één klik. Zonder verplichtingen.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="logo" href="/nl"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+        <p>Weet wat jouw LEGO écht waard zijn. Echte BrickLink-prijzen, portefeuille-tracking en wederverkoopmeldingen, rechtstreeks in je browser.</p>
+        <div class="foot-langs"><a href="/">🇬🇧 EN</a><a href="/fr">🇫🇷 FR</a><a href="/de">🇩🇪 DE</a><a href="/es">🇪🇸 ES</a><a href="/it">🇮🇹 IT</a><a href="/nl" class="active">🇳🇱 NL</a><a href="/sv">🇸🇪 SV</a><a href="/da">🇩🇰 DA</a></div>
+      </div>
+      <div class="foot-col">
+        <h5>Product</h5>
+        <a href="/nl#how">Hoe het werkt</a>
+        <a href="/nl#features">Functies</a>
+        <a href="/nl/pricing">Prijzen</a>
+        <a href="/app">App openen</a>
+      </div>
+      <div class="foot-col">
+        <h5>Juridisch</h5>
+        <a href="/nl/terms">Gebruiksvoorwaarden</a>
+        <a href="/nl/privacy">Privacy</a>
+        <a href="/nl/refunds">Terugbetalingen</a>
+        <a href="/nl/cookies">Cookies</a>
+      </div>
+      <div class="foot-col">
+        <h5>Bronnen</h5>
+        <a href="/nl/blog">Blog</a>
+        <a href="mailto:support@brickgains.com">Contact</a>
+        <a href="/nl#faq">FAQ</a>
+      </div>
+    </div>
+    <div class="disc">BrickGains is een product van Mint Technology LLC (Rio Rancho, NM, USA). BrickGains is een onafhankelijk hulpmiddel, niet gelieerd aan, goedgekeurd door of gesponsord door de LEGO-groep. LEGO® is een geregistreerd handelsmerk van de LEGO-groep. Prijzen zijn indicatief en gebaseerd op marktgegevens.</div>
+  </div>
+</footer>
+
+<!-- PAYWALL MODAL -->
+<div class="modal-bg" id="wall">
+  <div class="modal">
+    <span class="x" onclick="closeWall()">✕</span>
+    <h3>Je hebt je 3 gratis taxaties gebruikt 🧱</h3>
+    <p>Ga onbeperkt: taxeer elke set, volg je hele collectie en ontvang "verkopen"-meldingen vanaf $4.99/maand.</p>
+    <button class="btn lg" onclick="goPricing()">Bekijk de prijzen &amp; abonneer</button>
+    <a class="altlink" href="/app">Of gratis beginnen (beperkte tracking)</a>
+  </div>
+</div>
+
+<script>window.LANG='nl';</script>
+<script src="/auth.js"></script>
+<script src="/main.js"></script>
+</body>
+</html>
