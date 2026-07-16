@@ -319,9 +319,9 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .article .crumb a{color:var(--red);font-weight:700}
 .article h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.5px;line-height:1.08}
 .article .meta{color:var(--slate);font-weight:600;margin:14px 0 26px;font-size:14.5px}
-.article .hero-img{width:100%;border:3px solid var(--ink);border-radius:var(--radius);box-shadow:var(--sh);background:#f6f4ec;margin-bottom:8px}
+.article .hero-img{max-height:420px;width:auto;max-width:100%;display:block;margin:0 auto 8px;border:3px solid var(--ink);border-radius:var(--radius);box-shadow:var(--sh);background:#f6f4ec}
 .article figure{margin:30px 0}
-.article figure img{width:100%;border:3px solid var(--ink);border-radius:var(--radius);box-shadow:var(--sh);background:#f6f4ec}
+.article figure img{max-height:380px;width:auto;max-width:100%;display:block;margin:0 auto;border:3px solid var(--ink);border-radius:var(--radius);box-shadow:var(--sh);background:#f6f4ec}
 .article figcaption{color:var(--slate);font-weight:600;font-size:13px;text-align:center;margin-top:8px}
 .article h2{font-family:var(--disp);font-size:clamp(22px,3vw,28px);font-weight:700;margin:34px 0 12px;letter-spacing:-.3px}
 .article h3{font-family:var(--disp);font-size:19px;font-weight:700;margin:22px 0 8px}
