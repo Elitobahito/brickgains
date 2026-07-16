@@ -294,6 +294,11 @@ class H(BaseHTTPRequestHandler):
             q = urllib.parse.parse_qs(u.query).get("set", [""])[0]
             if not q: return self._send(400, json.dumps({"error": "set manquant"}))
             return self._send(200, json.dumps(get_value(q)))
+        if u.path == "/api/movers":
+            try:
+                return self._send(200, open(os.path.join(BASE, "movers.json")).read())
+            except Exception:
+                return self._send(200, json.dumps({"updated": None, "sets": []}))
         # static
         path = u.path
         if path == "/" : path = "/index.html"

@@ -42,6 +42,22 @@
   </div>
 
   <div id="tableWrap"></div>
+
+  <!-- MARKET MOVERS -->
+  <div class="movers-sec">
+    <div class="movers-head">
+      <div class="h2" style="text-align:left;font-size:27px">📈 Market Movers</div>
+      <span class="mv-note" id="moversUpdated"></span>
+    </div>
+    <p style="color:var(--slate);font-weight:500;margin:-6px 0 4px">Biggest gains and laggards versus retail price across popular collectible sets. Click any set to add it or check it on the home page.</p>
+    <div class="mv-tabs">
+      <button class="mv-tab on" data-view="gainers" onclick="moversView('gainers')">🚀 Top gainers</button>
+      <button class="mv-tab" data-view="losers" onclick="moversView('losers')">🧊 Laggards</button>
+      <button class="mv-tab" data-view="retiring" onclick="moversView('retiring')">⏰ Still available</button>
+    </div>
+    <div class="excards" id="moversTop"></div>
+    <div id="moversTable"></div>
+  </div>
 </div>
 
 <script src="/auth.js"></script>
