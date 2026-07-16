@@ -422,21 +422,29 @@ class H(BaseHTTPRequestHandler):
                 return self._send(200, open(os.path.join(BASE, "movers.json")).read())
             except Exception:
                 return self._send(200, json.dumps({"updated": None, "sets": []}))
-        # static
+        # static — locale-aware routing
+        LOCS = ("fr", "de", "es", "it", "nl", "sv", "da")
+        def resolve(p):
+            noext = "." not in p.rsplit("/", 1)[-1]
+            if p in ("", "/"): return "/index.html"
+            if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies"): return p + ".html"
+            if p == "/blog": return "/blog/index.html"
+            if p.startswith("/blog/") and noext: return p + ".html"
+            if p == "/set": return "/set/index.html"
+            if p.startswith("/set/") and noext: return p + ".html"
+            return p
         path = u.path
-        if path == "/" : path = "/index.html"
-        if path == "/app": path = "/app.html"
-        if path in ("/pricing","/terms","/privacy","/refunds","/cookies"): path += ".html"
-        if path == "/blog": path = "/blog/index.html"
-        elif path.startswith("/blog/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
-        if path.startswith("/u/") and "." not in path.rsplit("/", 1)[-1]: path = "/u.html"
-        if path == "/set": path = "/set/index.html"
-        elif path.startswith("/set/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
-        # --- French locale ---
-        if path in ("/fr", "/fr/"): path = "/fr/index.html"
-        elif path in ("/fr/pricing","/fr/terms","/fr/privacy","/fr/refunds","/fr/cookies"): path += ".html"
-        elif path == "/fr/blog": path = "/fr/blog/index.html"
-        elif path.startswith("/fr/blog/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
+        # global (non-localised) routes
+        if path == "/app" or (path.startswith("/") and path.rstrip("/").split("/")[-1] == "app" and path.count("/") == 2):
+            path = "/app.html"
+        elif path.startswith("/u/") and "." not in path.rsplit("/", 1)[-1]:
+            path = "/u.html"
+        else:
+            loc = ""
+            for lg in LOCS:
+                if path == "/" + lg or path.startswith("/" + lg + "/"):
+                    loc = "/" + lg; path = path[len(loc):] or "/"; break
+            path = (loc + resolve(path)) if loc else resolve(path)
         fp = os.path.join(STATIC, path.lstrip("/"))
         if not os.path.isfile(fp): return self._send(404, "Not found", "text/plain")
         ext = fp.rsplit(".", 1)[-1]
