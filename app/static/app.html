@@ -35,6 +35,18 @@
     <div class="stat"><div class="k">Total ROI</div><div class="v" id="stRoi">0%</div></div>
   </div>
 
+  <div class="share-bar" id="shareBar" style="display:none">
+    <div class="sb-l"><span class="sb-ico">🔗</span><div><b>Share your portfolio</b><span class="sb-sub">A public "look at my gains" link. Values shown, prices paid stay private.</span></div></div>
+    <div class="sb-r">
+      <button class="btn ghost" id="shareToggle" onclick="toggleShare()">Get share link</button>
+      <div class="sb-link" id="shareLinkBox" style="display:none">
+        <input id="shareLink" readonly onclick="this.select()">
+        <button class="btn" onclick="copyShare()">Copy</button>
+        <button class="linkish" onclick="unshare()">Stop sharing</button>
+      </div>
+    </div>
+  </div>
+
   <div class="add-row">
     <input id="pset" placeholder="Set number (e.g. 10276)" onkeydown="if(event.key==='Enter')addSet()">
     <input id="pprice" type="number" placeholder="Price paid ($)" onkeydown="if(event.key==='Enter')addSet()">

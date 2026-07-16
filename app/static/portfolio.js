@@ -10,6 +10,8 @@ async function initPortfolio(){
   const note = document.getElementById('syncNote');
   if(ME){
     note.textContent = '✓ Synced to your account ('+ME.email+')';
+    document.getElementById('shareBar').style.display='flex';
+    if(ME.share_id) showShareLink(ME.share_id);
     // one-time migration of any device portfolio into the account
     const local = lload();
     if(local.length){
@@ -67,6 +69,27 @@ async function doImport(){
     lsave(pf);
   }
   document.getElementById('importRaw').value=''; toggleImport(); render();
+}
+
+// ---- Public sharing ----
+function showShareLink(sid){
+  const url = location.origin + '/u/' + sid;
+  document.getElementById('shareLink').value = url;
+  document.getElementById('shareLinkBox').style.display = 'flex';
+  document.getElementById('shareToggle').style.display = 'none';
+}
+async function toggleShare(){
+  const r = await fetch('/api/portfolio/share',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:true})}).then(x=>x.json());
+  if(r.ok && r.share_id) showShareLink(r.share_id);
+}
+async function unshare(){
+  await fetch('/api/portfolio/share',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:false})});
+  document.getElementById('shareLinkBox').style.display='none';
+  document.getElementById('shareToggle').style.display='';
+}
+function copyShare(){
+  const i=document.getElementById('shareLink'); i.select();
+  navigator.clipboard.writeText(i.value).then(()=>{const b=event.target;const t=b.textContent;b.textContent='Copied!';setTimeout(()=>b.textContent=t,1400);});
 }
 
 async function render(){

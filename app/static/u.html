@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A LEGO portfolio on BrickGains</title>
+<meta name="description" content="See this shared LEGO investment portfolio: sets, current market value and gains, tracked with BrickGains.">
+<meta name="robots" content="noindex,follow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="topbar"><i></i><i></i><i></i><i></i></div>
+<header><div class="wrap nav">
+  <a class="logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+  <nav class="links"><a href="/set">Set values</a><a href="/#features">Features</a><a href="/blog">Blog</a><a href="/pricing">Pricing</a></nav>
+  <div class="navcta"><a class="btn" href="/app">Build yours free</a></div>
+</div></header>
+
+<div class="wrap" style="padding-top:40px;padding-bottom:72px">
+  <div class="share-hero">
+    <span class="eyebrow">Shared portfolio</span>
+    <h1 id="shareTitle">A LEGO portfolio</h1>
+    <p class="sec-sub">Tracked with real BrickLink market prices on BrickGains.</p>
+  </div>
+
+  <div class="portfolio-head" id="shareStats" style="display:none">
+    <div class="stat"><div class="k">Sets</div><div class="v" id="ssCount">0</div></div>
+    <div class="stat"><div class="k">Current value</div><div class="v" id="ssValue">$0</div></div>
+    <div class="stat"><div class="k">Total ROI</div><div class="v" id="ssRoi">-</div></div>
+  </div>
+
+  <div id="shareWrap"><div class="empty">Loading portfolio…</div></div>
+
+  <div class="promo-card" style="margin-top:30px"><div class="pc-l"><div class="pc-eyebrow">🧱 BrickGains</div>
+  <div class="pc-title">Track your own LEGO like a portfolio</div>
+  <div class="pc-text">Real BrickLink prices, ROI, watchlist and sell alerts. Free to start.</div></div>
+  <a class="btn" href="/app">Build my portfolio free</a></div>
+</div>
+
+<footer><div class="wrap"><div class="disc">BrickGains is a product of Mint Technology LLC. Not affiliated with the LEGO Group. LEGO is a trademark of the LEGO Group. Prices are indicative and based on marketplace data.</div></div></footer>
+
+<script>
+function money(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); }
+function pct(a){ return (a>0?'+':'')+a+'%'; }
+function badgeCls(a){ return a>0?'up':(a<0?'down':'flat'); }
+async function loadShare(){
+  const sid = location.pathname.replace(/^\/u\//,'').replace(/\/$/,'');
+  const wrap = document.getElementById('shareWrap');
+  let d;
+  try{ d = await fetch('/api/u/'+encodeURIComponent(sid)).then(r=>r.ok?r.json():null); }catch(e){ d=null; }
+  if(!d || !d.ok){ wrap.innerHTML = '<div class="empty">This portfolio is not shared or does not exist.</div>'; return; }
+  document.getElementById('shareStats').style.display='';
+  document.getElementById('ssCount').textContent = d.count;
+  document.getElementById('ssValue').textContent = money(d.totalValue);
+  const roi = document.getElementById('ssRoi');
+  if(d.roi==null){ roi.textContent='-'; } else { roi.textContent=pct(d.roi); roi.className='v '+(d.roi>=0?'up-t':'down-t'); }
+  if(!d.items.length){ wrap.innerHTML='<div class="empty">No sets in this portfolio yet.</div>'; return; }
+  const rows = d.items.map(it=>{
+    const st = it.retired?'<span class="mv-chip">Retired</span>':'<span class="mv-chip av">Available</span>';
+    const cond = it.condition==='opened'?'<span class="cond opened">Opened</span>':'<span class="cond sealed">Sealed</span>';
+    return `<tr><td class="mv-set"><img src="${it.image||''}" onerror="this.style.display='none'">${it.name}</td>
+      <td>${cond}</td><td>${st}</td><td class="num">${money(it.value)}</td>
+      <td class="num"><span class="mv-badge ${badgeCls(it.appreciation||0)}">${it.appreciation!=null?pct(it.appreciation):'-'}</span></td></tr>`;
+  }).join('');
+  wrap.innerHTML = `<table class="mv"><thead><tr><th>Set</th><th>Condition</th><th>Status</th><th style="text-align:right">Value</th><th style="text-align:right">Gain vs retail</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+loadShare();
+</script>
+</body>
+</html>

@@ -87,6 +87,9 @@ def db_init():
     qx(f"""CREATE TABLE IF NOT EXISTS price_history(
         id {ai}, set_num TEXT NOT NULL, day TEXT NOT NULL, new_avg REAL, appreciation REAL,
         UNIQUE(set_num, day))""")
+    # migration: public share link on users
+    try: qx("ALTER TABLE users ADD COLUMN share_id TEXT")
+    except Exception: pass
 
 def hash_pw(pw, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -117,7 +120,7 @@ def make_session(user_id):
 
 def user_by_token(tok):
     if not tok: return None
-    return q1("""SELECT u.id,u.email,u.plan FROM sessions s JOIN users u ON u.id=s.user_id
+    return q1("""SELECT u.id,u.email,u.plan,u.share_id FROM sessions s JOIN users u ON u.id=s.user_id
                  WHERE s.token=?""", (tok,))
 
 def _norm(sn):
@@ -325,6 +328,17 @@ class H(BaseHTTPRequestHandler):
                 rid = d.get("id")
                 qx("DELETE FROM portfolio WHERE id=? AND user_id=?", (rid, uid))
                 return self._send(200, json.dumps({"ok": True}))
+            if u.path == "/api/portfolio/share":
+                on = bool(d.get("on", True))
+                if not on:
+                    qx("UPDATE users SET share_id=NULL WHERE id=?", (uid,))
+                    return self._send(200, json.dumps({"ok": True, "shared": False, "share_id": None}))
+                row = q1("SELECT share_id FROM users WHERE id=?", (uid,))
+                sid = (row or {}).get("share_id")
+                if not sid:
+                    sid = secrets.token_urlsafe(8)
+                    qx("UPDATE users SET share_id=? WHERE id=?", (sid, uid))
+                return self._send(200, json.dumps({"ok": True, "shared": True, "share_id": sid}))
             if u.path == "/api/portfolio/import":
                 raw = d.get("raw") or ""
                 toks = re.split(r"[\s,;\n]+", str(raw))
@@ -376,6 +390,33 @@ class H(BaseHTTPRequestHandler):
                 c.close()
             except Exception: pass
             return self._send(200, json.dumps({"set": s, "history": rows}))
+        if u.path.startswith("/api/u/"):
+            sid = u.path[len("/api/u/"):].strip("/")
+            owner = q1("SELECT id FROM users WHERE share_id=?", (sid,)) if sid else None
+            if not owner:
+                return self._send(404, json.dumps({"ok": False, "error": "not found"}))
+            rows = []
+            try:
+                c = _conn()
+                cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
+                cur.execute(_conv("SELECT set_num,paid,condition FROM portfolio WHERE user_id=? ORDER BY id DESC"), (owner["id"],))
+                rows = [dict(r) for r in cur.fetchall()]
+                c.close()
+            except Exception: pass
+            items, tot_val, tot_paid = [], 0.0, 0.0
+            for r in rows:
+                d = get_value(r["set_num"])
+                if not d or d.get("error"): continue
+                val = (d.get("usedAvg") or d.get("newAvg")) if r.get("condition") == "opened" else d.get("newAvg")
+                if val: tot_val += val
+                if r.get("paid"): tot_paid += r["paid"]
+                items.append({"set": d.get("set"), "name": d.get("name"), "image": d.get("image"),
+                    "year": d.get("year"), "theme": d.get("theme"), "retired": d.get("retired"),
+                    "condition": r.get("condition"), "value": val, "appreciation": d.get("appreciation")})
+            # ROI% only (percentage, never the paid dollar amounts)
+            roi = round((tot_val - tot_paid) / tot_paid * 100) if tot_paid > 0 else None
+            return self._send(200, json.dumps({"ok": True, "count": len(items),
+                "totalValue": round(tot_val), "roi": roi, "items": items}))
         if u.path == "/api/movers":
             try:
                 return self._send(200, open(os.path.join(BASE, "movers.json")).read())
@@ -388,6 +429,7 @@ class H(BaseHTTPRequestHandler):
         if path in ("/pricing","/terms","/privacy","/refunds","/cookies"): path += ".html"
         if path == "/blog": path = "/blog/index.html"
         elif path.startswith("/blog/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
+        if path.startswith("/u/") and "." not in path.rsplit("/", 1)[-1]: path = "/u.html"
         if path == "/set": path = "/set/index.html"
         elif path.startswith("/set/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
         # --- French locale ---

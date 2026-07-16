@@ -467,6 +467,19 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .vbadge.watch{background:#fff;color:var(--ink)}
 .vbadge.sell{background:var(--red);color:#fff}
 
+/* share bar (dashboard) + shared portfolio page */
+.share-bar{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:16px 20px;margin:22px 0}
+.share-bar .sb-l{display:flex;align-items:center;gap:14px}
+.share-bar .sb-ico{font-size:26px}
+.share-bar .sb-l b{display:block;font-family:var(--disp);font-size:16px}
+.share-bar .sb-sub{color:var(--slate);font-weight:600;font-size:13px}
+.share-bar .sb-r{display:flex;align-items:center;gap:10px}
+.btn.ghost{background:#fff}
+.sb-link{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sb-link input{border:3px solid var(--ink);border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;min-width:240px;box-shadow:2px 2px 0 var(--ink)}
+.share-hero{margin-bottom:24px}
+.share-hero h1{font-size:34px;font-weight:800;letter-spacing:-.6px;margin:6px 0}
+
 /* portfolio add tools: condition select, import, sync note */
 .add-row select{border:3px solid var(--ink);border-radius:12px;padding:0 12px;font-size:15px;font-weight:700;box-shadow:3px 3px 0 var(--ink);background:#fff;cursor:pointer}
 .add-tools{display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap}
