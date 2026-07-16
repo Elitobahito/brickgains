@@ -1,0 +1,29 @@
+name: Daily price snapshot
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Snapshot LEGO prices
+        env:
+          SNAPSHOT_KEY: ${{ secrets.SNAPSHOT_KEY }}
+        run: |
+          python3 - <<'PY'
+          import os,json,urllib.request,time
+          SETS="10276 10179 10182 10218 10246 10265 21318 75192 71043 92176 10256 21322 10281 21319 10278 75252 42083 21327 71374 10297 10255 10312 10307 42115".split()
+          rows=[]
+          for s in SETS:
+              try:
+                  d=json.loads(urllib.request.urlopen(f"https://brickgains.com/api/value?set={s}",timeout=220).read())
+                  if d.get("appreciation") is not None:
+                      rows.append({"set":d.get("set"),"newAvg":d.get("newAvg"),"appreciation":d.get("appreciation")})
+                      print("ok",s,d.get("appreciation"))
+              except Exception as e: print("err",s,e)
+              time.sleep(1)
+          body=json.dumps({"key":os.environ["SNAPSHOT_KEY"],"rows":rows}).encode()
+          r=urllib.request.Request("https://brickgains.com/api/snapshot",data=body,headers={"Content-Type":"application/json"},method="POST")
+          print("snapshot:",urllib.request.urlopen(r,timeout=60).read().decode())
+          PY

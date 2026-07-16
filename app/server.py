@@ -61,10 +61,12 @@ def q1(sql, params=()):
         return dict(r) if r else None
     finally: c.close()
 
-def qx(sql, params=(), returning=False):
+def qx(sql, params=(), returning=False, ignore=False):
     c = _conn()
     try:
         cur = c.cursor()
+        if ignore:
+            sql = (sql + " ON CONFLICT DO NOTHING") if PG else sql.replace("INSERT INTO", "INSERT OR IGNORE INTO", 1)
         if returning and PG: sql = sql + " RETURNING id"
         cur.execute(_conv(sql), params)
         val = (cur.fetchone()[0] if PG else cur.lastrowid) if returning else None
@@ -82,6 +84,9 @@ def db_init():
     qx(f"""CREATE TABLE IF NOT EXISTS portfolio(
         id {ai}, user_id INTEGER NOT NULL, set_num TEXT NOT NULL,
         paid REAL, condition TEXT DEFAULT 'sealed', added {ts})""")
+    qx(f"""CREATE TABLE IF NOT EXISTS price_history(
+        id {ai}, set_num TEXT NOT NULL, day TEXT NOT NULL, new_avg REAL, appreciation REAL,
+        UNIQUE(set_num, day))""")
 
 def hash_pw(pw, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -283,6 +288,22 @@ class H(BaseHTTPRequestHandler):
                 qx("DELETE FROM sessions WHERE token=?", (tok,))
             return self._send(200, json.dumps({"ok": True}), cookie=self._sess_cookie("", clear=True))
 
+        if u.path == "/api/snapshot":
+            d = self._body()
+            if d.get("key") != ENV.get("SNAPSHOT_KEY", "nope"):
+                return self._send(403, json.dumps({"ok": False}))
+            day = (d.get("day") or time.strftime("%Y-%m-%d"))[:10]
+            n = 0
+            for r in (d.get("rows") or []):
+                s = str(r.get("set", "")).replace("-1", "")
+                if not s: continue
+                try:
+                    qx("INSERT INTO price_history(set_num,day,new_avg,appreciation) VALUES(?,?,?,?)",
+                       (s, day, r.get("newAvg"), r.get("appreciation")), ignore=True)
+                    n += 1
+                except Exception: pass
+            return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day}))
+
         return self._send(404, "Not found", "text/plain")
 
     def do_GET(self):
@@ -294,6 +315,18 @@ class H(BaseHTTPRequestHandler):
             q = urllib.parse.parse_qs(u.query).get("set", [""])[0]
             if not q: return self._send(400, json.dumps({"error": "set manquant"}))
             return self._send(200, json.dumps(get_value(q)))
+        if u.path == "/api/history":
+            s = urllib.parse.parse_qs(u.query).get("set", [""])[0].replace("-1", "")
+            if not s: return self._send(400, json.dumps({"error": "set manquant"}))
+            rows = []
+            try:
+                c = _conn()
+                cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
+                cur.execute(_conv("SELECT day,new_avg,appreciation FROM price_history WHERE set_num=? ORDER BY day"), (s,))
+                rows = [dict(r) for r in cur.fetchall()]
+                c.close()
+            except Exception: pass
+            return self._send(200, json.dumps({"set": s, "history": rows}))
         if u.path == "/api/movers":
             try:
                 return self._send(200, open(os.path.join(BASE, "movers.json")).read())
