@@ -209,7 +209,9 @@
         const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
         const d = await r.json();
         if(d.ok){ me = d.user; msg.className='authmsg ok'; msg.textContent=S.success;
-          setTimeout(()=>{ location.href = FRA ? '/app' : '/app'; }, 500); }
+          const intent = sessionStorage.getItem('bg_intent');
+          if(intent){ sessionStorage.removeItem('bg_intent'); setTimeout(()=>BG.checkout(intent), 400); }
+          else { setTimeout(()=>{ location.href = '/app'; }, 500); } }
         else { msg.className='authmsg err'; msg.textContent = d.error || S.err; }
       }catch(err){ msg.className='authmsg err'; msg.textContent=S.net; }
     },
@@ -239,12 +241,26 @@
       setTimeout(()=>{ if(!me && !localStorage.getItem('bg_promo')) el('promoWall').classList.add('on'); }, 18000);
     }
   };
+  // Stripe checkout: POST /api/checkout -> redirect to hosted page. If not logged in, open auth then resume.
+  BG.checkout = async function(plan){
+    try{
+      const r = await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan})});
+      if(r.status===401){ sessionStorage.setItem('bg_intent', plan); BG.openAuth('signup'); return; }
+      const d = await r.json();
+      if(d && d.ok && d.url){ location.href = d.url; }
+      else { alert((d && d.error) || (FRA ? "Paiement indisponible" : "Checkout unavailable")); }
+    }catch(e){ alert(FRA ? "Erreur réseau" : "Network error"); }
+  };
   window.BG = BG;
 
   document.addEventListener('DOMContentLoaded', async ()=>{
     document.body.insertAdjacentHTML('beforeend', authHTML);
     const btn = el('accountBtn');
     if(btn) btn.addEventListener('click', ()=> me ? BG.openAcct() : BG.openAuth('login'));
+    document.addEventListener('click', function(e){
+      const a = e.target.closest('[data-plan]');
+      if(a){ e.preventDefault(); BG.checkout(a.getAttribute('data-plan')); }
+    });
     await BG.refreshMe();
     if(document.getElementById('promoWall') && !location.pathname.startsWith('/app')) BG.maybePromo();
   });

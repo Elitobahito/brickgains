@@ -91,6 +91,9 @@ def db_init():
     # migration: public share link on users
     try: qx("ALTER TABLE users ADD COLUMN share_id TEXT")
     except Exception: pass
+    # migration: stripe customer id on users
+    try: qx("ALTER TABLE users ADD COLUMN stripe_customer_id TEXT")
+    except Exception: pass
 
 def hash_pw(pw, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -127,6 +130,46 @@ def user_by_token(tok):
 def _norm(sn):
     sn = str(sn).strip().lower().replace("lego", "").strip()
     return sn if "-" in sn else f"{sn}-1"
+
+# ---------- Stripe (raw API, no SDK) ----------
+STRIPE_SK = ENV.get("STRIPE_SECRET_KEY", "")
+STRIPE_WHSEC = ENV.get("STRIPE_WEBHOOK_SECRET", "")
+PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR", "")}
+SITE_URL = ENV.get("SITE_URL", "https://brickgains.com")
+
+def stripe_api(path, data=None):
+    req = urllib.request.Request("https://api.stripe.com/v1/" + path,
+        data=(urllib.parse.urlencode(data, doseq=True).encode() if data is not None else None))
+    req.add_header("Authorization", "Bearer " + STRIPE_SK)
+    if data is not None:
+        req.add_header("Content-Type", "application/x-www-form-urlencoded")
+    try:
+        with urllib.request.urlopen(req, timeout=25) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        try: return {"error": json.loads(e.read() or b"{}").get("error", {"message": "stripe error"})}
+        except Exception: return {"error": {"message": "stripe error"}}
+    except Exception as ex:
+        return {"error": {"message": str(ex)}}
+
+def stripe_verify(payload, sig_header):
+    if not STRIPE_WHSEC or not sig_header:
+        return False
+    try:
+        parts = dict(p.split("=", 1) for p in sig_header.split(",") if "=" in p)
+        t, v1 = parts.get("t"), parts.get("v1")
+        if not t or not v1:
+            return False
+        signed = t.encode() + b"." + payload
+        expected = hmac.new(STRIPE_WHSEC.encode(), signed, hashlib.sha256).hexdigest()
+        return hmac.compare_digest(expected, v1)
+    except Exception:
+        return False
+
+def set_user_plan(uid, plan):
+    if uid:
+        try: qx("UPDATE users SET plan=? WHERE id=?", (plan, int(uid)))
+        except Exception: pass
 
 def rebrickable(sn):
     try:
@@ -361,6 +404,66 @@ class H(BaseHTTPRequestHandler):
                     if n >= 200: break
                 return self._send(200, json.dumps({"ok": True, "added": n}))
             return self._send(404, json.dumps({"ok": False}))
+
+        if u.path == "/api/checkout":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            d = self._body()
+            plan = (d.get("plan") or "").strip().lower()
+            price = PRICE_IDS.get(plan)
+            if not price:
+                return self._send(400, json.dumps({"ok": False, "error": "invalid plan"}))
+            if not STRIPE_SK:
+                return self._send(500, json.dumps({"ok": False, "error": "billing not configured"}))
+            params = {
+                "mode": "subscription",
+                "line_items[0][price]": price,
+                "line_items[0][quantity]": 1,
+                "success_url": SITE_URL + "/app?upgraded=1",
+                "cancel_url": SITE_URL + "/pricing?canceled=1",
+                "client_reference_id": str(me["id"]),
+                "customer_email": me["email"],
+                "allow_promotion_codes": "true",
+                "metadata[user_id]": str(me["id"]),
+                "metadata[plan]": plan,
+                "subscription_data[metadata][user_id]": str(me["id"]),
+                "subscription_data[metadata][plan]": plan,
+            }
+            sess = stripe_api("checkout/sessions", params)
+            if sess.get("error") or not sess.get("url"):
+                msg = (sess.get("error") or {}).get("message", "checkout failed")
+                return self._send(502, json.dumps({"ok": False, "error": msg}))
+            return self._send(200, json.dumps({"ok": True, "url": sess["url"]}))
+
+        if u.path == "/api/stripe/webhook":
+            n = int(self.headers.get("Content-Length", "0") or 0)
+            if n <= 0 or n > 1000000:
+                return self._send(400, json.dumps({"ok": False}))
+            payload = self.rfile.read(n)
+            if not stripe_verify(payload, self.headers.get("Stripe-Signature", "")):
+                return self._send(400, json.dumps({"ok": False, "error": "bad signature"}))
+            try: evt = json.loads(payload)
+            except Exception: return self._send(400, json.dumps({"ok": False}))
+            typ = evt.get("type", "")
+            obj = (evt.get("data") or {}).get("object") or {}
+            meta = obj.get("metadata") or {}
+            if typ == "checkout.session.completed":
+                uid = obj.get("client_reference_id") or meta.get("user_id")
+                plan = meta.get("plan") or "pro"
+                set_user_plan(uid, plan)
+                cust = obj.get("customer")
+                if uid and cust:
+                    try: qx("UPDATE users SET stripe_customer_id=? WHERE id=?", (cust, int(uid)))
+                    except Exception: pass
+            elif typ == "customer.subscription.updated":
+                uid = meta.get("user_id")
+                status = obj.get("status", "")
+                plan = meta.get("plan") or "pro"
+                set_user_plan(uid, plan if status in ("active", "trialing") else "free")
+            elif typ == "customer.subscription.deleted":
+                set_user_plan(meta.get("user_id"), "free")
+            return self._send(200, json.dumps({"ok": True}))
 
         return self._send(404, "Not found", "text/plain")
 
