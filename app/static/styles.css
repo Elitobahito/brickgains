@@ -338,7 +338,8 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .promo-card .pc-eyebrow{font-family:var(--disp);font-weight:700;color:var(--yellow);font-size:13px;text-transform:uppercase;letter-spacing:.5px}
 .promo-card .pc-title{font-family:var(--disp);font-weight:800;font-size:22px;margin:6px 0 6px;line-height:1.15}
 .promo-card .pc-text{color:#cfccc3;font-weight:500;font-size:15px}
-.promo-card .btn{white-space:nowrap}
+.promo-card .btn{white-space:nowrap;color:#fff;text-decoration:none}
+.article a.btn,.article .promo-card .btn{color:#fff;text-decoration:none}
 .related{margin-top:44px;border-top:2px solid var(--line);padding-top:24px}
 .related h4{font-family:var(--disp);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
 .related a{display:block;color:var(--red);font-weight:700;margin-bottom:8px}
