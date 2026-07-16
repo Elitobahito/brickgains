@@ -58,6 +58,36 @@
     <div class="excards" id="moversTop"></div>
     <div id="moversTable"></div>
   </div>
+
+  <!-- WATCHLIST -->
+  <div class="movers-sec" style="border-top:3px solid var(--ink);padding-top:36px">
+    <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">👀 Watchlist</div><span class="mv-note">Sets you don't own yet. We flag when they move or retire.</span></div>
+    <div class="add-row" style="margin-top:16px">
+      <input id="wset" placeholder="Set number to watch (e.g. 10307)" onkeydown="if(event.key==='Enter')addWatch()">
+      <button class="btn" onclick="addWatch()">Add to watchlist</button>
+    </div>
+    <div id="watchWrap"></div>
+  </div>
+
+  <!-- EBAY PROFIT CALCULATOR -->
+  <div class="movers-sec" style="border-top:3px solid var(--ink);padding-top:36px">
+    <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">💵 eBay profit calculator</div><span class="mv-note">See your real profit after fees before you sell.</span></div>
+    <div class="ebay-calc">
+      <div class="ec-inputs">
+        <label>Sell price ($)<input id="ecSell" type="number" oninput="ebayCalc()" placeholder="0"></label>
+        <label>What you paid ($)<input id="ecCost" type="number" oninput="ebayCalc()" placeholder="0"></label>
+        <label>Shipping you charge ($)<input id="ecShipIn" type="number" oninput="ebayCalc()" placeholder="0"></label>
+        <label>Shipping you pay ($)<input id="ecShipOut" type="number" oninput="ebayCalc()" placeholder="0"></label>
+        <label>eBay fee (%)<input id="ecFee" type="number" value="13.25" oninput="ebayCalc()"></label>
+      </div>
+      <div class="ec-out" id="ecOut">
+        <div class="ec-row"><span>eBay fees</span><span id="ecFees">$0</span></div>
+        <div class="ec-row"><span>Net payout</span><span id="ecNet">$0</span></div>
+        <div class="ec-row big"><span>Profit</span><span id="ecProfit">$0</span></div>
+        <div class="ec-row"><span>Margin</span><span id="ecMargin">0%</span></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="/auth.js"></script>

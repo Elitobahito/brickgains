@@ -115,3 +115,57 @@ function moversView(view){
 }
 
 loadMovers();
+
+// ---- Watchlist ----
+function wload(){ try{return JSON.parse(localStorage.getItem('bb_watch')||'[]')}catch(e){return[]} }
+function wsave(a){ localStorage.setItem('bb_watch', JSON.stringify(a)); }
+function addWatch(){
+  const el=document.getElementById('wset'); const set=el.value.trim().replace('-1','');
+  if(!set) return;
+  const w=wload(); if(!w.includes(set)) w.push(set); wsave(w); el.value=''; renderWatch();
+}
+function removeWatch(set){ wsave(wload().filter(x=>x!==set)); renderWatch(); }
+function verdict(d){
+  // acheter / garder / vendre depuis retraite + plus-value
+  const a=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null);
+  if(d.retired){ if(a!=null&&a>=25) return['HOLD','Retired winner. Hold or sell into strength.','hold'];
+                 return['HOLD','Retired. Value should climb as supply dries up.','hold']; }
+  if(a!=null&&a>=10) return['BUY','Available and already above retail. Grab before retirement.','buy'];
+  return['WATCH','Still at retail. Buy on a promo, then hold to retirement.','watch'];
+}
+async function renderWatch(){
+  const w=wload(); const wrap=document.getElementById('watchWrap');
+  if(!w.length){ wrap.innerHTML='<div class="empty">No sets watched yet. Add a set above to track it.</div>'; return; }
+  wrap.innerHTML=`<table class="mv"><thead><tr><th>Set</th><th>Status</th><th style="text-align:right">Retail</th><th style="text-align:right">Value (new)</th><th style="text-align:right">Gain</th><th>Verdict</th><th></th></tr></thead><tbody>${w.map(s=>`<tr id="w_${s}"><td colspan="7" style="color:#999">Loading…</td></tr>`).join('')}</tbody></table>`;
+  for(const s of w){
+    let d={}; try{ d=await fetch('/api/value?set='+encodeURIComponent(s)).then(r=>r.json()); }catch(e){ d={error:1}; }
+    const row=document.getElementById('w_'+s); if(!row) continue;
+    if(d.error||!d.name){ row.innerHTML=`<td>${s}</td><td colspan="5" style="color:#999">Not found</td><td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`; continue; }
+    const a=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null);
+    const st=d.retired?`<span class="mv-chip">Retired</span>`:`<span class="mv-chip av">Available</span>`;
+    const[vb,,vc]=verdict(d);
+    row.innerHTML=`<td class="mv-set"><img src="${d.image||''}" onerror="this.style.display='none'">${d.name}</td>
+      <td>${st}</td><td class="num">${money(d.rrp)}</td><td class="num">${money(d.newAvg)}</td>
+      <td class="num"><span class="mv-badge ${badgeCls(a||0)}">${a!=null?pct(a):'-'}</span></td>
+      <td><span class="vbadge ${vc}">${vb}</span></td>
+      <td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`;
+  }
+}
+renderWatch();
+
+// ---- eBay profit calculator ----
+function ebayCalc(){
+  const n=id=>parseFloat(document.getElementById(id).value)||0;
+  const sell=n('ecSell'), cost=n('ecCost'), shipIn=n('ecShipIn'), shipOut=n('ecShipOut'), fee=n('ecFee');
+  const gross=sell+shipIn;
+  const fees=gross*(fee/100)+0.30;           // eBay final value fee + $0.30 per order
+  const net=gross-fees-shipOut;
+  const profit=net-cost;
+  const margin=sell>0?Math.round(profit/sell*100):0;
+  const m=v=>(v<0?'-$':'$')+Math.abs(Math.round(v)).toLocaleString('en-US');
+  document.getElementById('ecFees').textContent=m(fees);
+  document.getElementById('ecNet').textContent=m(net);
+  const pe=document.getElementById('ecProfit'); pe.textContent=m(profit); pe.className=profit>=0?'up-t':'down-t';
+  document.getElementById('ecMargin').textContent=margin+'%';
+}
+ebayCalc();
