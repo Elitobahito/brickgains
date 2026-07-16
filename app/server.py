@@ -13,6 +13,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 BASE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(BASE)
 STATIC = os.path.join(BASE, "static")
+_STATIC_ROOT = os.path.realpath(STATIC)
 CACHE_FILE = os.path.join(BASE, "cache.json")
 CACHE_TTL = 24 * 3600
 PORT = int(os.environ.get("PORT", "8000"))
@@ -206,6 +207,13 @@ class H(BaseHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "SAMEORIGIN")
         self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
+        self.send_header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        self.send_header("Content-Security-Policy",
+            "default-src 'self'; img-src 'self' https: data:; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "font-src 'self' https://fonts.gstatic.com; "
+            "script-src 'self' 'unsafe-inline'; connect-src 'self'; "
+            "frame-ancestors 'self'; base-uri 'self'")
         if cookie: self.send_header("Set-Cookie", cookie)
         self.end_headers()
         self.wfile.write(body if isinstance(body, bytes) else body.encode())
@@ -445,7 +453,10 @@ class H(BaseHTTPRequestHandler):
                 if path == "/" + lg or path.startswith("/" + lg + "/"):
                     loc = "/" + lg; path = path[len(loc):] or "/"; break
             path = (loc + resolve(path)) if loc else resolve(path)
-        fp = os.path.join(STATIC, path.lstrip("/"))
+        fp = os.path.realpath(os.path.join(STATIC, path.lstrip("/")))
+        # security: confine to STATIC root (block path traversal ../ escaping the web root)
+        if not (fp == _STATIC_ROOT or fp.startswith(_STATIC_ROOT + os.sep)):
+            return self._send(404, "Not found", "text/plain")
         if not os.path.isfile(fp): return self._send(404, "Not found", "text/plain")
         ext = fp.rsplit(".", 1)[-1]
         ctype = {"html": "text/html", "css": "text/css", "js": "application/javascript",
