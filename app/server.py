@@ -306,6 +306,8 @@ class H(BaseHTTPRequestHandler):
         if path in ("/pricing","/terms","/privacy","/refunds","/cookies"): path += ".html"
         if path == "/blog": path = "/blog/index.html"
         elif path.startswith("/blog/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
+        if path == "/set": path = "/set/index.html"
+        elif path.startswith("/set/") and "." not in path.rsplit("/", 1)[-1]: path += ".html"
         # --- French locale ---
         if path in ("/fr", "/fr/"): path = "/fr/index.html"
         elif path in ("/fr/pricing","/fr/terms","/fr/privacy","/fr/refunds","/fr/cookies"): path += ".html"
