@@ -79,9 +79,20 @@ def verify_pw(pw, stored):
     except Exception:
         return False
 
+# --- rate limiter (in-memory, per IP) ---
+RATE = {}
+def rate_ok(key, limit, window):
+    now = time.time()
+    q = RATE.setdefault(key, [])
+    while q and q[0] < now - window: q.pop(0)
+    if len(q) >= limit: return False
+    q.append(now); return True
+
 def make_session(user_id):
     tok = secrets.token_urlsafe(32)
-    c = db(); c.execute("INSERT INTO sessions(token,user_id) VALUES(?,?)", (tok, user_id)); c.commit(); c.close()
+    c = db()
+    c.execute("DELETE FROM sessions WHERE created < datetime('now','-30 days')")
+    c.execute("INSERT INTO sessions(token,user_id) VALUES(?,?)", (tok, user_id)); c.commit(); c.close()
     return tok
 
 def user_by_token(tok):
@@ -172,12 +183,29 @@ class H(BaseHTTPRequestHandler):
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("X-Frame-Options", "SAMEORIGIN")
+        self.send_header("Referrer-Policy", "strict-origin-when-cross-origin")
         if cookie: self.send_header("Set-Cookie", cookie)
         self.end_headers()
         self.wfile.write(body if isinstance(body, bytes) else body.encode())
 
+    def _ip(self):
+        xff = self.headers.get("X-Forwarded-For", "")
+        return (xff.split(",")[0].strip() if xff else self.client_address[0]) or "?"
+
+    def _https(self):
+        return self.headers.get("X-Forwarded-Proto", "") == "https"
+
+    def _sess_cookie(self, tok, clear=False):
+        sec = "; Secure" if self._https() else ""
+        if clear:
+            return f"bg_session=; Path=/; HttpOnly; SameSite=Lax{sec}; Max-Age=0"
+        return f"bg_session={tok}; Path=/; HttpOnly; SameSite=Lax{sec}; Max-Age=2592000"
+
     def _body(self):
         n = int(self.headers.get("Content-Length", "0") or 0)
+        if n > 100000: return {}
         try: return json.loads(self.rfile.read(n) or b"{}")
         except Exception: return {}
 
@@ -208,6 +236,8 @@ class H(BaseHTTPRequestHandler):
                 return self._send(500, json.dumps({"ok": False}))
 
         if u.path == "/api/signup":
+            if not rate_ok("auth:" + self._ip(), 12, 900):
+                return self._send(429, json.dumps({"ok": False, "error": "Too many attempts. Please try again in a few minutes."}))
             d = self._body()
             email = (d.get("email") or "").strip().lower()
             pw = d.get("password") or ""
@@ -222,9 +252,11 @@ class H(BaseHTTPRequestHandler):
             c.commit(); uid = cur.lastrowid; c.close()
             tok = make_session(uid)
             return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": "free"}}),
-                              cookie=f"bg_session={tok}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000")
+                              cookie=self._sess_cookie(tok))
 
         if u.path == "/api/login":
+            if not rate_ok("auth:" + self._ip(), 12, 900):
+                return self._send(429, json.dumps({"ok": False, "error": "Too many attempts. Please try again in a few minutes."}))
             d = self._body()
             email = (d.get("email") or "").strip().lower()
             pw = d.get("password") or ""
@@ -235,14 +267,13 @@ class H(BaseHTTPRequestHandler):
                 return self._send(401, json.dumps({"ok": False, "error": "Wrong email or password."}))
             tok = make_session(row["id"])
             return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": row["plan"]}}),
-                              cookie=f"bg_session={tok}; Path=/; HttpOnly; SameSite=Lax; Max-Age=2592000")
+                              cookie=self._sess_cookie(tok))
 
         if u.path == "/api/logout":
             tok = self._cookie("bg_session")
             if tok:
                 c = db(); c.execute("DELETE FROM sessions WHERE token=?", (tok,)); c.commit(); c.close()
-            return self._send(200, json.dumps({"ok": True}),
-                              cookie="bg_session=; Path=/; HttpOnly; Max-Age=0")
+            return self._send(200, json.dumps({"ok": True}), cookie=self._sess_cookie("", clear=True))
 
         return self._send(404, "Not found", "text/plain")
 
