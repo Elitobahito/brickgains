@@ -62,7 +62,7 @@ async function loadShare(){
   const rows = d.items.map(it=>{
     const st = it.retired?'<span class="mv-chip">Retired</span>':'<span class="mv-chip av">Available</span>';
     const cond = it.condition==='opened'?'<span class="cond opened">Opened</span>':'<span class="cond sealed">Sealed</span>';
-    return `<tr><td class="mv-set"><img src="${it.image||''}" onerror="this.style.display='none'">${it.name}</td>
+    return `<tr><td class="mv-set"><img src="${it.image||''}" alt="LEGO ${it.name||'set'}" onerror="this.style.display='none'">${it.name}</td>
       <td>${cond}</td><td>${st}</td><td class="num">${money(it.value)}</td>
       <td class="num"><span class="mv-badge ${badgeCls(it.appreciation||0)}">${it.appreciation!=null?pct(it.appreciation):'-'}</span></td></tr>`;
   }).join('');
