@@ -155,6 +155,7 @@ let MV = [];
 function pct(a){ return (a>0?'+':'')+a+'%'; }
 function badgeCls(a){ return a>0?'up':(a<0?'down':'flat'); }
 function pickSet(s){ const i=document.getElementById('pset'); if(i){ i.value=s; i.focus(); i.scrollIntoView({behavior:'smooth',block:'center'}); } }
+function openSet(s){ const n=String(s||'').replace('-1',''); if(n) window.open('/set/'+n, '_blank', 'noopener'); }
 
 async function loadMovers(){
   try{
@@ -175,7 +176,7 @@ function moversView(view){
   else if(view==='retiring'){ list = list.filter(x=>!x.retired).sort((a,b)=>b.appreciation-a.appreciation); }
 
   const top = list.slice(0,4).map(d=>`
-    <div class="ex" onclick="pickSet('${(d.set||'').replace('-1','')}')" style="cursor:pointer">
+    <div class="ex" onclick="openSet('${(d.set||'').replace('-1','')}')" style="cursor:pointer">
       <img src="${d.image||''}" onerror="this.style.visibility='hidden'">
       <h4>${d.name}</h4>
       <div class="prices">Retail ${money(d.rrp)} &rarr; New ${money(d.newAvg)}</div>
@@ -185,7 +186,7 @@ function moversView(view){
 
   const rows = list.map(d=>{
     const st = d.retired ? `<span class="mv-chip">Retired</span>` : `<span class="mv-chip av">Available</span>`;
-    return `<tr class="clik" onclick="pickSet('${(d.set||'').replace('-1','')}')">
+    return `<tr class="clik" onclick="openSet('${(d.set||'').replace('-1','')}')">
       <td class="mv-set"><img src="${d.image||''}" onerror="this.style.display='none'">${d.name}${st}</td>
       <td>${d.theme||''} ${d.year?'· '+d.year:''}</td>
       <td class="num">${money(d.rrp)}</td>
