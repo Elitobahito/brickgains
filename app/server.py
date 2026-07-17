@@ -109,6 +109,18 @@ def verify_pw(pw, stored):
 
 # --- rate limiter (in-memory, per IP) ---
 RATE = {}
+# --- daily free-check counter (in-memory, per IP+day) for user-initiated value checks ---
+CHECKS = {}
+def check_bump(ip):
+    day = time.strftime("%Y-%m-%d")
+    key = ip + "|" + day
+    if len(CHECKS) > 5000:
+        for k in [k for k in CHECKS if not k.endswith(day)]: CHECKS.pop(k, None)
+    n = CHECKS.get(key, 0)
+    return n
+def check_inc(ip):
+    key = ip + "|" + time.strftime("%Y-%m-%d")
+    CHECKS[key] = CHECKS.get(key, 0) + 1
 def rate_ok(key, limit, window):
     now = time.time()
     q = RATE.setdefault(key, [])
@@ -137,6 +149,11 @@ STRIPE_WHSEC = ENV.get("STRIPE_WEBHOOK_SECRET", "")
 PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR", "")}
 STRIPE_PORTAL_CONFIG = ENV.get("STRIPE_PORTAL_CONFIG", "")
 SITE_URL = ENV.get("SITE_URL", "https://brickgains.com")
+
+# Free-plan limits (enforced server-side)
+FREE_SETS_CAP = 10          # max sets a free account can track
+FREE_CHECKS_PER_DAY = 3     # user-initiated value checks per day (anon/free)
+PAID_PLANS = ("pro", "investor")
 
 def stripe_api(path, data=None):
     req = urllib.request.Request("https://api.stripe.com/v1/" + path,
@@ -369,6 +386,11 @@ class H(BaseHTTPRequestHandler):
                 sn = str(d.get("set", "")).strip().lower().replace("lego", "").replace("-1", "").strip()
                 if not sn:
                     return self._send(400, json.dumps({"ok": False, "error": "set manquant"}))
+                if (me.get("plan") or "free") == "free":
+                    cnt = q1("SELECT count(*) AS n FROM portfolio WHERE user_id=?", (uid,))
+                    if cnt and int(cnt["n"]) >= FREE_SETS_CAP:
+                        return self._send(403, json.dumps({"ok": False, "limit": True,
+                            "error": "Free plan tracks up to %d sets. Upgrade to Pro for unlimited." % FREE_SETS_CAP}))
                 paid = d.get("paid")
                 try: paid = float(paid) if paid not in (None, "") else None
                 except Exception: paid = None
@@ -394,16 +416,29 @@ class H(BaseHTTPRequestHandler):
             if u.path == "/api/portfolio/import":
                 raw = d.get("raw") or ""
                 toks = re.split(r"[\s,;\n]+", str(raw))
+                is_free = (me.get("plan") or "free") == "free"
+                cap = 200
+                if is_free:
+                    cur = q1("SELECT count(*) AS n FROM portfolio WHERE user_id=?", (uid,))
+                    cap = max(0, FREE_SETS_CAP - (int(cur["n"]) if cur else 0))
                 seen, n = set(), 0
+                hit_limit = False
                 for t in toks:
                     sn = t.strip().lower().replace("lego", "").replace("-1", "").strip()
                     if not sn or sn in seen: continue
+                    if n >= cap:
+                        hit_limit = is_free
+                        break
                     seen.add(sn)
                     qx("INSERT INTO portfolio(user_id,set_num,paid,condition) VALUES(?,?,?,?)",
                        (uid, sn, None, "sealed"))
                     n += 1
                     if n >= 200: break
-                return self._send(200, json.dumps({"ok": True, "added": n}))
+                res = {"ok": True, "added": n}
+                if hit_limit:
+                    res["limit"] = True
+                    res["error"] = "Free plan tracks up to %d sets. Upgrade to Pro for unlimited." % FREE_SETS_CAP
+                return self._send(200, json.dumps(res))
             return self._send(404, json.dumps({"ok": False}))
 
         if u.path == "/api/checkout":
@@ -521,8 +556,19 @@ class H(BaseHTTPRequestHandler):
             except Exception: pass
             return self._send(200, json.dumps({"ok": True, "items": rows}))
         if u.path == "/api/value":
-            q = urllib.parse.parse_qs(u.query).get("set", [""])[0]
+            qs = urllib.parse.parse_qs(u.query)
+            q = qs.get("set", [""])[0]
             if not q: return self._send(400, json.dumps({"error": "set manquant"}))
+            # user-initiated checks (u=1) are limited per day for anon/free users
+            if qs.get("u", [""])[0] == "1":
+                me = self._me()
+                paid = bool(me and (me.get("plan") in PAID_PLANS))
+                if not paid:
+                    ip = self._ip()
+                    if check_bump(ip) >= FREE_CHECKS_PER_DAY:
+                        return self._send(429, json.dumps({"limit": True,
+                            "error": "You have used your %d free checks for today. Subscribe for unlimited." % FREE_CHECKS_PER_DAY}))
+                    check_inc(ip)
             return self._send(200, json.dumps(get_value(q)))
         if u.path == "/api/history":
             s = urllib.parse.parse_qs(u.query).get("set", [""])[0].replace("-1", "")

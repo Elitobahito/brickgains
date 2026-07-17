@@ -183,8 +183,10 @@ async function doSearch(){
   const box = document.getElementById('result');
   box.innerHTML = `<div class="vcard"><div class="loading">${T.loading}</div></div>`;
   try{
-    const r = await fetch('/api/value?set='+encodeURIComponent(q));
+    const r = await fetch('/api/value?u=1&set='+encodeURIComponent(q));
+    if(r.status===429){ box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
     const d = await r.json();
+    if(d.limit){ box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
     box.innerHTML = cardHTML(d);
     if(!d.error) setFree(freeUsed()+1);
   }catch(e){ box.innerHTML = `<div class="vcard"><div class="loading">${T.wrong}</div></div>`; }

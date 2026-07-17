@@ -45,8 +45,10 @@ async function addSet(){
   if(!set) return;
   const paid = isNaN(price)?null:price;
   if(ME){
-    await fetch('/api/portfolio/add',{method:'POST',headers:{'Content-Type':'application/json'},
+    const r = await fetch('/api/portfolio/add',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({set,paid,condition:cond})});
+    const d = await r.json().catch(()=>({}));
+    if(d && d.limit){ alert(d.error||'Free plan limit reached. Upgrade to Pro for unlimited.'); location.href='/pricing'; return; }
   } else { const pf=lload(); pf.push({set,paid,condition:cond}); lsave(pf); }
   document.getElementById('pset').value=''; document.getElementById('pprice').value='';
   render();
@@ -62,7 +64,7 @@ function toggleImport(){ const b=document.getElementById('importBox'); b.style.d
 async function doImport(){
   const raw = document.getElementById('importRaw').value.trim();
   if(!raw) return;
-  if(ME){ await fetch('/api/portfolio/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw})}); }
+  if(ME){ const r = await fetch('/api/portfolio/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw})}); const d = await r.json().catch(()=>({})); if(d && d.limit){ alert(d.error||'Free plan limit reached. Upgrade to Pro for unlimited.'); } }
   else {
     const pf=lload(); const seen=new Set(pf.map(x=>x.set));
     raw.split(/[\s,;\n]+/).forEach(t=>{const s=t.trim().replace('-1',''); if(s&&!seen.has(s)){seen.add(s); pf.push({set:s,paid:null,condition:'sealed'});}});
