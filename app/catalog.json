@@ -1,5 +1,5 @@
 {
- "updated": "2026-07-16",
+ "updated": "2026-07-17",
  "sets": [
   {
    "set": "10182-1",
@@ -82,6 +82,54 @@
    "retired": "2010-12-25"
   },
   {
+   "set": "70657-1",
+   "name": "NINJAGO City Docks",
+   "year": 2018,
+   "theme": "The LEGO Ninjago Movie",
+   "image": "https://cdn.rebrickable.com/media/sets/70657-1/6267.jpg",
+   "rrp": 229.99,
+   "newMin": 452.9,
+   "newAvg": 705.1193,
+   "newMax": 1301.66,
+   "usedMin": 378.89,
+   "usedAvg": 525.7312,
+   "usedMax": 802.68,
+   "appreciation": 207,
+   "retired": "2019-11-29"
+  },
+  {
+   "set": "75827-1",
+   "name": "Firehouse Headquarters ",
+   "year": 2016,
+   "theme": "Ghostbusters",
+   "image": "https://cdn.rebrickable.com/media/sets/75827-1/33208.jpg",
+   "rrp": 349.99,
+   "newMin": 581.81,
+   "newAvg": 1066.7818,
+   "newMax": 2293.39,
+   "usedMin": 471.96,
+   "usedAvg": 699.5448,
+   "usedMax": 917.3,
+   "appreciation": 205,
+   "retired": "2019-03-13"
+  },
+  {
+   "set": "70620-1",
+   "name": "NINJAGO City",
+   "year": 2017,
+   "theme": "The LEGO Ninjago Movie",
+   "image": "https://cdn.rebrickable.com/media/sets/70620-1/30657.jpg",
+   "rrp": 299.99,
+   "newMin": 619.4,
+   "newAvg": 891.1823,
+   "newMax": 1401.66,
+   "usedMin": 460,
+   "usedAvg": 619.1944,
+   "usedMax": 860.02,
+   "appreciation": 197,
+   "retired": "2019-11-30"
+  },
+  {
    "set": "76422-1",
    "name": "Diagon Alley: Weasleys' Wizard Wheezes",
    "year": 2023,
@@ -96,6 +144,38 @@
    "usedMax": 200,
    "appreciation": 191,
    "retired": "2024-11-23"
+  },
+  {
+   "set": "31203-1",
+   "name": "World Map",
+   "year": 2021,
+   "theme": "Art",
+   "image": "https://cdn.rebrickable.com/media/sets/31203-1/88510.jpg",
+   "rrp": 249.99,
+   "newMin": 499.99,
+   "newAvg": 711.6188,
+   "newMax": 998.25,
+   "usedMin": 390.74,
+   "usedAvg": 510.15,
+   "usedMax": 674.99,
+   "appreciation": 185,
+   "retired": "2024-01-19"
+  },
+  {
+   "set": "75159-1",
+   "name": "Death Star",
+   "year": 2016,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75159-1/34107.jpg",
+   "rrp": 499.99,
+   "newMin": 860.02,
+   "newAvg": 1349.7354,
+   "newMax": 1999.99,
+   "usedMin": 570.43,
+   "usedAvg": 820.6776,
+   "usedMax": 1146.7,
+   "appreciation": 170,
+   "retired": "2020-11-22"
   },
   {
    "set": "10218-1",
@@ -114,6 +194,22 @@
    "retired": "2016-11-26"
   },
   {
+   "set": "70922-1",
+   "name": "The Joker Manor",
+   "year": 2017,
+   "theme": "The LEGO Batman Movie",
+   "image": "https://cdn.rebrickable.com/media/sets/70922-1/9300.jpg",
+   "rrp": 269.99,
+   "newMin": 627.24,
+   "newAvg": 673.4344,
+   "newMax": 917.36,
+   "usedMin": 802.68,
+   "usedAvg": 366.8543,
+   "usedMax": 802.68,
+   "appreciation": 149,
+   "retired": "2018-12-14"
+  },
+  {
    "set": "10276-1",
    "name": "Colosseum",
    "year": 2020,
@@ -128,6 +224,38 @@
    "usedMax": 950,
    "appreciation": 146,
    "retired": "2024-02-05"
+  },
+  {
+   "set": "75059-1",
+   "name": "Sandcrawler",
+   "year": 2014,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75059-1/824.jpg",
+   "rrp": 299.99,
+   "newMin": 446.05,
+   "newAvg": 732.7106,
+   "newMax": 1165,
+   "usedMin": 450,
+   "usedAvg": 499.6506,
+   "usedMax": 713.03,
+   "appreciation": 144,
+   "retired": "2016-11-21"
+  },
+  {
+   "set": "10188-1",
+   "name": "Death Star",
+   "year": 2008,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/10188-1/52658.jpg",
+   "rrp": 399.99,
+   "newMin": 694.29,
+   "newAvg": 927.8406,
+   "newMax": 1426.07,
+   "usedMin": 481.81,
+   "usedAvg": 588.3567,
+   "usedMax": 917.35,
+   "appreciation": 132,
+   "retired": "2015-12-19"
   },
   {
    "set": "21319-1",
@@ -176,6 +304,22 @@
    "usedMax": 250,
    "appreciation": 110,
    "retired": "2022-11-25"
+  },
+  {
+   "set": "76139-1",
+   "name": "1989 Batmobile",
+   "year": 2019,
+   "theme": "DC Comics Super Heroes",
+   "image": "https://cdn.rebrickable.com/media/sets/76139-1/15647.jpg",
+   "rrp": 249.99,
+   "newMin": 378.84,
+   "newAvg": 524.8864,
+   "newMax": 858.88,
+   "usedMin": 235,
+   "usedAvg": 338.0097,
+   "usedMax": 675.54,
+   "appreciation": 110,
+   "retired": "2021-11-12"
   },
   {
    "set": "71774-1",
@@ -288,6 +432,22 @@
    "usedMax": 57.02,
    "appreciation": 74,
    "retired": "2024-12-14"
+  },
+  {
+   "set": "75313-1",
+   "name": "AT-AT",
+   "year": 2021,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75313-1/94568.jpg",
+   "rrp": 849.99,
+   "newMin": 1042.45,
+   "newAvg": 1457.8388,
+   "newMax": 3898.76,
+   "usedMin": 837.08,
+   "usedAvg": 1100.3186,
+   "usedMax": 1499.98,
+   "appreciation": 72,
+   "retired": "2024-11-23"
   },
   {
    "set": "10278-1",
@@ -480,6 +640,22 @@
    "usedMax": 177.63,
    "appreciation": 54,
    "retired": "2024-03-01"
+  },
+  {
+   "set": "31200-1",
+   "name": "Star Wars The Sith",
+   "year": 2020,
+   "theme": "Art",
+   "image": "https://cdn.rebrickable.com/media/sets/31200-1/68329.jpg",
+   "rrp": 119.99,
+   "newMin": 122.72,
+   "newAvg": 183.3459,
+   "newMax": 265,
+   "usedMin": 94.61,
+   "usedAvg": 159.7278,
+   "usedMax": 513.41,
+   "appreciation": 53,
+   "retired": "2022-01-24"
   },
   {
    "set": "21250-1",
@@ -786,6 +962,22 @@
    "retired": "2025-03-23"
   },
   {
+   "set": "75309-1",
+   "name": "Republic Gunship",
+   "year": 2021,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75309-1/90319.jpg",
+   "rrp": 399.99,
+   "newMin": 401.34,
+   "newAvg": 548.8565,
+   "newMax": 1018,
+   "usedMin": 317.3,
+   "usedAvg": 390.5481,
+   "usedMax": 549.27,
+   "appreciation": 37,
+   "retired": "2024-03-01"
+  },
+  {
    "set": "71799-1",
    "name": "NINJAGO City Markets",
    "year": 2023,
@@ -800,6 +992,22 @@
    "usedMax": 513.26,
    "appreciation": 36,
    "retired": "2025-11-22"
+  },
+  {
+   "set": "76178-1",
+   "name": "Daily Bugle",
+   "year": 2021,
+   "theme": "Marvel Super Heroes",
+   "image": "https://cdn.rebrickable.com/media/sets/76178-1/88191.jpg",
+   "rrp": 349.99,
+   "newMin": 365.48,
+   "newAvg": 476.5477,
+   "newMax": 1605.38,
+   "usedMin": 315.37,
+   "usedAvg": 306.9977,
+   "usedMax": 499.12,
+   "appreciation": 36,
+   "retired": "2025-11-19"
   },
   {
    "set": "10320-1",
@@ -944,6 +1152,22 @@
    "usedMax": 500,
    "appreciation": 32,
    "retired": "2024-12-22"
+  },
+  {
+   "set": "40179-1",
+   "name": "Personalised Mosaic Portrait",
+   "year": 2016,
+   "theme": "Miscellaneous",
+   "image": "https://cdn.rebrickable.com/media/sets/40179-1/143334.jpg",
+   "rrp": 79.99,
+   "newMin": 51.34,
+   "newAvg": 105.9159,
+   "newMax": 259.05,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": 32,
+   "retired": null
   },
   {
    "set": "76415-1",
@@ -1234,6 +1458,22 @@
    "retired": "2026-02-12"
   },
   {
+   "set": "21330-1",
+   "name": "Home Alone",
+   "year": 2021,
+   "theme": "Ideas",
+   "image": "https://cdn.rebrickable.com/media/sets/21330-1/94025.jpg",
+   "rrp": 299.99,
+   "newMin": 224.52,
+   "newAvg": 368.0418,
+   "newMax": 798,
+   "usedMin": 204.99,
+   "usedAvg": 248.5403,
+   "usedMax": 399.21,
+   "appreciation": 23,
+   "retired": null
+  },
+  {
    "set": "10281-1",
    "name": "Bonsai Tree",
    "year": 2021,
@@ -1312,6 +1552,22 @@
    "usedMax": 96.95,
    "appreciation": 21,
    "retired": "2025-12-15"
+  },
+  {
+   "set": "31197-1",
+   "name": "Andy Warhol's Marilyn Monroe",
+   "year": 2020,
+   "theme": "Art",
+   "image": "https://cdn.rebrickable.com/media/sets/31197-1/68279.jpg",
+   "rrp": 119.99,
+   "newMin": 85,
+   "newAvg": 144.1602,
+   "newMax": 249.08,
+   "usedMin": 114.66,
+   "usedAvg": 114.66,
+   "usedMax": 114.66,
+   "appreciation": 20,
+   "retired": "2022-04-15"
   },
   {
    "set": "10255-1",
@@ -1618,6 +1874,22 @@
    "retired": "2024-11-29"
   },
   {
+   "set": "21323-1",
+   "name": "Grand Piano",
+   "year": 2020,
+   "theme": "Ideas",
+   "image": "https://cdn.rebrickable.com/media/sets/21323-1/69409.jpg",
+   "rrp": 399.99,
+   "newMin": 254.98,
+   "newAvg": 439.2885,
+   "newMax": 700.83,
+   "usedMin": 194.56,
+   "usedAvg": 304.0559,
+   "usedMax": 411.78,
+   "appreciation": 10,
+   "retired": "2026-07-07"
+  },
+  {
    "set": "71794-1",
    "name": "Lloyd and Arin's Ninja Team Mechs",
    "year": 2023,
@@ -1698,6 +1970,22 @@
    "retired": "2024-11-29"
   },
   {
+   "set": "21226-1",
+   "name": "Art Project - Create Together",
+   "year": 2021,
+   "theme": "Art",
+   "image": "https://cdn.rebrickable.com/media/sets/21226-1/93814.jpg",
+   "rrp": 119.99,
+   "newMin": 94.76,
+   "newAvg": 129.9415,
+   "newMax": 302.99,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": 8,
+   "retired": "2022-11-28"
+  },
+  {
    "set": "42143-1",
    "name": "Ferrari Daytona SP3",
    "year": 2022,
@@ -1712,6 +2000,22 @@
    "usedMax": 570.3,
    "appreciation": 7,
    "retired": "2026-06-21"
+  },
+  {
+   "set": "31201-1",
+   "name": "Harry Potter Hogwarts Crests",
+   "year": 2021,
+   "theme": "Art",
+   "image": "https://cdn.rebrickable.com/media/sets/31201-1/76225.jpg",
+   "rrp": 119.99,
+   "newMin": 89.16,
+   "newAvg": 127.8214,
+   "newMax": 205.37,
+   "usedMin": 65.8,
+   "usedAvg": 92.2412,
+   "usedMax": 129.99,
+   "appreciation": 7,
+   "retired": "2022-12-29"
   },
   {
    "set": "71043-1",
@@ -2112,6 +2416,22 @@
    "usedMax": 45.2,
    "appreciation": -29,
    "retired": "2025-12-04"
+  },
+  {
+   "set": "2000409-1",
+   "name": "Window Exploration - 100 bags",
+   "year": 2010,
+   "theme": "Serious Play",
+   "image": "https://cdn.rebrickable.com/media/sets/2000409-1/14381.jpg",
+   "rrp": 484.99,
+   "newMin": 4.58,
+   "newAvg": 4.58,
+   "newMax": 4.58,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": -99,
+   "retired": null
   },
   {
    "set": "43217-1",
