@@ -135,6 +135,7 @@ def _norm(sn):
 STRIPE_SK = ENV.get("STRIPE_SECRET_KEY", "")
 STRIPE_WHSEC = ENV.get("STRIPE_WEBHOOK_SECRET", "")
 PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR", "")}
+STRIPE_PORTAL_CONFIG = ENV.get("STRIPE_PORTAL_CONFIG", "")
 SITE_URL = ENV.get("SITE_URL", "https://brickgains.com")
 
 def stripe_api(path, data=None):
@@ -436,6 +437,40 @@ class H(BaseHTTPRequestHandler):
                 return self._send(502, json.dumps({"ok": False, "error": msg}))
             return self._send(200, json.dumps({"ok": True, "url": sess["url"]}))
 
+        if u.path == "/api/billing-portal":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            row = q1("SELECT stripe_customer_id FROM users WHERE id=?", (me["id"],))
+            cust = row.get("stripe_customer_id") if row else None
+            if not cust:
+                return self._send(400, json.dumps({"ok": False, "error": "no active subscription"}))
+            params = {"customer": cust, "return_url": SITE_URL + "/app"}
+            if STRIPE_PORTAL_CONFIG:
+                params["configuration"] = STRIPE_PORTAL_CONFIG
+            sess = stripe_api("billing_portal/sessions", params)
+            if sess.get("error") or not sess.get("url"):
+                msg = (sess.get("error") or {}).get("message", "portal failed")
+                return self._send(502, json.dumps({"ok": False, "error": msg}))
+            return self._send(200, json.dumps({"ok": True, "url": sess["url"]}))
+
+        if u.path == "/api/contact":
+            if not rate_ok("contact:" + self._ip(), 6, 900):
+                return self._send(429, json.dumps({"ok": False, "error": "Too many messages. Try again later."}))
+            d = self._body()
+            name = (d.get("name") or "").strip()[:120]
+            email = (d.get("email") or "").strip()[:160]
+            message = (d.get("message") or "").strip()[:4000]
+            if "@" not in email or "." not in email or len(message) < 5:
+                return self._send(400, json.dumps({"ok": False, "error": "Please enter a valid email and message."}))
+            try:
+                with open(os.path.join(ROOT, "contacts.csv"), "a") as f:
+                    safe = message.replace("\n", " ").replace("\r", " ")
+                    f.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}\t{name}\t{email}\t{safe}\n')
+            except Exception:
+                return self._send(500, json.dumps({"ok": False}))
+            return self._send(200, json.dumps({"ok": True}))
+
         if u.path == "/api/stripe/webhook":
             n = int(self.headers.get("Content-Length", "0") or 0)
             if n <= 0 or n > 1000000:
@@ -538,7 +573,7 @@ class H(BaseHTTPRequestHandler):
         def resolve(p):
             noext = "." not in p.rsplit("/", 1)[-1]
             if p in ("", "/"): return "/index.html"
-            if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies"): return p + ".html"
+            if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies", "/contact"): return p + ".html"
             if p == "/blog": return "/blog/index.html"
             if p.startswith("/blog/") and noext: return p + ".html"
             if p == "/set": return "/set/index.html"

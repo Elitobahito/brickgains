@@ -294,6 +294,16 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .tc-next{background:var(--yellow);box-shadow:2px 2px 0 var(--ink)}
 .tour-btn{font-family:var(--disp);font-weight:700;font-size:13px;background:var(--yellow);border:2px solid var(--ink);border-radius:9px;padding:6px 12px;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
 
+/* ---- contact form ---- */
+.contact-form{display:flex;flex-direction:column;gap:14px;max-width:520px;margin:28px 0}
+.contact-form label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:14px;color:var(--ink)}
+.contact-form input,.contact-form textarea{border:3px solid var(--ink);border-radius:12px;padding:11px 13px;font-family:var(--font);font-size:15px;font-weight:500;box-shadow:2px 2px 0 var(--ink);background:#fff}
+.contact-form input:focus,.contact-form textarea:focus{outline:none;box-shadow:0 0 0 3px var(--yellow)}
+.contact-form textarea{resize:vertical}
+.contact-form .btn{align-self:flex-start;margin-top:4px}
+.c-done{font-weight:700;color:var(--green);font-size:14px}
+.c-alt{color:var(--slate);font-weight:500;margin-top:10px}
+
 /* ---- account icon ---- */
 .navcta{display:flex;align-items:center;gap:12px}
 .acct{width:44px;height:44px;border-radius:12px;border:2.5px solid var(--ink);background:#fff;color:var(--ink);

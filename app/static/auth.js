@@ -11,7 +11,7 @@
     google:"Continuer avec Google", or:"ou", email:"Email", pass:"Mot de passe (8+ caractères)",
     login:"Se connecter", create:"Créer un compte", newHere:"Nouveau ici ?", already:"Déjà un compte ?",
     doCreate:"Créer un compte", doLogin:"Se connecter",
-    acct:"Votre compte", openPf:"Ouvrir mon portefeuille", logout:"Se déconnecter",
+    acct:"Votre compte", openPf:"Ouvrir mon portefeuille", logout:"Se déconnecter", manage:"Gérer l'abonnement",
     plan:"Offre : ", wait:"Veuillez patienter...", success:"✅ Réussi ! Redirection...",
     err:"Une erreur est survenue.", net:"Erreur réseau. Réessayez.",
     gsoon:"La connexion Google est en cours de mise en place, utilisez l'email pour l'instant.",
@@ -26,7 +26,7 @@
     google:"Continue with Google", or:"or", email:"Email", pass:"Password (8+ characters)",
     login:"Log in", create:"Create account", newHere:"New here?", already:"Already have an account?",
     doCreate:"Create an account", doLogin:"Log in",
-    acct:"Your account", openPf:"Open my portfolio", logout:"Log out",
+    acct:"Your account", openPf:"Open my portfolio", logout:"Log out", manage:"Manage subscription",
     plan:"Plan: ", wait:"Please wait...", success:"✅ Success! Redirecting...",
     err:"Something went wrong.", net:"Network error. Try again.",
     gsoon:"Google sign-in is being set up, use email for now.",
@@ -41,7 +41,7 @@
     google:"Mit Google fortfahren", or:"oder", email:"E-Mail", pass:"Passwort (8+ Zeichen)",
     login:"Anmelden", create:"Konto erstellen", newHere:"Neu hier?", already:"Schon ein Konto?",
     doCreate:"Konto erstellen", doLogin:"Anmelden",
-    acct:"Dein Konto", openPf:"Mein Portfolio öffnen", logout:"Abmelden",
+    acct:"Dein Konto", openPf:"Mein Portfolio öffnen", logout:"Abmelden", manage:"Abo verwalten",
     plan:"Tarif: ", wait:"Bitte warten...", success:"✅ Erfolg! Weiterleitung...",
     err:"Etwas ist schiefgelaufen.", net:"Netzwerkfehler. Bitte erneut versuchen.",
     gsoon:"Die Google-Anmeldung wird eingerichtet, nutze vorerst die E-Mail.",
@@ -56,7 +56,7 @@
     google:"Continuar con Google", or:"o", email:"Correo electrónico", pass:"Contraseña (8+ caracteres)",
     login:"Iniciar sesión", create:"Crear cuenta", newHere:"¿Nuevo por aquí?", already:"¿Ya tienes una cuenta?",
     doCreate:"Crear una cuenta", doLogin:"Iniciar sesión",
-    acct:"Tu cuenta", openPf:"Abrir mi cartera", logout:"Cerrar sesión",
+    acct:"Tu cuenta", openPf:"Abrir mi cartera", logout:"Cerrar sesión", manage:"Gestionar suscripción",
     plan:"Plan: ", wait:"Espera un momento...", success:"✅ ¡Listo! Redirigiendo...",
     err:"Algo salió mal.", net:"Error de red. Inténtalo de nuevo.",
     gsoon:"El inicio de sesión con Google se está configurando, usa el correo por ahora.",
@@ -71,7 +71,7 @@
     google:"Continua con Google", or:"o", email:"Email", pass:"Password (8+ caratteri)",
     login:"Accedi", create:"Crea account", newHere:"Nuovo qui?", already:"Hai già un account?",
     doCreate:"Crea un account", doLogin:"Accedi",
-    acct:"Il tuo account", openPf:"Apri il mio portafoglio", logout:"Esci",
+    acct:"Il tuo account", openPf:"Apri il mio portafoglio", logout:"Esci", manage:"Gestisci abbonamento",
     plan:"Piano: ", wait:"Attendi...", success:"✅ Fatto! Reindirizzamento...",
     err:"Qualcosa è andato storto.", net:"Errore di rete. Riprova.",
     gsoon:"L'accesso con Google è in fase di configurazione, per ora usa l'email.",
@@ -86,7 +86,7 @@
     google:"Doorgaan met Google", or:"of", email:"E-mail", pass:"Wachtwoord (8+ tekens)",
     login:"Inloggen", create:"Account aanmaken", newHere:"Nieuw hier?", already:"Heb je al een account?",
     doCreate:"Een account aanmaken", doLogin:"Inloggen",
-    acct:"Je account", openPf:"Mijn portefeuille openen", logout:"Uitloggen",
+    acct:"Je account", openPf:"Mijn portefeuille openen", logout:"Uitloggen", manage:"Abonnement beheren",
     plan:"Abonnement: ", wait:"Even geduld...", success:"✅ Gelukt! Doorsturen...",
     err:"Er ging iets mis.", net:"Netwerkfout. Probeer opnieuw.",
     gsoon:"Google-inloggen wordt ingesteld, gebruik voorlopig e-mail.",
@@ -101,7 +101,7 @@
     google:"Fortsätt med Google", or:"eller", email:"E-post", pass:"Lösenord (8+ tecken)",
     login:"Logga in", create:"Skapa konto", newHere:"Ny här?", already:"Har du redan ett konto?",
     doCreate:"Skapa ett konto", doLogin:"Logga in",
-    acct:"Ditt konto", openPf:"Öppna min portfölj", logout:"Logga ut",
+    acct:"Ditt konto", openPf:"Öppna min portfölj", logout:"Logga ut", manage:"Hantera prenumeration",
     plan:"Plan: ", wait:"Vänta...", success:"✅ Klart! Omdirigerar...",
     err:"Något gick fel.", net:"Nätverksfel. Försök igen.",
     gsoon:"Google-inloggning håller på att ställas in, använd e-post tills vidare.",
@@ -116,7 +116,7 @@
     google:"Fortsæt med Google", or:"eller", email:"E-mail", pass:"Adgangskode (8+ tegn)",
     login:"Log ind", create:"Opret konto", newHere:"Ny her?", already:"Har du allerede en konto?",
     doCreate:"Opret en konto", doLogin:"Log ind",
-    acct:"Din konto", openPf:"Åbn min portefølje", logout:"Log ud",
+    acct:"Din konto", openPf:"Åbn min portefølje", logout:"Log ud", manage:"Administrer abonnement",
     plan:"Abonnement: ", wait:"Vent venligst...", success:"✅ Færdig! Omdirigerer...",
     err:"Noget gik galt.", net:"Netværksfejl. Prøv igen.",
     gsoon:"Google-login er ved at blive sat op, brug e-mail indtil videre.",
@@ -161,6 +161,7 @@
       <p id="acctEmail" style="font-weight:700;color:var(--ink)"></p>
       <p id="acctPlan" style="margin-top:-6px"></p>
       <a class="btn lg" href="/app" style="width:100%;margin-bottom:10px">${S.openPf}</a>
+      <button class="btn ghost" style="width:100%;margin-bottom:10px" onclick="BG.billingPortal()">${S.manage}</button>
       <a class="altlink" onclick="BG.logout()">${S.logout}</a>
     </div>
   </div>
@@ -250,6 +251,16 @@
       if(d && d.ok && d.url){ location.href = d.url; }
       else { alert((d && d.error) || (FRA ? "Paiement indisponible" : "Checkout unavailable")); }
     }catch(e){ alert(FRA ? "Erreur réseau" : "Network error"); }
+  };
+  // Stripe billing portal: manage / cancel subscription. Free users go to pricing.
+  BG.billingPortal = async function(){
+    if(!me || me.plan==='free' || !me.plan){ location.href = (LANG && LANG!=='en' ? '/'+LANG : '')+'/pricing'; return; }
+    try{
+      var r = await fetch('/api/billing-portal',{method:'POST'});
+      var d = await r.json();
+      if(d && d.ok && d.url){ location.href = d.url; }
+      else { alert((d && d.error) || (FRA?"Portail indisponible":"Billing portal unavailable")); }
+    }catch(e){ alert(FRA?"Erreur réseau":"Network error"); }
   };
   window.BG = BG;
 

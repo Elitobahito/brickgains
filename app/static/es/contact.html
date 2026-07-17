@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contacto · BrickGains</title><meta name="description" content="Contacto BrickGains: preguntas sobre tu cuenta, la facturacion o los datos.">
+<link rel="canonical" href="https://brickgains.com/es/contact">
+<link rel="alternate" hreflang="da" href="https://brickgains.com/da/contact">
+<link rel="alternate" hreflang="de" href="https://brickgains.com/de/contact">
+<link rel="alternate" hreflang="en" href="https://brickgains.com/contact">
+<link rel="alternate" hreflang="es" href="https://brickgains.com/es/contact">
+<link rel="alternate" hreflang="fr" href="https://brickgains.com/fr/contact">
+<link rel="alternate" hreflang="it" href="https://brickgains.com/it/contact">
+<link rel="alternate" hreflang="nl" href="https://brickgains.com/nl/contact">
+<link rel="alternate" hreflang="sv" href="https://brickgains.com/sv/contact">
+<link rel="alternate" hreflang="x-default" href="https://brickgains.com/contact">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css"><meta property="og:site_name" content="BrickGains"><meta property="og:type" content="website"><meta property="og:locale" content="es_ES"><meta property="og:title" content="Contacto · BrickGains"><meta property="og:description" content="Contacto BrickGains: preguntas sobre tu cuenta, la facturacion o los datos."><meta property="og:url" content="https://brickgains.com/es/contact"><meta property="og:image" content="https://brickgains.com/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Contacto · BrickGains"><meta name="twitter:description" content="Contacto BrickGains: preguntas sobre tu cuenta, la facturacion o los datos."><meta name="twitter:image" content="https://brickgains.com/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Contacto · BrickGains", "url": "https://brickgains.com/es/contact"}</script>
+</head><body>
+<script>window.LANG='es';</script>
+<div class="topbar"><i></i><i></i><i></i><i></i></div>
+<header><div class="wrap nav">
+  <a class="logo" href="/es/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+  <nav class="links"><a href="/es/set">Valores de sets</a><a href="/es/#features">Funciones</a><a href="/es/pricing">Precios</a><a href="/es/#faq">Preguntas frecuentes</a></nav>
+  <div class="navcta"><button class="acct" id="accountBtn" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></button>
+  <a class="btn" href="/es/#hero">Consulta un set gratis</a></div>
+</div></header>
+<section class="legal"><div class="wrap" style="max-width:720px">
+<h1>Contacto</h1>
+<p>Preguntas sobre tu cuenta, la facturacion o nuestros datos? Escribenos y te responderemos.</p>
+<form class="contact-form" onsubmit="return BGContact(event)">
+  <label>Tu nombre (opcional)<input id="cName" type="text" autocomplete="name"></label>
+  <label>Tu correo<input id="cEmail" type="email" required autocomplete="email"></label>
+  <label>Tu mensaje<textarea id="cMsg" rows="6" required></textarea></label>
+  <button class="btn" type="submit">Enviar mensaje</button>
+  <span id="cDone" class="c-done"></span>
+</form>
+<p class="c-alt">Prefieres el correo? Escribe a <a href="mailto:support@brickgains.com">support@brickgains.com</a></p>
+</div></section>
+<script>
+function BGContact(e){e.preventDefault();var b=document.getElementById('cDone');b.textContent='...';
+var body=JSON.stringify({name:document.getElementById('cName').value,email:document.getElementById('cEmail').value,message:document.getElementById('cMsg').value});
+fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:body})
+.then(function(r){return r.json();}).then(function(d){b.textContent=d.ok?"Gracias! Tu mensaje ha sido enviado.":(d.error||'Error');
+if(d.ok){document.getElementById('cName').value='';document.getElementById('cEmail').value='';document.getElementById('cMsg').value='';}})
+.catch(function(){b.textContent='Error';});return false;}
+</script><footer><div class="wrap"><div class="foot-top">
+<div class="foot-brand"><a class="logo" href="/es/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+<p>Descubre cuánto vale realmente tu LEGO. Precios reales de BrickLink, seguimiento de cartera y alertas de venta, directamente en tu navegador.</p>
+<div class="foot-langs"><select class="lang-select" aria-label="Language" onchange="if(this.value)window.location.href=this.value"><option value="/da">🇩🇰 Dansk</option><option value="/de">🇩🇪 Deutsch</option><option value="/">🇬🇧 English</option><option value="/es" selected>🇪🇸 Español</option><option value="/fr">🇫🇷 Français</option><option value="/it">🇮🇹 Italiano</option><option value="/nl">🇳🇱 Nederlands</option><option value="/sv">🇸🇪 Svenska</option></select></div></div>
+<div class="foot-col"><h5>Producto</h5><a href="/es/set">Valores de sets</a><a href="/es/#features">Funciones</a><a href="/es/pricing">Precios</a><a href="/es/app">Abrir app</a></div>
+<div class="foot-col"><h5>Recursos</h5><a href="/es/blog">Blog</a><a href="/es/#faq">Preguntas frecuentes</a><a href="/es/contact">Contacto</a></div>
+<div class="foot-col"><h5>Legal</h5><a href="/es/terms">Términos</a><a href="/es/privacy">Privacidad</a><a href="/es/refunds">Reembolsos</a><a href="/es/cookies">Cookies</a></div>
+</div>
+<div class="disc">BrickGains es un producto de Mint Technology LLC (Rio Rancho, NM, USA). BrickGains es una herramienta independiente y no está afiliada, respaldada ni patrocinada por el Grupo LEGO. LEGO es una marca registrada del Grupo LEGO. Los precios son indicativos y se basan en datos de mercado.</div>
+</div></footer><script src="/auth.js"></script></body></html>
