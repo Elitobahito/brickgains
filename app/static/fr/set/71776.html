@@ -52,15 +52,27 @@
 </div>
 
 <div class="locked">
-  <div class="locked-blur">
+  <div class="locked-blur" aria-hidden="true">
     <div class="lb-title">Historique des prix et prévision de retraite</div>
-    <div class="lb-chart"></div>
-    <div class="lb-rows"><span></span><span></span><span></span></div>
+    <div class="lb-chart"><svg viewBox="0 0 600 160" preserveAspectRatio="none">
+      <line class="lb-grid" x1="0" y1="40" x2="600" y2="40"/><line class="lb-grid" x1="0" y1="80" x2="600" y2="80"/><line class="lb-grid" x1="0" y1="120" x2="600" y2="120"/>
+      <polyline class="lb-area" points="0,138 60,130 120,133 180,110 240,116 300,92 360,82 420,56 480,62 540,36 600,20 600,160 0,160"/>
+      <polyline class="lb-line" points="0,138 60,130 120,133 180,110 240,116 300,92 360,82 420,56 480,62 540,36 600,20"/>
+      <circle class="lb-dot" cx="300" cy="92" r="5"/><circle class="lb-dot" cx="480" cy="62" r="5"/><circle class="lb-dot" cx="600" cy="20" r="5"/>
+    </svg></div>
+    <div class="lb-table">
+      <div class="lb-tr"><i style="width:34%"></i><i style="width:20%"></i><i style="width:16%"></i></div>
+      <div class="lb-tr"><i style="width:28%"></i><i style="width:22%"></i><i style="width:14%"></i></div>
+      <div class="lb-tr"><i style="width:38%"></i><i style="width:18%"></i><i style="width:18%"></i></div>
+      <div class="lb-tr"><i style="width:24%"></i><i style="width:24%"></i><i style="width:15%"></i></div>
+    </div>
   </div>
   <div class="locked-over">
-    <div class="lo-title">🔒 Débloquez le tableau complet</div>
-    <div class="lo-text">Historique quotidien des prix, prévision de retraite, alertes de fenêtre de vente et votre ROI sur ce set.</div>
-    <a class="btn" href="/fr/pricing">Voir les offres, dès 4,99 $/mois</a>
+    <div class="lo-card">
+      <div class="lo-title">🔒 Débloquez le tableau complet</div>
+      <div class="lo-text">Historique quotidien des prix, prévision de retraite, alertes de fenêtre de vente et votre ROI sur ce set.</div>
+      <a class="btn" href="/fr/pricing">Voir les offres, dès 4,99 $/mois</a>
+    </div>
   </div>
 </div>
 
