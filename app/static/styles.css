@@ -425,7 +425,7 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 @media(min-width:1300px){ .art-rail{display:block} }
 
 /* ---- promo card (blog -> pricing) ---- */
-.promo-card{background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-left:10px solid var(--yellow);border-radius:var(--radius);
+.promo-card{background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:var(--radius);
   box-shadow:var(--sh);padding:28px 30px;margin:34px 0;display:flex;gap:22px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .promo-card .pc-l{flex:1;min-width:240px}
 .promo-card .pc-eyebrow{font-family:var(--disp);font-weight:700;color:var(--red);font-size:13px;text-transform:uppercase;letter-spacing:.5px}
@@ -608,7 +608,7 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 /* verdict card on set pages */
 .verdict-card{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:6px 6px 0 var(--ink);padding:26px 28px;margin:26px 0;border-left-width:12px}
 .verdict-card.buy{border-left-color:var(--green)}
-.verdict-card.hold{border-left-color:var(--yellow)}
+.verdict-card.hold{border-left-color:var(--slate)}
 .verdict-card.watch{border-left-color:var(--blue)}
 .verdict-card .vc-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .verdict-card .vc-head h2{font-family:var(--disp);font-size:22px;font-weight:800;margin:0}
