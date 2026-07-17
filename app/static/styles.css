@@ -397,13 +397,13 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 @media(min-width:1300px){ .art-rail{display:block} }
 
 /* ---- promo card (blog -> pricing) ---- */
-.promo-card{background:var(--ink);color:#fff;border:3px solid var(--ink);border-radius:var(--radius);
+.promo-card{background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-left:10px solid var(--yellow);border-radius:var(--radius);
   box-shadow:var(--sh);padding:28px 30px;margin:34px 0;display:flex;gap:22px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .promo-card .pc-l{flex:1;min-width:240px}
-.promo-card .pc-eyebrow{font-family:var(--disp);font-weight:700;color:var(--yellow);font-size:13px;text-transform:uppercase;letter-spacing:.5px}
-.promo-card .pc-title{font-family:var(--disp);font-weight:800;font-size:22px;margin:6px 0 6px;line-height:1.15}
-.promo-card .pc-text{color:#cfccc3;font-weight:500;font-size:15px}
-.promo-card .btn{white-space:nowrap;color:#fff;text-decoration:none}
+.promo-card .pc-eyebrow{font-family:var(--disp);font-weight:700;color:var(--red);font-size:13px;text-transform:uppercase;letter-spacing:.5px}
+.promo-card .pc-title{font-family:var(--disp);font-weight:800;font-size:22px;margin:6px 0 6px;line-height:1.15;color:var(--ink)}
+.promo-card .pc-text{color:var(--slate);font-weight:500;font-size:15px}
+.promo-card .btn{white-space:nowrap;background:var(--red);color:#fff;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);text-decoration:none}
 .article a.btn,.article .promo-card .btn{color:#fff;text-decoration:none}
 .related{margin-top:44px;border-top:2px solid var(--line);padding-top:24px}
 .related h4{font-family:var(--disp);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
