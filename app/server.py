@@ -640,7 +640,10 @@ class H(BaseHTTPRequestHandler):
             if p == "/blog": return "/blog/index.html"
             if p.startswith("/blog/") and noext: return p + ".html"
             if p == "/set": return "/set/index.html"
-            if p.startswith("/set/") and noext: return p + ".html"
+            if p.startswith("/set/") and noext:
+                tok = p[len("/set/"):]
+                mnum = re.match(r"^(\d+)", tok)   # /set/<num>-<slug> -> serve <num>.html
+                return ("/set/" + mnum.group(1) + ".html") if mnum else (p + ".html")
             return p
         path = u.path
         # global (non-localised) routes
