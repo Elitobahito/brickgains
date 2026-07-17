@@ -14,28 +14,22 @@
 </head>
 <body>
 
-<div class="appbar">
-  <div class="wrap nav">
-    <a class="logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
-    <nav class="links" style="margin-left:auto;display:flex;align-items:center;gap:18px">
-      <a href="/" style="color:#cfccc3">&larr; Home</a>
-      <button class="acct light" id="accountBtn" aria-label="Account" title="Account">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-      </button>
+<div class="app-shell">
+  <aside class="app-side">
+    <a class="logo side-logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
+    <nav class="side-nav">
+      <button class="side-item on" data-tab="portfolio" onclick="showTab('portfolio')"><span class="si-ic">📊</span>Portfolio</button>
+      <button class="side-item" data-tab="movers" onclick="showTab('movers')"><span class="si-ic">📈</span>Market Movers</button>
+      <button class="side-item" data-tab="watch" onclick="showTab('watch')"><span class="si-ic">👀</span>Watchlist</button>
+      <button class="side-item" data-tab="ebay" onclick="showTab('ebay')"><span class="si-ic">💵</span>eBay Calculator</button>
+      <button class="side-item" data-tab="account" onclick="showTab('account')"><span class="si-ic">👤</span>Account</button>
     </nav>
-  </div>
-</div>
-
-<div class="wrap app-wrap">
-
-  <!-- TAB NAV -->
-  <div class="app-tabs" id="appTabs">
-    <button class="app-tab on" data-tab="portfolio" onclick="showTab('portfolio')">📊 Portfolio</button>
-    <button class="app-tab" data-tab="movers" onclick="showTab('movers')">📈 Market Movers</button>
-    <button class="app-tab" data-tab="watch" onclick="showTab('watch')">👀 Watchlist</button>
-    <button class="app-tab" data-tab="ebay" onclick="showTab('ebay')">💵 eBay Calculator</button>
-    <button class="app-tab" data-tab="account" onclick="showTab('account')">👤 Account</button>
-  </div>
+    <div class="side-foot">
+      <button class="side-item" onclick="if(window.BGTour)BGTour.start()"><span class="si-ic">💡</span>Take the tour</button>
+      <a class="side-item" href="/"><span class="si-ic">←</span>Back to site</a>
+    </div>
+  </aside>
+  <main class="app-main">
 
   <!-- PORTFOLIO -->
   <section class="app-panel on" id="panel-portfolio">
@@ -170,6 +164,7 @@
     </div>
   </section>
 
+  </main>
 </div>
 
 <script src="/auth.js"></script>
@@ -180,7 +175,7 @@
 function showTab(name){
   var panels=document.querySelectorAll('.app-panel');
   for(var i=0;i<panels.length;i++){ panels[i].classList.toggle('on', panels[i].id==='panel-'+name); }
-  var tabs=document.querySelectorAll('.app-tab');
+  var tabs=document.querySelectorAll('[data-tab]');
   for(var j=0;j<tabs.length;j++){ tabs[j].classList.toggle('on', tabs[j].getAttribute('data-tab')===name); }
   if(name==='account'){ fillAccount(); }
   try{ if(history.replaceState) history.replaceState(null,'','#'+name); }catch(e){}

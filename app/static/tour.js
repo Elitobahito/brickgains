@@ -1,6 +1,6 @@
 /* BrickGains - onboarding product tour (coach-marks). Vanilla, CSP-safe.
    Dark overlay + spotlight on the target + tooltip card with Back/Next/Skip.
-   Shown once (localStorage bg_tour_v1). Replayable via the "Tour" button. */
+   Shown once (localStorage bg_tour_v2). Replayable via the "Tour" button. */
 (function(){
   var FR = (document.documentElement.lang === 'fr');
   var LOC = document.documentElement.lang || 'en';
@@ -116,7 +116,7 @@
   function end(){
     if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
     overlay=null;
-    try{ localStorage.setItem('bg_tour_v1','1'); }catch(e){}
+    try{ localStorage.setItem('bg_tour_v2','1'); }catch(e){}
     window.removeEventListener('resize', reposition);
     window.removeEventListener('scroll', reposition, true);
   }
@@ -134,7 +134,7 @@
   function init(){
     if(!document.querySelector('.portfolio-head')) return; // only on /app
     addButton();
-    var seen; try{ seen = localStorage.getItem('bg_tour_v1'); }catch(e){ seen='1'; }
+    var seen; try{ seen = localStorage.getItem('bg_tour_v2'); }catch(e){ seen='1'; }
     if(!seen) setTimeout(start, 700);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
