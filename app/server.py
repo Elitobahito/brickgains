@@ -691,7 +691,7 @@ class H(BaseHTTPRequestHandler):
                     s["stripe_error"] = (sub.get("error") if isinstance(sub, dict) else "no data")
             except Exception as e:
                 s["stripe_error"] = str(e)
-            return self._send(200, json.dumps(s))
+            return self._send(200, json.dumps(s, default=str))
         if u.path == "/api/portfolio":
             me = self._me()
             if not me:
