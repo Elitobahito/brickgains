@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>BrickGains · Admin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23141414'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+body{background:#f4f2ec}
+.adm-wrap{max-width:1080px;margin:0 auto;padding:28px 22px 72px}
+.adm-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.adm-top h1{font-family:var(--disp);font-weight:800;font-size:26px}
+.adm-badge{font-family:var(--disp);font-weight:800;font-size:11px;background:var(--ink);color:#fff;border-radius:20px;padding:3px 11px;letter-spacing:.5px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px}
+.kpi{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh);padding:18px 20px}
+.kpi .k{color:var(--slate);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.4px}
+.kpi .v{font-family:var(--disp);font-weight:800;font-size:30px;line-height:1.1;margin-top:6px}
+.kpi.hot .v{color:var(--green-d)}
+.adm-card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh);padding:22px;margin-bottom:22px}
+.adm-card h2{font-family:var(--disp);font-weight:800;font-size:18px;margin-bottom:14px}
+table.adm{width:100%;border-collapse:collapse}
+table.adm th,table.adm td{text-align:left;padding:9px 8px;border-bottom:2px solid var(--line);font-size:14px}
+table.adm th{color:var(--slate);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.pill{font-family:var(--disp);font-weight:800;font-size:11px;border-radius:20px;padding:2px 9px;text-transform:capitalize}
+.pill.free{background:var(--line);color:var(--ink)} .pill.pro{background:var(--yellow);color:var(--ink)} .pill.investor{background:var(--green);color:#fff}
+.adm-login{max-width:360px;margin:80px auto;background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:var(--sh);padding:28px;text-align:center}
+.adm-login input{width:100%;border:3px solid var(--ink);border-radius:12px;padding:12px 14px;font-family:var(--font);font-weight:600;box-shadow:2px 2px 0 var(--ink);margin:14px 0}
+.adm-err{color:var(--red);font-weight:700;font-size:13px;min-height:16px}
+@media(max-width:820px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+
+<div class="adm-login" id="login" style="display:none">
+  <div style="font-family:var(--disp);font-weight:800;font-size:22px;color:var(--red)">BrickGains</div>
+  <div style="font-weight:600;color:var(--slate);margin-top:4px">Admin access</div>
+  <form onsubmit="return doLogin(event)">
+    <input id="akey" type="password" placeholder="Admin password" autocomplete="current-password" autofocus>
+    <button class="btn lg" type="submit" style="width:100%">Enter</button>
+    <div class="adm-err" id="amsg"></div>
+  </form>
+</div>
+
+<div class="adm-wrap" id="dash" style="display:none">
+  <div class="adm-top">
+    <h1>📊 BrickGains Admin <span class="adm-badge">INTERNAL</span></h1>
+    <div><button class="btn ghost" onclick="load()">↻ Refresh</button></div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="k">Users</div><div class="v" id="kUsers">-</div></div>
+    <div class="kpi hot"><div class="k">Paid users</div><div class="v" id="kPaid">-</div></div>
+    <div class="kpi hot"><div class="k">MRR (live Stripe)</div><div class="v" id="kMrr">-</div></div>
+    <div class="kpi"><div class="k">Active subs</div><div class="v" id="kSubs">-</div></div>
+    <div class="kpi"><div class="k">Catalog sets</div><div class="v" id="kSets">-</div></div>
+    <div class="kpi"><div class="k">Newsletter</div><div class="v" id="kNews">-</div></div>
+    <div class="kpi"><div class="k">Contact msgs</div><div class="v" id="kContact">-</div></div>
+    <div class="kpi"><div class="k">Sets tracked</div><div class="v" id="kPortfolio">-</div></div>
+  </div>
+
+  <div class="adm-card">
+    <h2>Plan breakdown</h2>
+    <table class="adm"><tbody id="planRows"></tbody></table>
+    <p style="color:var(--slate);font-weight:500;font-size:13px;margin-top:10px" id="mrrNote"></p>
+  </div>
+
+  <div class="adm-card">
+    <h2>Recent signups</h2>
+    <table class="adm"><thead><tr><th>Email</th><th>Plan</th><th>Signed up</th></tr></thead><tbody id="recentRows"></tbody></table>
+  </div>
+
+  <div class="adm-card">
+    <h2>Traffic</h2>
+    <p style="color:var(--slate);font-weight:500;font-size:14px;line-height:1.6">Live search traffic (clicks, impressions, top queries) is in Google Search Console. GA4 / in-dashboard traffic is coming next.</p>
+    <a class="btn" href="https://search.google.com/search-console?resource_id=https://brickgains.com/" target="_blank" rel="noopener">Open Search Console</a>
+  </div>
+</div>
+
+<script>
+function show(id){ document.getElementById('login').style.display=id==='login'?'block':'none'; document.getElementById('dash').style.display=id==='dash'?'block':'none'; }
+function money(v){ return v==null?'-':'$'+Number(v).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:2}); }
+async function doLogin(e){ e.preventDefault();
+  var msg=document.getElementById('amsg'); msg.textContent='...';
+  try{
+    var r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:document.getElementById('akey').value})});
+    if(r.ok){ msg.textContent=''; load(); } else { var d=await r.json().catch(function(){return{};}); msg.textContent=d.error||'Wrong password'; }
+  }catch(err){ msg.textContent='Network error'; }
+  return false;
+}
+async function load(){
+  var r=await fetch('/api/admin/stats');
+  if(r.status===401){ show('login'); return; }
+  var s=await r.json();
+  show('dash');
+  document.getElementById('kUsers').textContent=s.users_total!=null?s.users_total:'-';
+  document.getElementById('kPaid').textContent=s.users_paid!=null?s.users_paid:'-';
+  document.getElementById('kMrr').textContent=money(s.stripe_mrr!=null?s.stripe_mrr:s.mrr_est);
+  document.getElementById('kSubs').textContent=s.stripe_active_subs!=null?s.stripe_active_subs:'-';
+  document.getElementById('kSets').textContent=s.catalog_sets!=null?s.catalog_sets:'-';
+  document.getElementById('kNews').textContent=s.newsletter_subs!=null?s.newsletter_subs:'-';
+  document.getElementById('kContact').textContent=s.contact_msgs!=null?s.contact_msgs:'-';
+  document.getElementById('kPortfolio').textContent=s.portfolio_entries!=null?s.portfolio_entries:'-';
+  var pr=s.plans||{}; var order=['free','pro','investor'];
+  document.getElementById('planRows').innerHTML=order.map(function(p){return '<tr><td><span class="pill '+p+'">'+p+'</span></td><td style="font-family:var(--disp);font-weight:800">'+(pr[p]||0)+'</td></tr>';}).join('');
+  document.getElementById('mrrNote').textContent='Estimated MRR from plans: '+money(s.mrr_est)+(s.stripe_error?(' · Stripe: '+JSON.stringify(s.stripe_error)):'');
+  var rec=s.recent||[];
+  document.getElementById('recentRows').innerHTML=rec.length?rec.map(function(u){var p=u.plan||'free';return '<tr><td>'+(u.email||'')+'</td><td><span class="pill '+p+'">'+p+'</span></td><td style="color:var(--slate)">'+String(u.created||'').slice(0,16).replace('T',' ')+'</td></tr>';}).join(''):'<tr><td colspan="3" style="color:var(--slate)">No signups yet</td></tr>';
+}
+load();
+</script>
+</body>
+</html>

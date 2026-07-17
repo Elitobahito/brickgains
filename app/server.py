@@ -155,6 +155,18 @@ FREE_SETS_CAP = 10          # max sets a free account can track
 FREE_CHECKS_PER_DAY = 3     # user-initiated value checks per day (anon/free)
 PAID_PLANS = ("pro", "investor")
 
+# --- internal admin (founders only) ---
+ADMIN_KEY = ENV.get("ADMIN_KEY", "")
+ADMIN_TOKEN = hashlib.sha256(("bgadmin1:" + ADMIN_KEY).encode()).hexdigest() if ADMIN_KEY else ""
+PLAN_PRICE = {"pro": 4.99, "investor": 12.99}  # for MRR estimate
+
+def _count_lines(fname):
+    try:
+        with open(os.path.join(ROOT, fname)) as f:
+            return sum(1 for _ in f)
+    except Exception:
+        return 0
+
 def stripe_api(path, data=None):
     req = urllib.request.Request("https://api.stripe.com/v1/" + path,
         data=(urllib.parse.urlencode(data, doseq=True).encode() if data is not None else None))
@@ -343,6 +355,9 @@ class H(BaseHTTPRequestHandler):
 
     def _me(self):
         return user_by_token(self._cookie("bg_session"))
+
+    def _is_admin(self):
+        return bool(ADMIN_TOKEN) and self._cookie("bg_admin") == ADMIN_TOKEN
 
     def do_POST(self):
         u = urllib.parse.urlparse(self.path)
@@ -610,6 +625,16 @@ class H(BaseHTTPRequestHandler):
                 set_user_plan(meta.get("user_id"), "free")
             return self._send(200, json.dumps({"ok": True}))
 
+        if u.path == "/api/admin/login":
+            if not rate_ok("admin:" + self._ip(), 8, 900):
+                return self._send(429, json.dumps({"ok": False, "error": "Too many attempts."}))
+            d = self._body()
+            if not ADMIN_KEY or (d.get("key") or "") != ADMIN_KEY:
+                return self._send(403, json.dumps({"ok": False, "error": "Wrong password."}))
+            sec = "; Secure" if self._https() else ""
+            cookie = f"bg_admin={ADMIN_TOKEN}; Path=/; HttpOnly; SameSite=Lax{sec}; Max-Age=604800"
+            return self._send(200, json.dumps({"ok": True}), cookie=cookie)
+
         return self._send(404, "Not found", "text/plain")
 
     def do_GET(self):
@@ -617,6 +642,56 @@ class H(BaseHTTPRequestHandler):
         if u.path == "/api/me":
             me = self._me()
             return self._send(200, json.dumps({"user": me}))
+
+        if u.path == "/api/admin/stats":
+            if not self._is_admin():
+                return self._send(401, json.dumps({"ok": False, "error": "admin login required"}))
+            s = {"ok": True}
+            try:
+                # users + plans
+                c = _conn()
+                cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
+                cur.execute("SELECT plan, count(*) AS n FROM users GROUP BY plan")
+                plans = {}
+                for r in cur.fetchall():
+                    r = dict(r); plans[r["plan"] or "free"] = int(r["n"])
+                s["plans"] = plans
+                s["users_total"] = sum(plans.values())
+                s["users_paid"] = plans.get("pro", 0) + plans.get("investor", 0)
+                s["mrr_est"] = round(plans.get("pro", 0) * PLAN_PRICE["pro"] + plans.get("investor", 0) * PLAN_PRICE["investor"], 2)
+                cur.execute(_conv("SELECT email, plan, created FROM users ORDER BY created DESC LIMIT 25"))
+                s["recent"] = [dict(r) if PG else {"email": r[0], "plan": r[1], "created": str(r[2])} for r in cur.fetchall()]
+                cur.execute("SELECT count(*) AS n FROM portfolio")
+                row = cur.fetchone(); s["portfolio_entries"] = int((dict(row)["n"] if PG else row[0]))
+                c.close()
+            except Exception as e:
+                s["db_error"] = str(e)
+            # content
+            s["newsletter_subs"] = _count_lines("subscribers.csv")
+            s["contact_msgs"] = _count_lines("contacts.csv")
+            try:
+                s["catalog_sets"] = len(json.load(open(os.path.join(BASE, "static", "..", "catalog.json"))).get("sets", []))
+            except Exception:
+                try: s["catalog_sets"] = len(json.load(open(os.path.join(BASE, "catalog.json"))).get("sets", []))
+                except Exception: s["catalog_sets"] = 0
+            # stripe live
+            try:
+                sub = stripe_api("subscriptions?status=active&limit=100&expand[]=data.items.data.price")
+                data = sub.get("data") if isinstance(sub, dict) else None
+                if isinstance(data, list):
+                    mrr = 0.0
+                    for su in data:
+                        for it in (su.get("items", {}).get("data", []) or []):
+                            pr = it.get("price", {}) or {}
+                            amt = (pr.get("unit_amount") or 0) / 100.0
+                            mrr += amt * (it.get("quantity", 1) or 1)
+                    s["stripe_active_subs"] = len(data)
+                    s["stripe_mrr"] = round(mrr, 2)
+                else:
+                    s["stripe_error"] = (sub.get("error") if isinstance(sub, dict) else "no data")
+            except Exception as e:
+                s["stripe_error"] = str(e)
+            return self._send(200, json.dumps(s))
         if u.path == "/api/portfolio":
             me = self._me()
             if not me:
@@ -695,6 +770,7 @@ class H(BaseHTTPRequestHandler):
             noext = "." not in p.rsplit("/", 1)[-1]
             if p in ("", "/"): return "/index.html"
             if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies", "/contact"): return p + ".html"
+            if p == "/admin": return "/admin.html"
             if p == "/blog": return "/blog/index.html"
             if p.startswith("/blog/") and noext: return p + ".html"
             if p == "/set": return "/set/index.html"
