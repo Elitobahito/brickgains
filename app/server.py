@@ -204,7 +204,8 @@ def set_user_plan(uid, plan):
 # ---------- Email (Resend) ----------
 RESEND_API_KEY = ENV.get("RESEND_API_KEY", "")
 # Until brickgains.com is verified in Resend, sending is limited to the account owner.
-EMAIL_FROM = ENV.get("EMAIL_FROM", "BrickGains <onboarding@resend.dev>")
+EMAIL_FROM = ENV.get("EMAIL_FROM", "BrickGains <no-reply@brickgains.com>")
+REPLY_TO_DEFAULT = ENV.get("REPLY_TO", "contact@brickgains.com")  # replies to no-reply mails land here
 SUPPORT_NOTIFY = ENV.get("SUPPORT_NOTIFY", "")  # where contact-form messages are forwarded
 
 def send_email(to, subject, html, reply_to=None):
@@ -212,8 +213,9 @@ def send_email(to, subject, html, reply_to=None):
         return {"error": "email not configured"}
     payload = {"from": EMAIL_FROM, "to": [to] if isinstance(to, str) else to,
                "subject": subject, "html": html}
-    if reply_to:
-        payload["reply_to"] = reply_to
+    rt = reply_to or REPLY_TO_DEFAULT
+    if rt:
+        payload["reply_to"] = rt
     req = urllib.request.Request("https://api.resend.com/emails",
         data=json.dumps(payload).encode(),
         headers={"Authorization": "Bearer " + RESEND_API_KEY, "Content-Type": "application/json"})
