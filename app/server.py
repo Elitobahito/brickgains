@@ -360,6 +360,23 @@ class H(BaseHTTPRequestHandler):
                 qx("DELETE FROM sessions WHERE token=?", (tok,))
             return self._send(200, json.dumps({"ok": True}), cookie=self._sess_cookie("", clear=True))
 
+        if u.path == "/api/change-password":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            if not rate_ok("pw:" + self._ip(), 8, 900):
+                return self._send(429, json.dumps({"ok": False, "error": "Too many attempts. Try again later."}))
+            d = self._body()
+            cur = d.get("current") or ""
+            new = d.get("new_password") or ""
+            if len(new) < 8:
+                return self._send(400, json.dumps({"ok": False, "error": "New password must be at least 8 characters."}))
+            row = q1("SELECT pw_hash FROM users WHERE id=?", (me["id"],))
+            if not row or not verify_pw(cur, row["pw_hash"]):
+                return self._send(403, json.dumps({"ok": False, "error": "Current password is incorrect."}))
+            qx("UPDATE users SET pw_hash=? WHERE id=?", (hash_pw(new), me["id"]))
+            return self._send(200, json.dumps({"ok": True}))
+
         if u.path == "/api/snapshot":
             d = self._body()
             if d.get("key") != ENV.get("SNAPSHOT_KEY", "nope"):

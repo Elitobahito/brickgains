@@ -26,96 +26,198 @@
   </div>
 </div>
 
-<div class="wrap" style="padding-top:36px;padding-bottom:72px">
-  <h1 style="font-size:34px;font-weight:800;letter-spacing:-.6px">My LEGO Portfolio</h1>
-  <p style="color:var(--slate);font-weight:500;margin-top:6px">Add your sets and the price you paid. We fetch the real market value and your ROI.</p>
+<div class="wrap app-wrap">
 
-  <div class="portfolio-head">
-    <div class="stat"><div class="k">Sets tracked</div><div class="v" id="stCount">0</div></div>
-    <div class="stat"><div class="k">Paid total</div><div class="v" id="stPaid">$0</div></div>
-    <div class="stat"><div class="k">Current value</div><div class="v" id="stValue">$0</div></div>
-    <div class="stat"><div class="k">Total ROI</div><div class="v" id="stRoi">0%</div></div>
+  <!-- TAB NAV -->
+  <div class="app-tabs" id="appTabs">
+    <button class="app-tab on" data-tab="portfolio" onclick="showTab('portfolio')">📊 Portfolio</button>
+    <button class="app-tab" data-tab="movers" onclick="showTab('movers')">📈 Market Movers</button>
+    <button class="app-tab" data-tab="watch" onclick="showTab('watch')">👀 Watchlist</button>
+    <button class="app-tab" data-tab="ebay" onclick="showTab('ebay')">💵 eBay Calculator</button>
+    <button class="app-tab" data-tab="account" onclick="showTab('account')">👤 Account</button>
   </div>
 
-  <div class="share-bar" id="shareBar" style="display:none">
-    <div class="sb-l"><span class="sb-ico">🔗</span><div><b>Share your portfolio</b><span class="sb-sub">A public "look at my gains" link. Values shown, prices paid stay private.</span></div></div>
-    <div class="sb-r">
-      <button class="btn ghost" id="shareToggle" onclick="toggleShare()">Get share link</button>
-      <div class="sb-link" id="shareLinkBox" style="display:none">
-        <input id="shareLink" readonly onclick="this.select()">
-        <button class="btn" onclick="copyShare()">Copy</button>
-        <button class="linkish" onclick="unshare()">Stop sharing</button>
+  <!-- PORTFOLIO -->
+  <section class="app-panel on" id="panel-portfolio">
+    <div class="panel-head">
+      <h1>My LEGO Portfolio</h1>
+      <p>Add your sets and the price you paid. We fetch the real market value and your ROI.</p>
+    </div>
+    <div class="portfolio-head">
+      <div class="stat"><div class="k">Sets tracked</div><div class="v" id="stCount">0</div></div>
+      <div class="stat"><div class="k">Paid total</div><div class="v" id="stPaid">$0</div></div>
+      <div class="stat"><div class="k">Current value</div><div class="v" id="stValue">$0</div></div>
+      <div class="stat"><div class="k">Total ROI</div><div class="v" id="stRoi">0%</div></div>
+    </div>
+    <div class="share-bar" id="shareBar" style="display:none">
+      <div class="sb-l"><span class="sb-ico">🔗</span><div><b>Share your portfolio</b><span class="sb-sub">A public "look at my gains" link. Values shown, prices paid stay private.</span></div></div>
+      <div class="sb-r">
+        <button class="btn ghost" id="shareToggle" onclick="toggleShare()">Get share link</button>
+        <div class="sb-link" id="shareLinkBox" style="display:none">
+          <input id="shareLink" readonly onclick="this.select()">
+          <button class="btn" onclick="copyShare()">Copy</button>
+          <button class="linkish" onclick="unshare()">Stop sharing</button>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="add-row">
-    <input id="pset" placeholder="Set number (e.g. 10276)" onkeydown="if(event.key==='Enter')addSet()">
-    <input id="pprice" type="number" placeholder="Price paid ($)" onkeydown="if(event.key==='Enter')addSet()">
-    <select id="pcond" title="Condition"><option value="sealed">Sealed</option><option value="opened">Opened</option></select>
-    <button class="btn" onclick="addSet()">Add to portfolio</button>
-  </div>
-  <div class="add-tools">
-    <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
-    <span class="sync-note" id="syncNote"></span>
-  </div>
-  <div id="importBox" class="import-box" style="display:none">
-    <textarea id="importRaw" placeholder="Paste set numbers, any separator: 10276, 10307 42115&#10;75192"></textarea>
-    <div><button class="btn" onclick="doImport()">Import all</button> <button class="linkish" onclick="toggleImport()">Cancel</button></div>
-  </div>
-
-  <div id="tableWrap"></div>
+    <div class="add-row">
+      <input id="pset" placeholder="Set number (e.g. 10276)" onkeydown="if(event.key==='Enter')addSet()">
+      <input id="pprice" type="number" placeholder="Price paid ($)" onkeydown="if(event.key==='Enter')addSet()">
+      <select id="pcond" title="Condition"><option value="sealed">Sealed</option><option value="opened">Opened</option></select>
+      <button class="btn" onclick="addSet()">Add to portfolio</button>
+    </div>
+    <div class="add-tools">
+      <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
+      <span class="sync-note" id="syncNote"></span>
+    </div>
+    <div id="importBox" class="import-box" style="display:none">
+      <textarea id="importRaw" placeholder="Paste set numbers, any separator: 10276, 10307 42115&#10;75192"></textarea>
+      <div><button class="btn" onclick="doImport()">Import all</button> <button class="linkish" onclick="toggleImport()">Cancel</button></div>
+    </div>
+    <div id="tableWrap"></div>
+  </section>
 
   <!-- MARKET MOVERS -->
-  <div class="movers-sec">
-    <div class="movers-head">
-      <div class="h2" style="text-align:left;font-size:27px">📈 Market Movers</div>
-      <span class="mv-note" id="moversUpdated"></span>
+  <section class="app-panel" id="panel-movers">
+    <div class="movers-sec">
+      <div class="movers-head">
+        <div class="h2" style="text-align:left;font-size:27px">📈 Market Movers</div>
+        <span class="mv-note" id="moversUpdated"></span>
+      </div>
+      <p style="color:var(--slate);font-weight:500;margin:-6px 0 4px">Biggest gains and laggards versus retail price across popular collectible sets. Click any set to add it or check it on the home page.</p>
+      <div class="mv-tabs">
+        <button class="mv-tab on" data-view="gainers" onclick="moversView('gainers')">🚀 Top gainers</button>
+        <button class="mv-tab" data-view="losers" onclick="moversView('losers')">🧊 Laggards</button>
+        <button class="mv-tab" data-view="retiring" onclick="moversView('retiring')">⏰ Still available</button>
+      </div>
+      <div class="excards" id="moversTop"></div>
+      <div id="moversTable"></div>
     </div>
-    <p style="color:var(--slate);font-weight:500;margin:-6px 0 4px">Biggest gains and laggards versus retail price across popular collectible sets. Click any set to add it or check it on the home page.</p>
-    <div class="mv-tabs">
-      <button class="mv-tab on" data-view="gainers" onclick="moversView('gainers')">🚀 Top gainers</button>
-      <button class="mv-tab" data-view="losers" onclick="moversView('losers')">🧊 Laggards</button>
-      <button class="mv-tab" data-view="retiring" onclick="moversView('retiring')">⏰ Still available</button>
-    </div>
-    <div class="excards" id="moversTop"></div>
-    <div id="moversTable"></div>
-  </div>
+  </section>
 
   <!-- WATCHLIST -->
-  <div class="movers-sec" style="border-top:3px solid var(--ink);padding-top:36px">
-    <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">👀 Watchlist</div><span class="mv-note">Sets you don't own yet. We flag when they move or retire.</span></div>
-    <div class="add-row" style="margin-top:16px">
-      <input id="wset" placeholder="Set number to watch (e.g. 10307)" onkeydown="if(event.key==='Enter')addWatch()">
-      <button class="btn" onclick="addWatch()">Add to watchlist</button>
+  <section class="app-panel" id="panel-watch">
+    <div class="movers-sec">
+      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">👀 Watchlist</div><span class="mv-note">Sets you don't own yet. We flag when they move or retire.</span></div>
+      <div class="add-row" style="margin-top:16px">
+        <input id="wset" placeholder="Set number to watch (e.g. 10307)" onkeydown="if(event.key==='Enter')addWatch()">
+        <button class="btn" onclick="addWatch()">Add to watchlist</button>
+      </div>
+      <div id="watchWrap"></div>
     </div>
-    <div id="watchWrap"></div>
-  </div>
+  </section>
 
   <!-- EBAY PROFIT CALCULATOR -->
-  <div class="movers-sec" style="border-top:3px solid var(--ink);padding-top:36px">
-    <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">💵 eBay profit calculator</div><span class="mv-note">See your real profit after fees before you sell.</span></div>
-    <div class="ebay-calc">
-      <div class="ec-inputs">
-        <label>Sell price ($)<input id="ecSell" type="number" oninput="ebayCalc()" placeholder="0"></label>
-        <label>What you paid ($)<input id="ecCost" type="number" oninput="ebayCalc()" placeholder="0"></label>
-        <label>Shipping you charge ($)<input id="ecShipIn" type="number" oninput="ebayCalc()" placeholder="0"></label>
-        <label>Shipping you pay ($)<input id="ecShipOut" type="number" oninput="ebayCalc()" placeholder="0"></label>
-        <label>eBay fee (%)<input id="ecFee" type="number" value="13.25" oninput="ebayCalc()"></label>
-      </div>
-      <div class="ec-out" id="ecOut">
-        <div class="ec-row"><span>eBay fees</span><span id="ecFees">$0</span></div>
-        <div class="ec-row"><span>Net payout</span><span id="ecNet">$0</span></div>
-        <div class="ec-row big"><span>Profit</span><span id="ecProfit">$0</span></div>
-        <div class="ec-row"><span>Margin</span><span id="ecMargin">0%</span></div>
+  <section class="app-panel" id="panel-ebay">
+    <div class="movers-sec">
+      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">💵 eBay profit calculator</div><span class="mv-note">See your real profit after fees before you sell.</span></div>
+      <div class="ebay-calc">
+        <div class="ec-inputs">
+          <label>Sell price ($)<input id="ecSell" type="number" oninput="ebayCalc()" placeholder="0"></label>
+          <label>What you paid ($)<input id="ecCost" type="number" oninput="ebayCalc()" placeholder="0"></label>
+          <label>Shipping you charge ($)<input id="ecShipIn" type="number" oninput="ebayCalc()" placeholder="0"></label>
+          <label>Shipping you pay ($)<input id="ecShipOut" type="number" oninput="ebayCalc()" placeholder="0"></label>
+          <label>eBay fee (%)<input id="ecFee" type="number" value="13.25" oninput="ebayCalc()"></label>
+        </div>
+        <div class="ec-out" id="ecOut">
+          <div class="ec-row"><span>eBay fees</span><span id="ecFees">$0</span></div>
+          <div class="ec-row"><span>Net payout</span><span id="ecNet">$0</span></div>
+          <div class="ec-row big"><span>Profit</span><span id="ecProfit">$0</span></div>
+          <div class="ec-row"><span>Margin</span><span id="ecMargin">0%</span></div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section class="app-panel" id="panel-account">
+    <div class="panel-head">
+      <h1>My account</h1>
+      <p>Manage your profile, subscription and security.</p>
+    </div>
+    <div id="acSignedOut" style="display:none">
+      <div class="acct-card" style="max-width:420px">
+        <h3>You are not signed in</h3>
+        <p class="muted">Sign in or create a free account to save your portfolio and manage your subscription.</p>
+        <button class="btn" onclick="BG.openAuth('login')">Sign in / Create account</button>
+      </div>
+    </div>
+    <div id="acSignedIn" class="acct-grid" style="display:none">
+      <div class="acct-card">
+        <h3>Profile</h3>
+        <div class="acct-row"><span>Email</span><b id="acEmail">-</b></div>
+        <div class="acct-row"><span>Plan</span><span class="planpill" id="acPlan">free</span></div>
+      </div>
+      <div class="acct-card">
+        <h3>Subscription</h3>
+        <p class="muted">Update your card, download invoices, or cancel your plan anytime. Free users can upgrade here.</p>
+        <button class="btn" onclick="BG.billingPortal()">Manage / cancel subscription</button>
+      </div>
+      <div class="acct-card">
+        <h3>Change password</h3>
+        <form class="acct-form" onsubmit="return changePw(event)">
+          <input id="pwCur" type="password" placeholder="Current password" autocomplete="current-password">
+          <input id="pwNew" type="password" placeholder="New password (min 8 characters)" autocomplete="new-password">
+          <button class="btn" type="submit">Update password</button>
+          <span id="pwMsg" class="acct-msg"></span>
+        </form>
+      </div>
+      <div class="acct-card">
+        <h3>Session</h3>
+        <p class="muted">Sign out of BrickGains on this device.</p>
+        <button class="btn ghost" onclick="BG.logout()">Log out</button>
+      </div>
+    </div>
+  </section>
+
 </div>
 
 <script src="/auth.js"></script>
 <script src="/portfolio.js"></script>
 <script src="/suggest.js"></script>
 <script src="/tour.js"></script>
+<script>
+function showTab(name){
+  var panels=document.querySelectorAll('.app-panel');
+  for(var i=0;i<panels.length;i++){ panels[i].classList.toggle('on', panels[i].id==='panel-'+name); }
+  var tabs=document.querySelectorAll('.app-tab');
+  for(var j=0;j<tabs.length;j++){ tabs[j].classList.toggle('on', tabs[j].getAttribute('data-tab')===name); }
+  if(name==='account'){ fillAccount(); }
+  try{ if(history.replaceState) history.replaceState(null,'','#'+name); }catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+window.showTab = showTab;
+
+async function fillAccount(){
+  try{
+    var r=await fetch('/api/me'); var u=(await r.json()).user;
+    var inb=document.getElementById('acSignedIn'), outb=document.getElementById('acSignedOut');
+    if(!u){ inb.style.display='none'; outb.style.display='block'; return; }
+    outb.style.display='none'; inb.style.display='grid';
+    document.getElementById('acEmail').textContent=u.email;
+    var p=document.getElementById('acPlan'); p.textContent=u.plan||'free';
+    p.className='planpill'+(u.plan && u.plan!=='free' ? ' paid' : '');
+  }catch(e){}
+}
+async function changePw(e){
+  e.preventDefault();
+  var m=document.getElementById('pwMsg'); m.className='acct-msg'; m.textContent='...';
+  var cur=document.getElementById('pwCur').value, nw=document.getElementById('pwNew').value;
+  try{
+    var r=await fetch('/api/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({current:cur,new_password:nw})});
+    var d=await r.json().catch(function(){return {};});
+    m.className='acct-msg '+(d.ok?'ok':'err'); m.textContent=d.ok?'Password updated.':(d.error||'Something went wrong.');
+    if(d.ok){ document.getElementById('pwCur').value=''; document.getElementById('pwNew').value=''; }
+  }catch(err){ m.className='acct-msg err'; m.textContent='Network error'; }
+  return false;
+}
+// appbar account icon -> Account tab. Open on the right tab if a hash is present.
+document.addEventListener('DOMContentLoaded', function(){
+  var b=document.getElementById('accountBtn');
+  if(b){ b.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopImmediatePropagation(); showTab('account'); }, true); }
+  var h=(location.hash||'').replace('#','');
+  if(['portfolio','movers','watch','ebay','account'].indexOf(h)>=0) showTab(h);
+});
+</script>
 </body>
 </html>

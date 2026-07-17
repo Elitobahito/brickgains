@@ -53,9 +53,11 @@
   }
   function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
 
+  var STEP_TAB = [null, 'portfolio', 'portfolio', 'movers', 'watch', 'ebay', null];
   function show(i){
     idx = i;
     var step = L.steps[i]; if(!step) return end();
+    if(STEP_TAB[i] && window.showTab){ window.showTab(STEP_TAB[i]); }
     var el = targets()[i];
     // spotlight
     if(el){

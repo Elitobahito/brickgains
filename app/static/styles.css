@@ -309,6 +309,34 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .plan li.soon::after{content:"SOON";font-family:var(--disp);font-weight:800;font-size:9.5px;letter-spacing:.5px;background:var(--blue);color:#fff;border-radius:20px;padding:1px 7px;margin-left:7px;vertical-align:middle;position:relative;top:-1px}
 .plan li.soon{color:var(--slate)}
 
+/* ---- app dashboard tabs + account ---- */
+.app-wrap{padding-top:20px;padding-bottom:72px}
+.app-tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:3px solid var(--ink);margin-bottom:28px;position:sticky;top:0;background:var(--paper);z-index:20;padding-top:12px}
+.app-tab{font-family:var(--disp);font-weight:700;font-size:14.5px;color:var(--slate);background:transparent;border:2px solid transparent;border-bottom:none;border-radius:12px 12px 0 0;padding:10px 15px;cursor:pointer;white-space:nowrap}
+.app-tab:hover{color:var(--ink)}
+.app-tab.on{color:var(--ink);background:#fff;border:2px solid var(--ink);border-bottom:3px solid #fff;margin-bottom:-3px}
+.app-panel{display:none}
+.app-panel.on{display:block;animation:appfade .18s ease}
+@keyframes appfade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.panel-head h1{font-size:32px;font-weight:800;letter-spacing:-.6px}
+.panel-head p{color:var(--slate);font-weight:500;margin-top:6px;margin-bottom:22px}
+.acct-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.acct-card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh);padding:22px}
+.acct-card h3{font-family:var(--disp);font-weight:800;font-size:18px;margin-bottom:12px}
+.acct-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-bottom:2px solid var(--line);font-weight:600}
+.acct-row:last-child{border-bottom:0}
+.acct-form{display:flex;flex-direction:column;gap:10px}
+.acct-form input{border:3px solid var(--ink);border-radius:10px;padding:10px 12px;font-family:var(--font);font-size:14px;font-weight:500;box-shadow:2px 2px 0 var(--ink);background:#fff}
+.acct-form input:focus{outline:none;box-shadow:0 0 0 3px var(--yellow)}
+.acct-form .btn{align-self:flex-start}
+.acct-msg{font-weight:700;font-size:13px;min-height:16px}
+.acct-msg.ok{color:var(--green)}
+.acct-msg.err{color:var(--red)}
+.planpill{font-family:var(--disp);font-weight:800;font-size:13px;background:var(--line);color:var(--ink);border-radius:20px;padding:3px 13px;text-transform:capitalize}
+.planpill.paid{background:var(--yellow)}
+.acct-card .muted{color:var(--slate);font-weight:500;font-size:14px;line-height:1.5;margin-bottom:14px}
+@media(max-width:640px){ .acct-grid{grid-template-columns:1fr} .app-tab{font-size:13px;padding:9px 11px} }
+
 /* ---- account icon ---- */
 .navcta{display:flex;align-items:center;gap:12px}
 .acct{width:44px;height:44px;border-radius:12px;border:2.5px solid var(--ink);background:#fff;color:var(--ink);
