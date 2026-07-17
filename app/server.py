@@ -6,7 +6,7 @@ qui fusionne Rebrickable + Brickset + Apify (BrickLink) avec cache 24h.
 
 Lancer :  python3 app/server.py   puis ouvrir http://localhost:8000
 """
-import json, os, time, re, urllib.request, urllib.parse
+import json, os, time, re, urllib.request, urllib.parse, urllib.error, html
 import sqlite3, hashlib, secrets, hmac
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -189,6 +189,41 @@ def set_user_plan(uid, plan):
         try: qx("UPDATE users SET plan=? WHERE id=?", (plan, int(uid)))
         except Exception: pass
 
+# ---------- Email (Resend) ----------
+RESEND_API_KEY = ENV.get("RESEND_API_KEY", "")
+# Until brickgains.com is verified in Resend, sending is limited to the account owner.
+EMAIL_FROM = ENV.get("EMAIL_FROM", "BrickGains <onboarding@resend.dev>")
+SUPPORT_NOTIFY = ENV.get("SUPPORT_NOTIFY", "")  # where contact-form messages are forwarded
+
+def send_email(to, subject, html, reply_to=None):
+    if not RESEND_API_KEY or not to:
+        return {"error": "email not configured"}
+    payload = {"from": EMAIL_FROM, "to": [to] if isinstance(to, str) else to,
+               "subject": subject, "html": html}
+    if reply_to:
+        payload["reply_to"] = reply_to
+    req = urllib.request.Request("https://api.resend.com/emails",
+        data=json.dumps(payload).encode(),
+        headers={"Authorization": "Bearer " + RESEND_API_KEY, "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        try: return {"error": json.loads(e.read() or b"{}")}
+        except Exception: return {"error": "send failed"}
+    except Exception as ex:
+        return {"error": str(ex)}
+
+def email_shell(title, body_html, cta_label=None, cta_url=None):
+    cta = (f'<a href="{cta_url}" style="display:inline-block;background:#E3000B;color:#fff;font-weight:700;'
+           f'text-decoration:none;padding:12px 22px;border-radius:10px;margin-top:8px">{cta_label}</a>') if cta_label and cta_url else ""
+    return (f'<div style="font-family:Inter,Arial,sans-serif;max-width:520px;margin:0 auto;color:#141414">'
+            f'<div style="font-weight:800;font-size:22px;color:#E3000B;padding:8px 0 16px">BrickGains</div>'
+            f'<div style="background:#fff;border:2px solid #141414;border-radius:14px;padding:24px">'
+            f'<h1 style="font-size:20px;margin:0 0 12px">{title}</h1>{body_html}{cta}</div>'
+            f'<div style="color:#8a877e;font-size:12px;padding:14px 4px">BrickGains by Mint Technology LLC. '
+            f'You receive this because you have a BrickGains account.</div></div>')
+
 def rebrickable(sn):
     try:
         req = urllib.request.Request(
@@ -320,6 +355,14 @@ class H(BaseHTTPRequestHandler):
                     return self._send(400, json.dumps({"ok": False, "error": "invalid email"}))
                 with open(os.path.join(ROOT, "subscribers.csv"), "a") as f:
                     f.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')},{topic},{email}\n")
+                if topic == "discount-10":
+                    try:
+                        send_email(email, "Your BrickGains 10% code 🎁", email_shell(
+                            "Here is your 10% discount",
+                            "<p style='font-weight:500;line-height:1.6'>Use this code at checkout for <b>10% off your first month</b> of any BrickGains plan:</p>"
+                            "<div style='font-family:monospace;font-weight:800;font-size:22px;background:#FFCF00;border:2px solid #141414;border-radius:10px;padding:12px;text-align:center;margin:8px 0'>BRICK10</div>",
+                            "See plans", SITE_URL + "/pricing"))
+                    except Exception: pass
                 return self._send(200, json.dumps({"ok": True}))
             except Exception:
                 return self._send(500, json.dumps({"ok": False}))
@@ -338,6 +381,13 @@ class H(BaseHTTPRequestHandler):
                 return self._send(409, json.dumps({"ok": False, "error": "An account with this email already exists."}))
             uid = qx("INSERT INTO users(email,pw_hash) VALUES(?,?)", (email, hash_pw(pw)), returning=True)
             tok = make_session(uid)
+            try:
+                send_email(email, "Welcome to BrickGains 🧱", email_shell(
+                    "Welcome to BrickGains!",
+                    "<p style='font-weight:500;line-height:1.6'>Your free account is ready. Add your LEGO sets and instantly see what they are really worth, "
+                    "track your ROI, and watch the sets you want to buy. Real BrickLink prices, updated daily.</p>",
+                    "Open my portfolio", SITE_URL + "/app"))
+            except Exception: pass
             return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": "free"}}),
                               cookie=self._sess_cookie(tok))
 
@@ -519,6 +569,14 @@ class H(BaseHTTPRequestHandler):
                 with open(os.path.join(ROOT, "contacts.csv"), "a") as f:
                     safe = message.replace("\n", " ").replace("\r", " ")
                     f.write(f'{time.strftime("%Y-%m-%d %H:%M:%S")}\t{name}\t{email}\t{safe}\n')
+                if SUPPORT_NOTIFY:
+                    try:
+                        send_email(SUPPORT_NOTIFY, f"New contact message from {name or email}",
+                            email_shell("New contact message",
+                                f"<p style='font-weight:500;line-height:1.6'><b>From:</b> {html.escape(name)} &lt;{html.escape(email)}&gt;</p>"
+                                f"<p style='font-weight:500;line-height:1.6;white-space:pre-wrap'>{html.escape(message)}</p>"),
+                            reply_to=email)
+                    except Exception: pass
             except Exception:
                 return self._send(500, json.dumps({"ok": False}))
             return self._send(200, json.dumps({"ok": True}))
