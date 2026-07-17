@@ -47,14 +47,15 @@
       q = (q||'').trim().toLowerCase();
       if(q.length < 1){ hide(); return; }
       load().then(function(d){
-        var num = [], name = [];
+        var numP = [], nameStart = [], nameIn = [];
         for(var i=0;i<d.length;i++){
-          var s = d[i];
-          if(s.n.toLowerCase().indexOf(q)===0) num.push(s);
-          else if(s.name.toLowerCase().indexOf(q)!==-1) name.push(s);
-          if(num.length+name.length>=40) break;
+          var s = d[i], n = s.n.toLowerCase(), nm = s.name.toLowerCase();
+          if(n.indexOf(q)===0) { numP.push(s); }
+          else if(nm.indexOf(q)===0 || nm.indexOf(' '+q)!==-1) { nameStart.push(s); }
+          else if(nm.indexOf(q)!==-1) { nameIn.push(s); }
+          if(numP.length>=8) break;
         }
-        render(num.concat(name).slice(0,8));
+        render(numP.concat(nameStart).concat(nameIn).slice(0,8));
       });
     }
 
