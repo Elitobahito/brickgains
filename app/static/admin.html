@@ -70,7 +70,7 @@ table.adm th{color:var(--slate);font-weight:700;font-size:12px;text-transform:up
 
   <div class="adm-card">
     <h2>Recent signups</h2>
-    <table class="adm"><thead><tr><th>Email</th><th>Plan</th><th>Signed up</th></tr></thead><tbody id="recentRows"></tbody></table>
+    <table class="adm"><thead><tr><th>Email</th><th>Plan</th><th>Signed up</th><th></th></tr></thead><tbody id="recentRows"></tbody></table>
   </div>
 
   <div class="adm-card">
@@ -115,13 +115,19 @@ async function load(){
   document.getElementById('planRows').innerHTML=order.map(function(p){return '<tr><td><span class="pill '+p+'">'+p+'</span></td><td style="font-family:var(--disp);font-weight:800">'+(pr[p]||0)+'</td></tr>';}).join('');
   document.getElementById('mrrNote').textContent='Estimated MRR from plans: '+money(s.mrr_est)+(s.stripe_error?(' · Stripe: '+JSON.stringify(s.stripe_error)):'');
   var rec=s.recent||[];
-  document.getElementById('recentRows').innerHTML=rec.length?rec.map(function(u){var p=u.plan||'free';return '<tr><td>'+(u.email||'')+'</td><td><span class="pill '+p+'">'+p+'</span></td><td style="color:var(--slate)">'+String(u.created||'').slice(0,16).replace('T',' ')+'</td></tr>';}).join(''):'<tr><td colspan="3" style="color:var(--slate)">No signups yet</td></tr>';
+  document.getElementById('recentRows').innerHTML=rec.length?rec.map(function(u){var p=u.plan||'free';var e=(u.email||'').replace(/'/g,"\\'");return '<tr><td>'+(u.email||'')+'</td><td><span class="pill '+p+'">'+p+'</span></td><td style="color:var(--slate)">'+String(u.created||'').slice(0,16).replace('T',' ')+'</td><td style="text-align:right"><button onclick="delUser(\''+e+'\')" style="background:none;border:0;color:#c8102e;font-weight:800;cursor:pointer;font-size:16px" title="Delete user">✕</button></td></tr>';}).join(''):'<tr><td colspan="4" style="color:var(--slate)">No signups yet</td></tr>';
   document.getElementById('kVis7').textContent=s.visitors_7d!=null?s.visitors_7d:'-';
   document.getElementById('kView7').textContent=s.views_7d!=null?s.views_7d:'-';
   var tr=s.traffic||[];
   document.getElementById('trafRows').innerHTML=tr.length?tr.map(function(d){return '<tr><td>'+d.day+'</td><td style="text-align:right;font-family:var(--disp);font-weight:800">'+(d.uniques||0)+'</td><td style="text-align:right">'+(d.views||0)+'</td></tr>';}).join(''):'<tr><td colspan="3" style="color:var(--slate)">No traffic recorded yet</td></tr>';
   var tp=s.top_pages||[];
   document.getElementById('topPageRows').innerHTML=tp.length?tp.map(function(p){return '<tr><td style="font-family:var(--mono,monospace)">'+p.path+'</td><td style="text-align:right;font-family:var(--disp);font-weight:800">'+p.hits+'</td></tr>';}).join(''):'<tr><td colspan="2" style="color:var(--slate)">No traffic recorded yet</td></tr>';
+}
+async function delUser(email){
+  if(!confirm('Delete '+email+' ? This removes their account, portfolio and sessions.')) return;
+  var r=await fetch('/api/admin/delete-user',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email})});
+  var d=await r.json().catch(function(){return {};});
+  if(d.ok){ load(); } else { alert(d.error||'Delete failed'); }
 }
 load();
 </script>

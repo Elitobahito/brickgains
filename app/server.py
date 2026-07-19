@@ -480,7 +480,7 @@ class H(BaseHTTPRequestHandler):
                 return self._send(500, json.dumps({"ok": False}))
 
         if u.path == "/api/signup":
-            if not rate_ok("auth:" + self._ip(), 12, 900):
+            if not rate_ok("auth:" + self._ip(), 6, 900):
                 return self._send(429, json.dumps({"ok": False, "error": "Too many attempts. Please try again in a few minutes."}))
             d = self._body()
             email = (d.get("email") or "").strip().lower()
@@ -747,6 +747,22 @@ class H(BaseHTTPRequestHandler):
             cookie = f"bg_admin={ADMIN_TOKEN}; Path=/; HttpOnly; SameSite=Lax{sec}; Max-Age=604800"
             return self._send(200, json.dumps({"ok": True}), cookie=cookie)
 
+        if u.path == "/api/admin/delete-user":
+            if not self._is_admin():
+                return self._send(401, json.dumps({"ok": False, "error": "admin login required"}))
+            d = self._body()
+            email = (d.get("email") or "").strip().lower()
+            if not email:
+                return self._send(400, json.dumps({"ok": False, "error": "email requis"}))
+            row = q1("SELECT id FROM users WHERE lower(email)=?", (email,))
+            if not row:
+                return self._send(404, json.dumps({"ok": False, "error": "introuvable"}))
+            uid = row["id"]
+            qx("DELETE FROM portfolio WHERE user_id=?", (uid,))
+            qx("DELETE FROM sessions WHERE user_id=?", (uid,))
+            qx("DELETE FROM users WHERE id=?", (uid,))
+            return self._send(200, json.dumps({"ok": True, "deleted": email}))
+
         return self._send(404, "Not found", "text/plain")
 
     def do_GET(self):
@@ -901,7 +917,7 @@ class H(BaseHTTPRequestHandler):
             noext = "." not in p.rsplit("/", 1)[-1]
             if p in ("", "/"): return "/index.html"
             if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies", "/contact"): return p + ".html"
-            if p == "/admin": return "/admin.html"
+            if p == "/elitobahito": return "/admin.html"
             if p == "/blog": return "/blog/index.html"
             if p.startswith("/blog/") and noext: return p + ".html"
             if p == "/set": return "/set/index.html"

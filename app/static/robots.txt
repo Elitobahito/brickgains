@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /app
-Disallow: /admin
 Sitemap: https://brickgains.com/sitemap.xml
