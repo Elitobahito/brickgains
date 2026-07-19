@@ -148,6 +148,15 @@
         <button class="btn" onclick="BG.billingPortal()">Manage / cancel subscription</button>
       </div>
       <div class="acct-card">
+        <h3>Email alerts</h3>
+        <p class="muted">Get an email when a set in your portfolio moves by 8% or more. We only email you when something actually changes - no spam.</p>
+        <label class="alert-toggle">
+          <input type="checkbox" id="alertOptin" onchange="saveAlerts()">
+          <span>Email me price alerts</span>
+        </label>
+        <span id="alertMsg" class="acct-msg"></span>
+      </div>
+      <div class="acct-card">
         <h3>Change password</h3>
         <form class="acct-form" onsubmit="return changePw(event)">
           <input id="pwCur" type="password" placeholder="Current password" autocomplete="current-password">
@@ -192,7 +201,18 @@ async function fillAccount(){
     document.getElementById('acEmail').textContent=u.email;
     var p=document.getElementById('acPlan'); p.textContent=u.plan||'free';
     p.className='planpill'+(u.plan && u.plan!=='free' ? ' paid' : '');
+    var ao=document.getElementById('alertOptin'); if(ao){ ao.checked=!!u.alert_email; }
   }catch(e){}
+}
+async function saveAlerts(){
+  var ao=document.getElementById('alertOptin'), m=document.getElementById('alertMsg');
+  m.className='acct-msg'; m.textContent='...';
+  try{
+    var r=await fetch('/api/alert-prefs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:ao.checked})});
+    var d=await r.json().catch(function(){return {};});
+    m.className='acct-msg '+(d.ok?'ok':'err');
+    m.textContent=d.ok?(ao.checked?'Alerts on.':'Alerts off.'):'Could not save.';
+  }catch(e){ m.className='acct-msg err'; m.textContent='Network error'; }
 }
 async function changePw(e){
   e.preventDefault();

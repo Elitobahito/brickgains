@@ -348,6 +348,8 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .acct-form input{border:3px solid var(--ink);border-radius:10px;padding:10px 12px;font-family:var(--font);font-size:14px;font-weight:500;box-shadow:2px 2px 0 var(--ink);background:#fff}
 .acct-form input:focus{outline:none;box-shadow:0 0 0 3px var(--yellow)}
 .acct-form .btn{align-self:flex-start}
+.alert-toggle{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:10px}
+.alert-toggle input{width:20px;height:20px;accent-color:var(--red);cursor:pointer}
 .acct-msg{font-weight:700;font-size:13px;min-height:16px}
 .acct-msg.ok{color:var(--green)}
 .acct-msg.err{color:var(--red)}

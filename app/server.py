@@ -62,6 +62,14 @@ def q1(sql, params=()):
         return dict(r) if r else None
     finally: c.close()
 
+def qa(sql, params=()):
+    c = _conn()
+    try:
+        cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
+        cur.execute(_conv(sql), params)
+        return [dict(r) for r in cur.fetchall()]
+    finally: c.close()
+
 def qx(sql, params=(), returning=False, ignore=False):
     c = _conn()
     try:
@@ -93,6 +101,9 @@ def db_init():
     except Exception: pass
     # migration: stripe customer id on users
     try: qx("ALTER TABLE users ADD COLUMN stripe_customer_id TEXT")
+    except Exception: pass
+    # migration: email price-alert opt-in
+    try: qx("ALTER TABLE users ADD COLUMN alert_email INTEGER DEFAULT 0")
     except Exception: pass
 
 def hash_pw(pw, salt=None):
@@ -136,7 +147,7 @@ def make_session(user_id):
 
 def user_by_token(tok):
     if not tok: return None
-    return q1("""SELECT u.id,u.email,u.plan,u.share_id FROM sessions s JOIN users u ON u.id=s.user_id
+    return q1("""SELECT u.id,u.email,u.plan,u.share_id,u.alert_email FROM sessions s JOIN users u ON u.id=s.user_id
                  WHERE s.token=?""", (tok,))
 
 def _norm(sn):
@@ -237,6 +248,71 @@ def email_shell(title, body_html, cta_label=None, cta_url=None):
             f'<h1 style="font-size:20px;margin:0 0 12px">{title}</h1>{body_html}{cta}</div>'
             f'<div style="color:#8a877e;font-size:12px;padding:14px 4px">BrickGains by Mint Technology LLC. '
             f'You receive this because you have a BrickGains account.</div></div>')
+
+ALERT_PCT = float(ENV.get("ALERT_PCT", "8"))  # min |%| move vs previous snapshot to trigger an alert
+
+def _catalog_names():
+    """set_num (sans -1) -> nom, depuis catalog.json."""
+    out = {}
+    for p in (os.path.join(BASE, "catalog.json"), os.path.join(BASE, "static", "..", "catalog.json")):
+        try:
+            for s in json.load(open(p)).get("sets", []):
+                out[str(s.get("set", "")).replace("-1", "")] = s.get("name") or ""
+            if out: break
+        except Exception: pass
+    return out
+
+def send_price_alerts(day, rows):
+    """Après un snapshot: détecte les sets qui ont bougé >= ALERT_PCT vs le snapshot
+    précédent, puis envoie un email digest aux users opt-in qui suivent ces sets."""
+    try:
+        movers = {}
+        for r in (rows or []):
+            sn = str(r.get("set", "")).replace("-1", "")
+            new = r.get("newAvg")
+            if not sn or new in (None, ""): continue
+            prev = q1("SELECT new_avg FROM price_history WHERE set_num=? AND day<? ORDER BY day DESC LIMIT 1", (sn, day))
+            if not prev or not prev.get("new_avg"): continue
+            try:
+                pa = float(prev["new_avg"]); nn = float(new)
+            except Exception: continue
+            if pa <= 0: continue
+            pct = (nn - pa) / pa * 100.0
+            if abs(pct) >= ALERT_PCT:
+                movers[sn] = {"new": nn, "pct": pct}
+        if not movers:
+            return {"movers": 0, "emails": 0}
+        names = _catalog_names()
+        users = qa("SELECT id,email FROM users WHERE alert_email=1")
+        sent = 0
+        for us in users:
+            uid, email = us["id"], us["email"]
+            prows = qa("SELECT set_num FROM portfolio WHERE user_id=?", (uid,))
+            mine = []
+            for pr in prows:
+                psn = str(pr["set_num"]).replace("-1", "")
+                if psn in movers:
+                    mine.append((psn, movers[psn]))
+            if not mine: continue
+            mine.sort(key=lambda x: abs(x[1]["pct"]), reverse=True)
+            items = ""
+            for sn, m in mine:
+                nm = names.get(sn, "LEGO " + sn) or ("LEGO " + sn)
+                arrow = "▲" if m["pct"] >= 0 else "▼"
+                color = "#0a8f3c" if m["pct"] >= 0 else "#c8102e"
+                items += (f'<tr><td style="padding:8px 0;border-bottom:1px solid #eee">'
+                          f'<b>{nm}</b> <span style="color:#8a877e">#{sn}</span></td>'
+                          f'<td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">'
+                          f'${round(m["new"]):,} <b style="color:{color}">{arrow} {m["pct"]:+.0f}%</b></td></tr>')
+            body = (f'<p style="margin:0 0 14px">Prices moved on {len(mine)} set(s) in your portfolio:</p>'
+                    f'<table style="width:100%;border-collapse:collapse;font-size:15px">{items}</table>')
+            res = send_email(email, f"BrickGains alert - {len(mine)} set(s) moved",
+                             email_shell("Your portfolio moved", body, "Open dashboard", SITE_URL + "/app"))
+            if not (isinstance(res, dict) and res.get("error")):
+                sent += 1
+        return {"movers": len(movers), "emails": sent}
+    except Exception as e:
+        return {"error": str(e)}
 
 def rebrickable(sn):
     try:
@@ -444,6 +520,15 @@ class H(BaseHTTPRequestHandler):
             qx("UPDATE users SET pw_hash=? WHERE id=?", (hash_pw(new), me["id"]))
             return self._send(200, json.dumps({"ok": True}))
 
+        if u.path == "/api/alert-prefs":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            d = self._body()
+            on = 1 if d.get("on") else 0
+            qx("UPDATE users SET alert_email=? WHERE id=?", (on, me["id"]))
+            return self._send(200, json.dumps({"ok": True, "alert_email": on}))
+
         if u.path == "/api/snapshot":
             d = self._body()
             if d.get("key") != ENV.get("SNAPSHOT_KEY", "nope"):
@@ -458,7 +543,10 @@ class H(BaseHTTPRequestHandler):
                        (s, day, r.get("newAvg"), r.get("appreciation")), ignore=True)
                     n += 1
                 except Exception: pass
-            return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day}))
+            alerts = {"emails": 0}
+            if d.get("alerts", True):
+                alerts = send_price_alerts(day, d.get("rows") or [])
+            return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day, "alerts": alerts}))
 
         if u.path.startswith("/api/portfolio"):
             me = self._me()
