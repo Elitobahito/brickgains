@@ -333,6 +333,42 @@ def send_price_alerts(day, rows):
     except Exception as e:
         return {"error": str(e)}
 
+def send_weekly_digest():
+    """Digest hebdo : à chaque user opt-in, la valeur de son portefeuille + variation vs
+    le snapshot précédent. Renvoie le nombre d'emails envoyés."""
+    try:
+        users = qa("SELECT id,email FROM users WHERE alert_email=1")
+        names = _catalog_names(); sent = 0
+        for us in users:
+            uid, email = us["id"], us["email"]
+            pts = qa("""SELECT ph.day AS day, SUM(ph.new_avg) AS value, COUNT(*) AS sets
+                        FROM price_history ph JOIN portfolio p ON p.set_num=ph.set_num
+                        WHERE p.user_id=? GROUP BY ph.day ORDER BY ph.day""", (uid,))
+            if not pts: continue
+            now = float(pts[-1]["value"] or 0)
+            prev = float(pts[-2]["value"]) if len(pts) >= 2 else None
+            nsets = int(pts[-1]["sets"] or 0)
+            if now <= 0: continue
+            if prev is not None and prev > 0:
+                chg = now - prev; pctv = chg / prev * 100.0
+                color = "#0a8f3c" if chg >= 0 else "#c8102e"
+                arrow = "▲" if chg >= 0 else "▼"
+                move = (f'<p style="font-size:15px;margin:0 0 6px">This week: '
+                        f'<b style="color:{color}">{arrow} {pctv:+.1f}%</b> '
+                        f'({"+"if chg>=0 else "-"}${abs(round(chg)):,})</p>')
+            else:
+                move = '<p style="font-size:15px;margin:0 0 6px;color:#8a877e">Your first weekly snapshot - we\'ll show week-over-week changes from next week.</p>'
+            body = (f'<p style="margin:0 0 10px">Your BrickGains portfolio ({nsets} set{"s" if nsets!=1 else ""}) is worth:</p>'
+                    f'<div style="font-size:34px;font-weight:800;color:#141414;margin:0 0 8px">${round(now):,}</div>'
+                    f'{move}')
+            res = send_email(email, "Your weekly BrickGains portfolio update",
+                             email_shell("Weekly portfolio update", body, "Open dashboard", SITE_URL + "/app"))
+            if not (isinstance(res, dict) and res.get("error")):
+                sent += 1
+        return {"users": len(users), "emails": sent}
+    except Exception as e:
+        return {"error": str(e)}
+
 def rebrickable(sn):
     try:
         req = urllib.request.Request(
@@ -569,6 +605,12 @@ class H(BaseHTTPRequestHandler):
             if d.get("alerts", True):
                 alerts = send_price_alerts(day, d.get("rows") or [])
             return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day, "alerts": alerts}))
+
+        if u.path == "/api/digest":
+            d = self._body()
+            if d.get("key") != ENV.get("SNAPSHOT_KEY", "nope"):
+                return self._send(403, json.dumps({"ok": False}))
+            return self._send(200, json.dumps({"ok": True, "digest": send_weekly_digest()}))
 
         if u.path.startswith("/api/portfolio"):
             me = self._me()
@@ -847,6 +889,22 @@ class H(BaseHTTPRequestHandler):
                 c.close()
             except Exception: pass
             return self._send(200, json.dumps({"ok": True, "items": rows}))
+        if u.path == "/api/portfolio/history":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            if me.get("plan") not in PAID_PLANS:
+                return self._send(403, json.dumps({"ok": False, "locked": True,
+                    "error": "Portfolio value history is a Pro feature."}))
+            try:
+                rows = qa("""SELECT ph.day AS day, SUM(ph.new_avg) AS value, COUNT(*) AS sets
+                             FROM price_history ph JOIN portfolio p ON p.set_num=ph.set_num
+                             WHERE p.user_id=? GROUP BY ph.day ORDER BY ph.day""", (me["id"],))
+                for r in rows:
+                    r["value"] = round(float(r["value"] or 0), 2); r["sets"] = int(r["sets"] or 0)
+            except Exception as e:
+                return self._send(200, json.dumps({"ok": True, "points": [], "err": str(e)}))
+            return self._send(200, json.dumps({"ok": True, "points": rows}))
         if u.path == "/api/value":
             qs = urllib.parse.parse_qs(u.query)
             q = qs.get("set", [""])[0]

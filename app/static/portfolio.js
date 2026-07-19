@@ -119,7 +119,7 @@ async function render(){
     ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="7" style="color:#999">Loading…</td></tr>`).join('')}
     </tbody></table>`;
 
-  let paidTot=0, valTot=0;
+  let paidTot=0, valTot=0; PF_LAST=[];
   for(let i=0;i<pf.length;i++){
     const item = pf[i];
     let d={};
@@ -129,6 +129,7 @@ async function render(){
     const paid = item.paid;
     if(paid) paidTot += paid;
     if(val) valTot += val;
+    PF_LAST.push({set:item.set, name:(d.name||''), condition:item.condition, paid:(paid==null?'':paid), value:(val==null?'':Math.round(val)), retired:(d.retired?'retired':'available')});
     let gain='-', gcls='';
     if(paid && val){ const g=val-paid; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
     const status = d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`;
@@ -153,6 +154,56 @@ async function render(){
     roiEl.textContent = (roi>=0?'+':'')+roi+'%';
     roiEl.className = 'v '+(roi>=0?'up-t':'down-t');
   } else roiEl.textContent='0%';
+  loadPortfolioChart();
+  applyExportGate();
+}
+
+let PF_LAST=[];
+
+function applyExportGate(){
+  var b=document.getElementById('csvBtn');
+  if(b) b.style.display = (ME && ME.plan==='investor') ? '' : 'none';
+}
+
+function exportCSV(){
+  if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
+  if(!PF_LAST.length){ alert('Add sets first.'); return; }
+  var head=['Set','Name','Condition','Paid','Value','Status'];
+  var lines=[head.join(',')];
+  PF_LAST.forEach(function(r){
+    var row=[r.set, '"'+String(r.name).replace(/"/g,'""')+'"', r.condition, r.paid, r.value, r.retired];
+    lines.push(row.join(','));
+  });
+  var blob=new Blob([lines.join('\n')],{type:'text/csv'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='brickgains-portfolio.csv'; a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function loadPortfolioChart(){
+  var card=document.getElementById('pfChartCard'); if(!card) return;
+  try{
+    var r=await fetch('/api/portfolio/history'); var d=await r.json();
+    if(d.locked || !d.points || d.points.length<2){ card.style.display='none'; return; }
+    var pts=d.points;
+    var W=680,H=200,pad=34;
+    var vals=pts.map(function(p){return p.value;});
+    var min=Math.min.apply(null,vals),max=Math.max.apply(null,vals);
+    if(max===min){max=min+1;}
+    var X=function(i){return pad+i*(W-2*pad)/(pts.length-1);};
+    var Y=function(v){return H-pad-(v-min)*(H-2*pad)/(max-min);};
+    var line=pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+' '+Y(p.value).toFixed(1);}).join(' ');
+    var area=line+' L'+X(pts.length-1).toFixed(1)+' '+(H-pad)+' L'+X(0).toFixed(1)+' '+(H-pad)+' Z';
+    var last=pts[pts.length-1].value, first=pts[0].value;
+    var chg=first>0?Math.round((last-first)/first*100):0;
+    var svg='<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="none" style="max-height:220px">'
+      +'<path d="'+area+'" fill="rgba(10,143,60,.12)"/>'
+      +'<path d="'+line+'" fill="none" stroke="#0a8f3c" stroke-width="2.5"/>'
+      +'<circle cx="'+X(pts.length-1).toFixed(1)+'" cy="'+Y(last).toFixed(1)+'" r="4" fill="#0a8f3c"/></svg>';
+    document.getElementById('pfChart').innerHTML=
+      '<div class="pfc-top"><span class="pfc-val">'+money(last)+'</span>'
+      +'<span class="pfc-chg '+(chg>=0?'up-t':'down-t')+'">'+(chg>=0?'+':'')+chg+'% since '+pts[0].day+'</span></div>'+svg;
+    card.style.display='block';
+  }catch(e){ card.style.display='none'; }
 }
 
 initPortfolio();

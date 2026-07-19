@@ -62,6 +62,7 @@
     </div>
     <div class="add-tools">
       <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
+      <button class="linkish" id="csvBtn" onclick="exportCSV()">⬇️ Export CSV</button>
       <span class="sync-note" id="syncNote"></span>
     </div>
     <div id="importBox" class="import-box" style="display:none">
@@ -69,6 +70,10 @@
       <div><button class="btn" onclick="doImport()">Import all</button> <button class="linkish" onclick="toggleImport()">Cancel</button></div>
     </div>
     <div id="tableWrap"></div>
+    <div id="pfChartCard" class="pf-chart-card" style="display:none">
+      <h3>📈 Portfolio value over time</h3>
+      <div id="pfChart"></div>
+    </div>
   </section>
 
   <!-- MARKET MOVERS -->
@@ -149,7 +154,7 @@
       </div>
       <div class="acct-card">
         <h3>Email alerts</h3>
-        <p class="muted">Get an email when a set in your portfolio moves by 8% or more. We only email you when something actually changes - no spam.</p>
+        <p class="muted">Get an email when a set in your portfolio moves by 8% or more, plus a weekly portfolio summary. We only email you when something actually changes - no spam.</p>
         <label class="alert-toggle">
           <input type="checkbox" id="alertOptin" onchange="saveAlerts()">
           <span>Email me price alerts</span>

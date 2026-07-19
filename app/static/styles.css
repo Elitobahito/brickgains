@@ -348,6 +348,11 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .acct-form input{border:3px solid var(--ink);border-radius:10px;padding:10px 12px;font-family:var(--font);font-size:14px;font-weight:500;box-shadow:2px 2px 0 var(--ink);background:#fff}
 .acct-form input:focus{outline:none;box-shadow:0 0 0 3px var(--yellow)}
 .acct-form .btn{align-self:flex-start}
+.pf-chart-card{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh);padding:20px 22px;margin-top:22px}
+.pf-chart-card h3{font-family:var(--disp);font-weight:800;font-size:18px;margin-bottom:12px}
+.pfc-top{display:flex;align-items:baseline;gap:14px;margin-bottom:8px;flex-wrap:wrap}
+.pfc-val{font-family:var(--disp);font-weight:800;font-size:26px}
+.pfc-chg{font-weight:700;font-size:14px}
 .feat-lock{text-align:center;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh);padding:34px 24px;max-width:520px;margin:14px auto}
 .feat-lock .fl-ic{font-size:36px;margin-bottom:8px}
 .feat-lock h3{font-family:var(--disp);font-weight:800;font-size:20px;margin-bottom:8px}
