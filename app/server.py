@@ -124,6 +124,13 @@ def db_init():
     # migration: email price-alert opt-in
     try: qx("ALTER TABLE users ADD COLUMN alert_email INTEGER DEFAULT 0")
     except Exception: pass
+    # migration: multi-copy quantity (Investor)
+    try: qx("ALTER TABLE portfolio ADD COLUMN qty INTEGER DEFAULT 1")
+    except Exception: pass
+    # server-side watchlist (with optional buy target)
+    qx(f"""CREATE TABLE IF NOT EXISTS watchlist(
+        id {ai}, user_id INTEGER NOT NULL, set_num TEXT NOT NULL,
+        target REAL, created {ts}, UNIQUE(user_id, set_num))""")
 
 def hash_pw(pw, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -330,6 +337,37 @@ def send_price_alerts(day, rows):
             if not (isinstance(res, dict) and res.get("error")):
                 sent += 1
         return {"movers": len(movers), "emails": sent}
+    except Exception as e:
+        return {"error": str(e)}
+
+def send_target_alerts(day, rows):
+    """Alerte prix-cible : quand un set suivi atteint (<=) le prix cible fixé par un
+    user opt-in, on l'e-mail. Renvoie le nombre d'emails envoyés."""
+    try:
+        price = {}
+        for r in (rows or []):
+            sn = str(r.get("set", "")).replace("-1", "")
+            v = r.get("newAvg")
+            if sn and v not in (None, ""):
+                try: price[sn] = float(v)
+                except Exception: pass
+        if not price: return {"emails": 0}
+        names = _catalog_names(); sent = 0
+        hits = qa("""SELECT w.user_id AS uid, u.email AS email, w.set_num AS set_num, w.target AS target
+                     FROM watchlist w JOIN users u ON u.id=w.user_id
+                     WHERE w.target IS NOT NULL AND u.alert_email=1""")
+        for h in hits:
+            sn = str(h["set_num"]).replace("-1", ""); tgt = float(h["target"] or 0)
+            cur = price.get(sn)
+            if cur is None or tgt <= 0 or cur > tgt: continue
+            nm = names.get(sn, "LEGO " + sn) or ("LEGO " + sn)
+            body = (f'<p style="margin:0 0 12px"><b>{nm}</b> (#{sn}) just hit your target price.</p>'
+                    f'<p style="font-size:15px;margin:0">Current value: <b>${round(cur):,}</b> · your target: ${round(tgt):,}</p>')
+            res = send_email(h["email"], f"Price target hit - {nm}",
+                             email_shell("A set hit your target price", body, "View set", SITE_URL + "/set/" + sn))
+            if not (isinstance(res, dict) and res.get("error")):
+                sent += 1
+        return {"emails": sent}
     except Exception as e:
         return {"error": str(e)}
 
@@ -601,10 +639,11 @@ class H(BaseHTTPRequestHandler):
                        (s, day, r.get("newAvg"), r.get("appreciation")), ignore=True)
                     n += 1
                 except Exception: pass
-            alerts = {"emails": 0}
+            alerts = {"emails": 0}; targets = {"emails": 0}
             if d.get("alerts", True):
                 alerts = send_price_alerts(day, d.get("rows") or [])
-            return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day, "alerts": alerts}))
+                targets = send_target_alerts(day, d.get("rows") or [])
+            return self._send(200, json.dumps({"ok": True, "recorded": n, "day": day, "alerts": alerts, "targets": targets}))
 
         if u.path == "/api/digest":
             d = self._body()
@@ -631,9 +670,22 @@ class H(BaseHTTPRequestHandler):
                 try: paid = float(paid) if paid not in (None, "") else None
                 except Exception: paid = None
                 cond = "opened" if str(d.get("condition", "sealed")).lower().startswith("open") else "sealed"
-                rid = qx("INSERT INTO portfolio(user_id,set_num,paid,condition) VALUES(?,?,?,?)",
-                         (uid, sn, paid, cond), returning=True)
+                qty = 1
+                if me.get("plan") == "investor":
+                    try: qty = max(1, min(99, int(d.get("qty") or 1)))
+                    except Exception: qty = 1
+                rid = qx("INSERT INTO portfolio(user_id,set_num,paid,condition,qty) VALUES(?,?,?,?,?)",
+                         (uid, sn, paid, cond, qty), returning=True)
                 return self._send(200, json.dumps({"ok": True, "id": rid}))
+            if u.path == "/api/portfolio/qty":
+                if me.get("plan") != "investor":
+                    return self._send(403, json.dumps({"ok": False, "locked": True,
+                        "error": "Multi-copy tracking is an Investor feature."}))
+                rid = d.get("id")
+                try: qty = max(1, min(99, int(d.get("qty") or 1)))
+                except Exception: qty = 1
+                qx("UPDATE portfolio SET qty=? WHERE id=? AND user_id=?", (qty, rid, uid))
+                return self._send(200, json.dumps({"ok": True, "qty": qty}))
             if u.path == "/api/portfolio/remove":
                 rid = d.get("id")
                 qx("DELETE FROM portfolio WHERE id=? AND user_id=?", (rid, uid))
@@ -675,6 +727,31 @@ class H(BaseHTTPRequestHandler):
                     res["limit"] = True
                     res["error"] = "Free plan tracks up to %d sets. Upgrade to Pro for unlimited." % FREE_SETS_CAP
                 return self._send(200, json.dumps(res))
+            return self._send(404, json.dumps({"ok": False}))
+
+        if u.path.startswith("/api/watchlist"):
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            uid = me["id"]; d = self._body()
+            if u.path == "/api/watchlist/add":
+                sn = str(d.get("set", "")).strip().lower().replace("lego", "").replace("-1", "").strip()
+                if not sn:
+                    return self._send(400, json.dumps({"ok": False, "error": "set manquant"}))
+                tgt = d.get("target")
+                try: tgt = float(tgt) if tgt not in (None, "") else None
+                except Exception: tgt = None
+                if PG:
+                    qx("INSERT INTO watchlist(user_id,set_num,target) VALUES(?,?,?) ON CONFLICT(user_id,set_num) DO UPDATE SET target=?",
+                       (uid, sn, tgt, tgt))
+                else:
+                    qx("INSERT INTO watchlist(user_id,set_num,target) VALUES(?,?,?) ON CONFLICT(user_id,set_num) DO UPDATE SET target=?",
+                       (uid, sn, tgt, tgt))
+                return self._send(200, json.dumps({"ok": True}))
+            if u.path == "/api/watchlist/remove":
+                sn = str(d.get("set", "")).strip().lower().replace("-1", "").strip()
+                qx("DELETE FROM watchlist WHERE user_id=? AND set_num=?", (uid, sn))
+                return self._send(200, json.dumps({"ok": True}))
             return self._send(404, json.dumps({"ok": False}))
 
         if u.path == "/api/checkout":
@@ -884,10 +961,19 @@ class H(BaseHTTPRequestHandler):
             try:
                 c = _conn()
                 cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
-                cur.execute(_conv("SELECT id,set_num,paid,condition FROM portfolio WHERE user_id=? ORDER BY id DESC"), (me["id"],))
+                cur.execute(_conv("SELECT id,set_num,paid,condition,qty FROM portfolio WHERE user_id=? ORDER BY id DESC"), (me["id"],))
                 rows = [dict(r) for r in cur.fetchall()]
                 c.close()
             except Exception: pass
+            return self._send(200, json.dumps({"ok": True, "items": rows}))
+        if u.path == "/api/watchlist":
+            me = self._me()
+            if not me:
+                return self._send(401, json.dumps({"ok": False, "error": "login required"}))
+            try:
+                rows = qa("SELECT set_num, target FROM watchlist WHERE user_id=? ORDER BY id DESC", (me["id"],))
+            except Exception:
+                rows = []
             return self._send(200, json.dumps({"ok": True, "items": rows}))
         if u.path == "/api/portfolio/history":
             me = self._me()

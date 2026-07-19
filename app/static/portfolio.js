@@ -39,10 +39,10 @@ async function getPF(){
   if(ME){
     try{
       const items = (await fetch('/api/portfolio').then(r=>r.json())).items||[];
-      return items.map(r=>({sid:r.id, set:r.set_num, paid:r.paid, condition:r.condition||'sealed'}));
+      return items.map(r=>({sid:r.id, set:r.set_num, paid:r.paid, condition:r.condition||'sealed', qty:r.qty||1}));
     }catch(e){ return []; }
   }
-  return lload().map(it=>({sid:null, set:it.set, paid:it.paid, condition:it.condition||'sealed'}));
+  return lload().map(it=>({sid:null, set:it.set, paid:it.paid, condition:it.condition||'sealed', qty:1}));
 }
 
 async function addSet(){
@@ -51,12 +51,14 @@ async function addSet(){
   const cond = document.getElementById('pcond').value;
   if(!set) return;
   const paid = isNaN(price)?null:price;
+  var qi=document.getElementById('pqty'); var qty=qi?Math.max(1,parseInt(qi.value)||1):1;
   if(ME){
     const r = await fetch('/api/portfolio/add',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({set,paid,condition:cond})});
+      body:JSON.stringify({set,paid,condition:cond,qty})});
     const d = await r.json().catch(()=>({}));
     if(d && d.limit){ alert(d.error||'Free plan limit reached. Upgrade to Pro for unlimited.'); location.href='/pricing'; return; }
   } else { const pf=lload(); pf.push({set,paid,condition:cond}); lsave(pf); }
+  if(qi) qi.value='1';
   document.getElementById('pset').value=''; document.getElementById('pprice').value='';
   render();
 }
@@ -112,11 +114,12 @@ async function render(){
     document.getElementById('stRoi').textContent='0%';
     return;
   }
+  var inv = ME && ME.plan==='investor';
   wrap.innerHTML = `<table class="pf"><thead><tr>
-    <th>Set</th><th>Condition</th><th>Status</th><th style="text-align:right">Paid</th>
+    <th>Set</th><th>Condition</th><th>Status</th>${inv?'<th style="text-align:center">Qty</th>':''}<th style="text-align:right">Paid</th>
     <th style="text-align:right">Value (new)</th><th style="text-align:right">Gain</th><th></th>
     </tr></thead><tbody id="tb">
-    ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="7" style="color:#999">Loading…</td></tr>`).join('')}
+    ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="${inv?8:7}" style="color:#999">Loading…</td></tr>`).join('')}
     </tbody></table>`;
 
   let paidTot=0, valTot=0; PF_LAST=[];
@@ -127,20 +130,23 @@ async function render(){
     // used value applies when the set is opened
     const val = item.condition==='opened' ? (d.usedAvg||d.newAvg) : d.newAvg;
     const paid = item.paid;
-    if(paid) paidTot += paid;
-    if(val) valTot += val;
-    PF_LAST.push({set:item.set, name:(d.name||''), condition:item.condition, paid:(paid==null?'':paid), value:(val==null?'':Math.round(val)), retired:(d.retired?'retired':'available')});
+    const q = item.qty||1;
+    if(paid) paidTot += paid*q;
+    if(val) valTot += val*q;
+    PF_LAST.push({set:item.set, name:(d.name||''), condition:item.condition, qty:q, paid:(paid==null?'':paid), value:(val==null?'':Math.round(val)), retired:(d.retired?'retired':'available')});
     let gain='-', gcls='';
-    if(paid && val){ const g=val-paid; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
+    if(paid && val){ const g=(val-paid)*q; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
     const status = d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`;
     const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?'Opened':'Sealed'}</span>`;
     const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
+    const qtyCell = inv ? `<td class="num" style="text-align:center">${item.sid?`<span class="qty-step"><button onclick="setQty(${item.sid},${q-1})">−</button><b>${q}</b><button onclick="setQty(${item.sid},${q+1})">+</button></span>`:q}</td>` : '';
     const row = document.getElementById('r'+i);
     if(row) row.innerHTML = (d.error||!d.name)
-      ? `<td>${item.set}</td><td colspan="5" style="color:#999">Not found</td><td><button class="del" onclick="${rm}">✕</button></td>`
+      ? `<td>${item.set}</td><td colspan="${inv?6:5}" style="color:#999">Not found</td><td><button class="del" onclick="${rm}">✕</button></td>`
       : `<td><b>${d.name}</b><br><span style="color:#999;font-size:13px">${d.set}</span></td>
          <td>${cond}</td>
          <td>${status}</td>
+         ${qtyCell}
          <td class="num">${money(paid)}</td>
          <td class="num">${money(val)}</td>
          <td class="num ${gcls}">${gain}</td>
@@ -161,8 +167,38 @@ async function render(){
 let PF_LAST=[];
 
 function applyExportGate(){
-  var b=document.getElementById('csvBtn');
-  if(b) b.style.display = (ME && ME.plan==='investor') ? '' : 'none';
+  var inv = ME && ME.plan==='investor';
+  var b=document.getElementById('csvBtn'); if(b) b.style.display = inv ? '' : 'none';
+  var p=document.getElementById('pdfBtn'); if(p) p.style.display = inv ? '' : 'none';
+  var q=document.getElementById('pqtyWrap'); if(q) q.style.display = inv ? '' : 'none';
+}
+
+async function setQty(id, qty){
+  if(qty<1) return;
+  await fetch('/api/portfolio/qty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,qty:qty})});
+  render();
+}
+
+function pdfReport(){
+  if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
+  if(!PF_LAST.length){ alert('Add sets first.'); return; }
+  var paidT=0,valT=0,rows='';
+  PF_LAST.forEach(function(r){
+    var q=r.qty||1; var pv=(r.paid||0)*q, vv=(r.value||0)*q; paidT+=pv; valT+=vv;
+    rows+='<tr><td>'+r.set+'</td><td>'+r.name+'</td><td>'+r.condition+'</td><td style="text-align:center">'+q+'</td><td style="text-align:right">'+(r.value?'$'+r.value.toLocaleString('en-US'):'-')+'</td><td style="text-align:right">'+(vv?'$'+vv.toLocaleString('en-US'):'-')+'</td></tr>';
+  });
+  var today=new Date().toISOString().slice(0,10);
+  var html='<html><head><title>BrickGains insurance report</title><style>'
+    +'body{font-family:Arial,sans-serif;color:#141414;padding:30px;max-width:820px;margin:0 auto}'
+    +'h1{color:#E3000B;margin:0 0 4px}.sub{color:#666;margin:0 0 20px}'
+    +'table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #ddd;padding:8px}th{text-align:left;background:#f6f4ec}'
+    +'.tot{font-size:18px;font-weight:800;margin-top:18px}.foot{color:#999;font-size:11px;margin-top:24px}</style></head><body>'
+    +'<h1>BrickGains</h1><p class="sub">LEGO collection valuation - insurance report · '+today+'</p>'
+    +'<table><thead><tr><th>Set</th><th>Name</th><th>Condition</th><th style="text-align:center">Qty</th><th style="text-align:right">Unit value</th><th style="text-align:right">Line value</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    +'<p class="tot">Total estimated market value: $'+Math.round(valT).toLocaleString('en-US')+'</p>'
+    +'<p class="foot">Values are estimates from live BrickLink marketplace data on '+today+'. For insurance reference only.</p>'
+    +'<script>window.onload=function(){window.print();}<\/script></body></html>';
+  var w=window.open('','_blank'); w.document.write(html); w.document.close();
 }
 
 function exportCSV(){
@@ -272,17 +308,29 @@ function moversView(view){
 
 loadMovers();
 
-// ---- Watchlist ----
-function wload(){ try{return JSON.parse(localStorage.getItem('bb_watch')||'[]')}catch(e){return[]} }
-function wsave(a){ localStorage.setItem('bb_watch', JSON.stringify(a)); }
-function addWatch(){
-  const el=document.getElementById('wset'); const set=el.value.trim().replace('-1','');
-  if(!set) return;
-  const w=wload(); if(!w.includes(set)) w.push(set); wsave(w); el.value=''; renderWatch();
+// ---- Watchlist (server-backed when logged in, with optional price target) ----
+function wloadLocal(){ try{ return (JSON.parse(localStorage.getItem('bb_watch')||'[]')).map(x=> typeof x==='string'?{set:x,target:null}:x); }catch(e){ return []; } }
+function wsaveLocal(a){ localStorage.setItem('bb_watch', JSON.stringify(a)); }
+async function getWatch(){
+  if(ME){
+    try{ return ((await fetch('/api/watchlist').then(r=>r.json())).items||[]).map(r=>({set:r.set_num, target:r.target})); }catch(e){ return []; }
+  }
+  return wloadLocal();
 }
-function removeWatch(set){ wsave(wload().filter(x=>x!==set)); renderWatch(); }
+async function addWatch(){
+  const el=document.getElementById('wset'); const set=el.value.trim().replace('-1','');
+  const te=document.getElementById('wtarget'); let target=te?parseFloat(te.value):NaN; if(isNaN(target)) target=null;
+  if(!set) return;
+  if(ME){ await fetch('/api/watchlist/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({set,target})}); }
+  else { const w=wloadLocal(); const ex=w.find(x=>x.set===set); if(ex){ex.target=target;} else {w.push({set,target});} wsaveLocal(w); }
+  el.value=''; if(te) te.value=''; renderWatch();
+}
+async function removeWatch(set){
+  if(ME){ await fetch('/api/watchlist/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({set})}); }
+  else { wsaveLocal(wloadLocal().filter(x=>x.set!==set)); }
+  renderWatch();
+}
 function verdict(d){
-  // acheter / garder / vendre depuis retraite + plus-value
   const a=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null);
   if(d.retired){ if(a!=null&&a>=25) return['HOLD','Retired winner. Hold or sell into strength.','hold'];
                  return['HOLD','Retired. Value should climb as supply dries up.','hold']; }
@@ -290,19 +338,21 @@ function verdict(d){
   return['WATCH','Still at retail. Buy on a promo, then hold to retirement.','watch'];
 }
 async function renderWatch(){
-  const w=wload(); const wrap=document.getElementById('watchWrap');
+  const w=await getWatch(); const wrap=document.getElementById('watchWrap');
   if(!w.length){ wrap.innerHTML='<div class="empty">No sets watched yet. Add a set above to track it.</div>'; return; }
-  wrap.innerHTML=`<table class="mv"><thead><tr><th>Set</th><th>Status</th><th style="text-align:right">Retail</th><th style="text-align:right">Value (new)</th><th style="text-align:right">Gain</th><th>Verdict</th><th></th></tr></thead><tbody>${w.map(s=>`<tr id="w_${s}"><td colspan="7" style="color:#999">Loading…</td></tr>`).join('')}</tbody></table>`;
-  for(const s of w){
+  wrap.innerHTML=`<table class="mv"><thead><tr><th>Set</th><th>Status</th><th style="text-align:right">Value (new)</th><th style="text-align:right">Target</th><th>Verdict</th><th></th></tr></thead><tbody>${w.map(it=>`<tr id="w_${it.set}"><td colspan="6" style="color:#999">Loading…</td></tr>`).join('')}</tbody></table>`;
+  for(const it of w){
+    const s=it.set;
     let d={}; try{ d=await fetch('/api/value?set='+encodeURIComponent(s)).then(r=>r.json()); }catch(e){ d={error:1}; }
     const row=document.getElementById('w_'+s); if(!row) continue;
-    if(d.error||!d.name){ row.innerHTML=`<td>${s}</td><td colspan="5" style="color:#999">Not found</td><td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`; continue; }
-    const a=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null);
+    if(d.error||!d.name){ row.innerHTML=`<td>${s}</td><td colspan="4" style="color:#999">Not found</td><td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`; continue; }
     const st=d.retired?`<span class="mv-chip">Retired</span>`:`<span class="mv-chip av">Available</span>`;
     const[vb,,vc]=verdict(d);
+    let tgt='<span style="color:#bbb">-</span>';
+    if(it.target!=null){ const hit=d.newAvg!=null && d.newAvg<=it.target; tgt=money(it.target)+(hit?' <span class="mv-chip av">🎯 hit</span>':''); }
     row.innerHTML=`<td class="mv-set"><img src="${d.image||''}" onerror="this.style.display='none'">${d.name}</td>
-      <td>${st}</td><td class="num">${money(d.rrp)}</td><td class="num">${money(d.newAvg)}</td>
-      <td class="num"><span class="mv-badge ${badgeCls(a||0)}">${a!=null?pct(a):'-'}</span></td>
+      <td>${st}</td><td class="num">${money(d.newAvg)}</td>
+      <td class="num">${tgt}</td>
       <td><span class="vbadge ${vc}">${vb}</span></td>
       <td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`;
   }

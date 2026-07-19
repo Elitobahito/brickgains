@@ -348,6 +348,9 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .acct-form input{border:3px solid var(--ink);border-radius:10px;padding:10px 12px;font-family:var(--font);font-size:14px;font-weight:500;box-shadow:2px 2px 0 var(--ink);background:#fff}
 .acct-form input:focus{outline:none;box-shadow:0 0 0 3px var(--yellow)}
 .acct-form .btn{align-self:flex-start}
+.qty-step{display:inline-flex;align-items:center;gap:8px}
+.qty-step button{width:24px;height:24px;border:2px solid var(--ink);background:#fff;border-radius:6px;font-weight:800;cursor:pointer;line-height:1}
+.qty-step b{min-width:18px;display:inline-block;text-align:center}
 .cmp-heads{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 6px}
 .cmp-col{background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:var(--sh);padding:16px;text-align:center}
 .cmp-col img{max-height:120px;max-width:100%;object-fit:contain;margin-bottom:8px}

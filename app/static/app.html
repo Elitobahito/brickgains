@@ -59,11 +59,13 @@
       <input id="pset" placeholder="Set number (e.g. 10276)" onkeydown="if(event.key==='Enter')addSet()">
       <input id="pprice" type="number" placeholder="Price paid ($)" onkeydown="if(event.key==='Enter')addSet()">
       <select id="pcond" title="Condition"><option value="sealed">Sealed</option><option value="opened">Opened</option></select>
+      <span id="pqtyWrap" style="display:none"><input id="pqty" type="number" min="1" max="99" value="1" title="Quantity" style="width:70px"></span>
       <button class="btn" onclick="addSet()">Add to portfolio</button>
     </div>
     <div class="add-tools">
       <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
       <button class="linkish" id="csvBtn" onclick="exportCSV()">⬇️ Export CSV</button>
+      <button class="linkish" id="pdfBtn" onclick="pdfReport()">🧾 Insurance report (PDF)</button>
       <span class="sync-note" id="syncNote"></span>
     </div>
     <div id="importBox" class="import-box" style="display:none">
@@ -98,9 +100,10 @@
   <!-- WATCHLIST -->
   <section class="app-panel" id="panel-watch">
     <div class="movers-sec">
-      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">👀 Watchlist</div><span class="mv-note">Sets you don't own yet. We flag when they move or retire.</span></div>
+      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">👀 Watchlist</div><span class="mv-note">Sets you don't own yet. Set a target price and we email you (Pro) when it drops to it.</span></div>
       <div class="add-row" style="margin-top:16px">
         <input id="wset" placeholder="Set number to watch (e.g. 10307)" onkeydown="if(event.key==='Enter')addWatch()">
+        <input id="wtarget" type="number" placeholder="Target price ($, optional)" onkeydown="if(event.key==='Enter')addWatch()">
         <button class="btn" onclick="addWatch()">Add to watchlist</button>
       </div>
       <div id="watchWrap"></div>
