@@ -309,6 +309,39 @@ async function renderWatch(){
 }
 renderWatch();
 
+// ---- Compare two sets ----
+async function compareSets(){
+  var a=(document.getElementById('cmpA').value||'').trim().replace('-1','');
+  var b=(document.getElementById('cmpB').value||'').trim().replace('-1','');
+  var out=document.getElementById('cmpOut');
+  if(!a||!b){ out.innerHTML='<div class="empty">Enter two set numbers.</div>'; return; }
+  out.innerHTML='<div class="empty">Loading…</div>';
+  async function val(s){ try{ return await fetch('/api/value?set='+encodeURIComponent(s)).then(r=>r.json()); }catch(e){ return {error:1}; } }
+  var da=await val(a), db=await val(b);
+  if(da.error||!da.name){ out.innerHTML='<div class="empty">Set '+a+' not found.</div>'; return; }
+  if(db.error||!db.name){ out.innerHTML='<div class="empty">Set '+b+' not found.</div>'; return; }
+  function ppp(d){ return (d.newAvg&&d.pieces)?('$'+(d.newAvg/d.pieces).toFixed(2)):'-'; }
+  function appr(d){ var x=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null); return x; }
+  function col(d){
+    return '<div class="cmp-col"><img src="'+(d.image||'')+'" onerror="this.style.display=\'none\'">'
+      +'<h4>'+d.name+'</h4><span class="cmp-num">'+d.set+'</span>'
+      +(d.retired?'<span class="mv-chip">Retired</span>':'<span class="mv-chip av">Available</span>')+'</div>';
+  }
+  function rowM(label,va,vb,hi){
+    return '<tr><td class="cmp-k">'+label+'</td><td class="'+(hi==='a'?'cmp-win':'')+'">'+va+'</td><td class="'+(hi==='b'?'cmp-win':'')+'">'+vb+'</td></tr>';
+  }
+  var aa=appr(da), ab=appr(db);
+  out.innerHTML='<div class="cmp-heads">'+col(da)+col(db)+'</div>'
+    +'<table class="mv cmp-tbl"><tbody>'
+    +rowM('Value (new)', money(da.newAvg), money(db.newAvg), (da.newAvg||0)>(db.newAvg||0)?'a':'b')
+    +rowM('Appreciation', aa!=null?pct(aa):'-', ab!=null?pct(ab):'-', (aa||-999)>(ab||-999)?'a':'b')
+    +rowM('Original RRP', money(da.rrp), money(db.rrp))
+    +rowM('Pieces', da.pieces||'-', db.pieces||'-')
+    +rowM('Price / piece', ppp(da), ppp(db))
+    +rowM('Year', da.year||'-', db.year||'-')
+    +'</tbody></table>';
+}
+
 // ---- eBay profit calculator ----
 function ebayCalc(){
   const n=id=>parseFloat(document.getElementById(id).value)||0;

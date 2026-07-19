@@ -22,6 +22,7 @@
       <button class="side-item" data-tab="movers" onclick="showTab('movers')"><span class="si-ic">📈</span>Market Movers</button>
       <button class="side-item" data-tab="watch" onclick="showTab('watch')"><span class="si-ic">👀</span>Watchlist</button>
       <button class="side-item" data-tab="ebay" onclick="showTab('ebay')"><span class="si-ic">💵</span>eBay Calculator</button>
+      <button class="side-item" data-tab="compare" onclick="showTab('compare')"><span class="si-ic">⚖️</span>Compare sets</button>
       <button class="side-item" data-tab="account" onclick="showTab('account')"><span class="si-ic">👤</span>Account</button>
     </nav>
     <div class="side-foot">
@@ -125,6 +126,19 @@
           <div class="ec-row"><span>Margin</span><span id="ecMargin">0%</span></div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- COMPARE SETS -->
+  <section class="app-panel" id="panel-compare">
+    <div class="movers-sec">
+      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">⚖️ Compare two sets</div><span class="mv-note">Value, appreciation, price-per-piece side by side before you buy.</span></div>
+      <div class="add-row" style="margin-top:16px">
+        <input id="cmpA" placeholder="First set number (e.g. 10276)" onkeydown="if(event.key==='Enter')compareSets()">
+        <input id="cmpB" placeholder="Second set number (e.g. 10307)" onkeydown="if(event.key==='Enter')compareSets()">
+        <button class="btn" onclick="compareSets()">Compare</button>
+      </div>
+      <div id="cmpOut"></div>
     </div>
   </section>
 
@@ -241,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var b=document.getElementById('accountBtn');
   if(b){ b.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopImmediatePropagation(); showTab('account'); }, true); }
   var h=(location.hash||'').replace('#','');
-  if(['portfolio','movers','watch','ebay','account'].indexOf(h)>=0) showTab(h);
+  if(['portfolio','movers','watch','ebay','compare','account'].indexOf(h)>=0) showTab(h);
 });
 </script>
 </body>
