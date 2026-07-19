@@ -25,6 +25,13 @@ async function initPortfolio(){
     note.textContent = 'Saved on this device. Log in to sync across devices.';
   }
   render();
+  applyGating();
+}
+
+function applyGating(){
+  if(isPaid()) return;
+  var eb = document.querySelector('#panel-ebay .ebay-calc');
+  if(eb) eb.outerHTML = upsellHTML('eBay profit calculator is a Pro feature','Know your exact profit after eBay fees and shipping before you sell - included in Pro.');
 }
 
 // returns unified list [{key, set, paid, condition, sid(server id|null)}]
@@ -157,9 +164,23 @@ function badgeCls(a){ return a>0?'up':(a<0?'down':'flat'); }
 function pickSet(s){ const i=document.getElementById('pset'); if(i){ i.value=s; i.focus(); i.scrollIntoView({behavior:'smooth',block:'center'}); } }
 function openSet(s){ const n=String(s||'').replace('-1',''); if(n) window.open('/set/'+n, '_blank', 'noopener'); }
 
+function isPaid(){ return ME && (ME.plan==='pro' || ME.plan==='investor'); }
+function upsellHTML(title, desc){
+  return '<div class="feat-lock"><div class="fl-ic">🔒</div>'
+    +'<h3>'+title+'</h3><p>'+desc+'</p>'
+    +'<a class="btn" href="/pricing">Upgrade to Pro - $4.99/mo</a></div>';
+}
 async function loadMovers(){
   try{
-    const d = await fetch('/api/movers').then(r=>r.json());
+    const r = await fetch('/api/movers');
+    const d = await r.json();
+    if(d && d.locked){
+      const tbl=document.getElementById('moversTable'); if(tbl) tbl.innerHTML=upsellHTML('Market Movers is a Pro feature','See the biggest LEGO gainers, laggards and retiring winners updated weekly.');
+      const top=document.getElementById('moversTop'); if(top) top.innerHTML='';
+      const up=document.getElementById('moversUpdated'); if(up) up.textContent='';
+      const tabs=document.querySelector('.mv-tabs'); if(tabs) tabs.style.display='none';
+      return;
+    }
     MV = d.sets||[];
     const up = document.getElementById('moversUpdated');
     if(up && d.updated) up.textContent = 'Updated '+d.updated+' · '+MV.length+' sets';

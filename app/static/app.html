@@ -201,7 +201,12 @@ async function fillAccount(){
     document.getElementById('acEmail').textContent=u.email;
     var p=document.getElementById('acPlan'); p.textContent=u.plan||'free';
     p.className='planpill'+(u.plan && u.plan!=='free' ? ' paid' : '');
-    var ao=document.getElementById('alertOptin'); if(ao){ ao.checked=!!u.alert_email; }
+    var paid=u.plan==='pro'||u.plan==='investor';
+    var ao=document.getElementById('alertOptin'), am=document.getElementById('alertMsg');
+    if(ao){
+      ao.checked=!!u.alert_email; ao.disabled=!paid;
+      if(!paid && am){ am.className='acct-msg'; am.innerHTML='<a href="/pricing" style="color:var(--red)">Upgrade to Pro</a> to turn on email alerts.'; }
+    }
   }catch(e){}
 }
 async function saveAlerts(){

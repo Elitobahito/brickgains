@@ -526,6 +526,9 @@ class H(BaseHTTPRequestHandler):
                 return self._send(401, json.dumps({"ok": False, "error": "login required"}))
             d = self._body()
             on = 1 if d.get("on") else 0
+            if on and me.get("plan") not in PAID_PLANS:
+                return self._send(403, json.dumps({"ok": False, "locked": True,
+                    "error": "Email price alerts are a Pro feature. Upgrade to enable them."}))
             qx("UPDATE users SET alert_email=? WHERE id=?", (on, me["id"]))
             return self._send(200, json.dumps({"ok": True, "alert_email": on}))
 
@@ -850,6 +853,10 @@ class H(BaseHTTPRequestHandler):
             return self._send(200, json.dumps({"ok": True, "count": len(items),
                 "totalValue": round(tot_val), "roi": roi, "items": items}))
         if u.path == "/api/movers":
+            me = self._me()
+            if not (me and me.get("plan") in PAID_PLANS):
+                return self._send(403, json.dumps({"ok": False, "locked": True,
+                    "error": "Market Movers is a Pro feature. Upgrade to unlock gainers & laggards."}))
             try:
                 return self._send(200, open(os.path.join(BASE, "movers.json")).read())
             except Exception:

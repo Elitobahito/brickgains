@@ -348,6 +348,12 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .acct-form input{border:3px solid var(--ink);border-radius:10px;padding:10px 12px;font-family:var(--font);font-size:14px;font-weight:500;box-shadow:2px 2px 0 var(--ink);background:#fff}
 .acct-form input:focus{outline:none;box-shadow:0 0 0 3px var(--yellow)}
 .acct-form .btn{align-self:flex-start}
+.feat-lock{text-align:center;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh);padding:34px 24px;max-width:520px;margin:14px auto}
+.feat-lock .fl-ic{font-size:36px;margin-bottom:8px}
+.feat-lock h3{font-family:var(--disp);font-weight:800;font-size:20px;margin-bottom:8px}
+.feat-lock p{color:var(--slate);font-weight:500;font-size:15px;line-height:1.5;margin-bottom:18px}
+.alert-toggle input:disabled{opacity:.45;cursor:not-allowed}
+.alert-toggle input:disabled + span{opacity:.55}
 .alert-toggle{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:10px}
 .alert-toggle input{width:20px;height:20px;accent-color:var(--red);cursor:pointer}
 .acct-msg{font-weight:700;font-size:13px;min-height:16px}
