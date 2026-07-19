@@ -242,6 +242,38 @@
    "retired": "2011-11-25"
   },
   {
+   "set": "9450-1",
+   "name": "Epic Dragon Battle",
+   "year": 2012,
+   "theme": "Ninjago",
+   "image": "https://cdn.rebrickable.com/media/sets/9450-1/45181.jpg",
+   "rrp": 119.99,
+   "newMin": 641.82,
+   "newAvg": 902.402,
+   "newMax": 1403,
+   "usedMin": 260,
+   "usedAvg": 367.5346,
+   "usedMax": 665.15,
+   "appreciation": 652,
+   "retired": "2015-02-28"
+  },
+  {
+   "set": "75053-1",
+   "name": "The Ghost",
+   "year": 2014,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75053-1/2718.jpg",
+   "rrp": 89.99,
+   "newMin": 431.44,
+   "newAvg": 665.9444,
+   "newMax": 1066.81,
+   "usedMin": 65,
+   "usedAvg": 279.4636,
+   "usedMax": 684.96,
+   "appreciation": 640,
+   "retired": "2015-11-28"
+  },
+  {
    "set": "10187-1",
    "name": "Volkswagen Beetle",
    "year": 2008,
@@ -288,6 +320,22 @@
    "usedMax": 999.99,
    "appreciation": 570,
    "retired": "2010-12-03"
+  },
+  {
+   "set": "75025-1",
+   "name": "Jedi Defender-class Cruiser",
+   "year": 2013,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75025-1/7578.jpg",
+   "rrp": 89.99,
+   "newMin": 539.54,
+   "newAvg": 603.2112,
+   "newMax": 849,
+   "usedMin": 400.22,
+   "usedAvg": 303.716,
+   "usedMax": 558.01,
+   "appreciation": 570,
+   "retired": "2014-12-15"
   },
   {
    "set": "9474-1",
@@ -402,6 +450,38 @@
    "retired": "2009-05-08"
   },
   {
+   "set": "75158-1",
+   "name": "Rebel Combat Frigate",
+   "year": 2016,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75158-1/6105.jpg",
+   "rrp": 109.99,
+   "newMin": 366.03,
+   "newAvg": 652.4029,
+   "newMax": 1499,
+   "usedMin": 379.82,
+   "usedAvg": 305.1267,
+   "usedMax": 592.88,
+   "appreciation": 493,
+   "retired": "2017-05-05"
+  },
+  {
+   "set": "7627-1",
+   "name": "Temple of the Crystal Skull",
+   "year": 2008,
+   "theme": "Indiana Jones",
+   "image": "https://cdn.rebrickable.com/media/sets/7627-1/65700.jpg",
+   "rrp": 79.99,
+   "newMin": 345.88,
+   "newAvg": 461.9029,
+   "newMax": 800.45,
+   "usedMin": 120.07,
+   "usedAvg": 182.5961,
+   "usedMax": 402,
+   "appreciation": 477,
+   "retired": "2009-06-30"
+  },
+  {
    "set": "10224-1",
    "name": "Town Hall",
    "year": 2012,
@@ -512,6 +592,22 @@
    "usedMax": 240.79,
    "appreciation": 416,
    "retired": "2009-04-24"
+  },
+  {
+   "set": "7946-1",
+   "name": "King's Castle",
+   "year": 2010,
+   "theme": "Castle",
+   "image": "https://cdn.rebrickable.com/media/sets/7946-1/17446.jpg",
+   "rrp": 99.99,
+   "newMin": 348.51,
+   "newAvg": 483.2317,
+   "newMax": 800,
+   "usedMin": 177.18,
+   "usedAvg": 249.715,
+   "usedMax": 383.63,
+   "appreciation": 383,
+   "retired": "2011-10-23"
   },
   {
    "set": "70173-1",
@@ -802,6 +898,22 @@
    "retired": "2010-12-03"
   },
   {
+   "set": "75151-1",
+   "name": "Clone Turbo Tank",
+   "year": 2016,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75151-1/8065.jpg",
+   "rrp": 109.99,
+   "newMin": 345.93,
+   "newAvg": 437.5543,
+   "newMax": 663.22,
+   "usedMin": 233.39,
+   "usedAvg": 274.217,
+   "usedMax": 399.99,
+   "appreciation": 298,
+   "retired": "2017-11-28"
+  },
+  {
    "set": "70678-1",
    "name": "Castle of the Forsaken Emperor",
    "year": 2019,
@@ -960,6 +1072,22 @@
    "usedMax": 250,
    "appreciation": 254,
    "retired": "2020-11-26"
+  },
+  {
+   "set": "9468-1",
+   "name": "Vampyre Castle",
+   "year": 2012,
+   "theme": "Monster Fighters",
+   "image": "https://cdn.rebrickable.com/media/sets/9468-1/9908.jpg",
+   "rrp": 99.99,
+   "newMin": 243.57,
+   "newAvg": 351.5132,
+   "newMax": 799.3,
+   "usedMin": 125,
+   "usedAvg": 194.0715,
+   "usedMax": 381,
+   "appreciation": 252,
+   "retired": "2013-11-29"
   },
   {
    "set": "10184-1",
@@ -1234,6 +1362,22 @@
    "retired": "2009-11-24"
   },
   {
+   "set": "10259-1",
+   "name": "Winter Village Station",
+   "year": 2017,
+   "theme": "Creator Expert",
+   "image": "https://cdn.rebrickable.com/media/sets/10259-1/6731.jpg",
+   "rrp": 79.99,
+   "newMin": 150.25,
+   "newAvg": 245.7401,
+   "newMax": 371.75,
+   "usedMin": 160.08,
+   "usedAvg": 191.445,
+   "usedMax": 228.69,
+   "appreciation": 207,
+   "retired": "2018-11-24"
+  },
+  {
    "set": "75060-1",
    "name": "Slave I",
    "year": 2015,
@@ -1298,6 +1442,22 @@
    "retired": "2022-12-18"
   },
   {
+   "set": "70816-1",
+   "name": "Benny's Spaceship, Spaceship, SPACESHIP!",
+   "year": 2014,
+   "theme": "The LEGO Movie",
+   "image": "https://cdn.rebrickable.com/media/sets/70816-1/16364.jpg",
+   "rrp": 99.99,
+   "newMin": 193.62,
+   "newAvg": 301.685,
+   "newMax": 514,
+   "usedMin": 142.63,
+   "usedAvg": 171.3519,
+   "usedMax": 340,
+   "appreciation": 202,
+   "retired": "2015-10-26"
+  },
+  {
    "set": "8053-1",
    "name": "Mobile Crane",
    "year": 2010,
@@ -1344,6 +1504,22 @@
    "usedMax": 600,
    "appreciation": 193,
    "retired": "2017-03-13"
+  },
+  {
+   "set": "70616-1",
+   "name": "Ice Tank",
+   "year": 2017,
+   "theme": "The LEGO Ninjago Movie",
+   "image": "https://cdn.rebrickable.com/media/sets/70616-1/15616.jpg",
+   "rrp": 79.99,
+   "newMin": 172.44,
+   "newAvg": 234.518,
+   "newMax": 285.87,
+   "usedMin": 105,
+   "usedAvg": 119.755,
+   "usedMax": 160.08,
+   "appreciation": 193,
+   "retired": "2019-03-11"
   },
   {
    "set": "76422-1",
@@ -1440,6 +1616,22 @@
    "usedMax": 270.75,
    "appreciation": 184,
    "retired": "2011-07-06"
+  },
+  {
+   "set": "7633-1",
+   "name": "Construction Site",
+   "year": 2009,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/7633-1/80059.jpg",
+   "rrp": 99.99,
+   "newMin": 195.95,
+   "newAvg": 284.464,
+   "newMax": 596.45,
+   "usedMin": 77.75,
+   "usedAvg": 110.1447,
+   "usedMax": 249.6,
+   "appreciation": 184,
+   "retired": "2010-11-08"
   },
   {
    "set": "71042-1",
@@ -1634,6 +1826,22 @@
    "retired": "2020-11-22"
   },
   {
+   "set": "75094-1",
+   "name": "Imperial Shuttle Tydirium",
+   "year": 2015,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75094-1/15303.jpg",
+   "rrp": 99.99,
+   "newMin": 161.05,
+   "newAvg": 264.8837,
+   "newMax": 450,
+   "usedMin": 56.6,
+   "usedAvg": 178.2233,
+   "usedMax": 602.76,
+   "appreciation": 165,
+   "retired": "2016-12-19"
+  },
+  {
    "set": "75055-1",
    "name": "Imperial Star Destroyer",
    "year": 2014,
@@ -1744,6 +1952,38 @@
    "usedMax": 343.95,
    "appreciation": 158,
    "retired": "2014-12-08"
+  },
+  {
+   "set": "21118-1",
+   "name": "The Mine",
+   "year": 2014,
+   "theme": "Minecraft",
+   "image": "https://cdn.rebrickable.com/media/sets/21118-1/17474.jpg",
+   "rrp": 109.99,
+   "newMin": 230,
+   "newAvg": 281.4091,
+   "newMax": 457.39,
+   "usedMin": 59.9,
+   "usedAvg": 116.1822,
+   "usedMax": 228.7,
+   "appreciation": 156,
+   "retired": "2015-12-26"
+  },
+  {
+   "set": "70615-1",
+   "name": "Fire Mech",
+   "year": 2017,
+   "theme": "The LEGO Ninjago Movie",
+   "image": "https://cdn.rebrickable.com/media/sets/70615-1/3964.jpg",
+   "rrp": 69.99,
+   "newMin": 147.81,
+   "newAvg": 178.2653,
+   "newMax": 244.13,
+   "usedMin": 46.35,
+   "usedAvg": 70.1343,
+   "usedMax": 108.63,
+   "appreciation": 155,
+   "retired": "2018-12-06"
   },
   {
    "set": "71705-1",
@@ -2690,6 +2930,22 @@
    "retired": "2020-02-02"
   },
   {
+   "set": "51515-1",
+   "name": "Robot Inventor",
+   "year": 2020,
+   "theme": "Mindstorms",
+   "image": "https://cdn.rebrickable.com/media/sets/51515-1/73629.jpg",
+   "rrp": 359.99,
+   "newMin": 571.74,
+   "newAvg": 737.8207,
+   "newMax": 1400,
+   "usedMin": 497.22,
+   "usedAvg": 508.202,
+   "usedMax": 600,
+   "appreciation": 105,
+   "retired": "2023-06-24"
+  },
+  {
    "set": "42100-1",
    "name": "Liebherr R 9800",
    "year": 2019,
@@ -2864,6 +3120,22 @@
    "usedMax": 280,
    "appreciation": 99,
    "retired": "2014-12-03"
+  },
+  {
+   "set": "42024-1",
+   "name": "Container Truck",
+   "year": 2014,
+   "theme": "Technic",
+   "image": "https://cdn.rebrickable.com/media/sets/42024-1/7790.jpg",
+   "rrp": 79.99,
+   "newMin": 118.99,
+   "newAvg": 158.8446,
+   "newMax": 250,
+   "usedMin": 43.23,
+   "usedAvg": 72.7914,
+   "usedMax": 129.01,
+   "appreciation": 99,
+   "retired": "2015-12-07"
   },
   {
    "set": "10272-1",
@@ -3170,6 +3442,22 @@
    "retired": "2023-08-22"
   },
   {
+   "set": "60110-1",
+   "name": "Fire Station",
+   "year": 2016,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/60110-1/1544.jpg",
+   "rrp": 99.99,
+   "newMin": 140.59,
+   "newAvg": 186.6415,
+   "newMax": 242.97,
+   "usedMin": 56.77,
+   "usedAvg": 84.6586,
+   "usedMax": 136.08,
+   "appreciation": 87,
+   "retired": "2018-12-04"
+  },
+  {
    "set": "60125-1",
    "name": "Volcano Heavy-Lift Helicopter",
    "year": 2016,
@@ -3426,6 +3714,22 @@
    "retired": "2018-11-25"
   },
   {
+   "set": "21320-1",
+   "name": "Dinosaur Fossils",
+   "year": 2019,
+   "theme": "Ideas",
+   "image": "https://cdn.rebrickable.com/media/sets/21320-1/22334.jpg",
+   "rrp": 59.99,
+   "newMin": 67.33,
+   "newAvg": 107.1053,
+   "newMax": 270.7,
+   "usedMin": 53.48,
+   "usedAvg": 71.5382,
+   "usedMax": 113.86,
+   "appreciation": 79,
+   "retired": "2022-01-24"
+  },
+  {
    "set": "75190-1",
    "name": "First Order Star Destroyer",
    "year": 2017,
@@ -3490,6 +3794,22 @@
    "retired": "2017-10-21"
   },
   {
+   "set": "60096-1",
+   "name": "Deep Sea Operation Base",
+   "year": 2015,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/60096-1/6800.jpg",
+   "rrp": 99.99,
+   "newMin": 112.5,
+   "newAvg": 177.1291,
+   "newMax": 368.29,
+   "usedMin": 67.19,
+   "usedAvg": 103.1182,
+   "usedMax": 120,
+   "appreciation": 77,
+   "retired": "2016-12-11"
+  },
+  {
    "set": "42162-1",
    "name": "Bugatti Bolide Agile Blue",
    "year": 2023,
@@ -3552,6 +3872,38 @@
    "usedMax": 292.04,
    "appreciation": 76,
    "retired": "2021-11-21"
+  },
+  {
+   "set": "42038-1",
+   "name": "Arctic Truck",
+   "year": 2015,
+   "theme": "Technic",
+   "image": "https://cdn.rebrickable.com/media/sets/42038-1/212.jpg",
+   "rrp": 84.99,
+   "newMin": 108.42,
+   "newAvg": 149.3136,
+   "newMax": 199.99,
+   "usedMin": 32.12,
+   "usedAvg": 78.8853,
+   "usedMax": 125.51,
+   "appreciation": 76,
+   "retired": "2016-11-26"
+  },
+  {
+   "set": "77944-1",
+   "name": "Fire Station Headquarters",
+   "year": 2021,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/77944-1/91560.jpg",
+   "rrp": 89.99,
+   "newMin": 148.64,
+   "newAvg": 158.655,
+   "newMax": 168.67,
+   "usedMin": 120.07,
+   "usedAvg": 122.925,
+   "usedMax": 125.78,
+   "appreciation": 76,
+   "retired": "2023-01-04"
   },
   {
    "set": "41130-1",
@@ -3632,6 +3984,22 @@
    "usedMax": 1499.98,
    "appreciation": 72,
    "retired": "2024-11-23"
+  },
+  {
+   "set": "60216-1",
+   "name": "Downtown Fire Brigade",
+   "year": 2019,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/60216-1/15021.jpg",
+   "rrp": 99.99,
+   "newMin": 114.35,
+   "newAvg": 171.8075,
+   "newMax": 285.87,
+   "usedMin": 61.18,
+   "usedAvg": 86.0387,
+   "usedMax": 136.08,
+   "appreciation": 72,
+   "retired": "2021-11-15"
   },
   {
    "set": "75936-1",
@@ -3760,6 +4128,22 @@
    "usedMax": 260,
    "appreciation": 69,
    "retired": "2020-02-15"
+  },
+  {
+   "set": "42097-1",
+   "name": "Compact Crawler Crane",
+   "year": 2019,
+   "theme": "Technic",
+   "image": "https://cdn.rebrickable.com/media/sets/42097-1/13831.jpg",
+   "rrp": 99.99,
+   "newMin": 108.42,
+   "newAvg": 168.54,
+   "newMax": 210.38,
+   "usedMin": 60.49,
+   "usedAvg": 88.875,
+   "usedMax": 200,
+   "appreciation": 69,
+   "retired": "2020-10-31"
   },
   {
    "set": "10278-1",
@@ -3922,6 +4306,22 @@
    "retired": "2022-11-23"
   },
   {
+   "set": "31084-1",
+   "name": "Pirate Roller Coaster",
+   "year": 2018,
+   "theme": "Creator",
+   "image": "https://cdn.rebrickable.com/media/sets/31084-1/2614.jpg",
+   "rrp": 89.99,
+   "newMin": 82.91,
+   "newAvg": 149.1237,
+   "newMax": 400,
+   "usedMin": 45.63,
+   "usedAvg": 78.2382,
+   "usedMax": 131.52,
+   "appreciation": 66,
+   "retired": "2019-12-01"
+  },
+  {
    "set": "76398-1",
    "name": "Hogwarts Hospital Wing",
    "year": 2022,
@@ -4000,6 +4400,22 @@
    "usedMax": 493.33,
    "appreciation": 63,
    "retired": "2022-11-26"
+  },
+  {
+   "set": "4207-1",
+   "name": "City Garage",
+   "year": 2012,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/4207-1/6756.jpg",
+   "rrp": 119.99,
+   "newMin": 149.95,
+   "newAvg": 195.8829,
+   "newMax": 285.87,
+   "usedMin": 74.97,
+   "usedAvg": 105.7445,
+   "usedMax": 170,
+   "appreciation": 63,
+   "retired": "2014-01-11"
   },
   {
    "set": "71787-1",
@@ -4226,6 +4642,22 @@
    "retired": "2020-11-20"
   },
   {
+   "set": "10704-1",
+   "name": "Creative Box",
+   "year": 2017,
+   "theme": "Classic",
+   "image": "https://cdn.rebrickable.com/media/sets/10704-1/11509.jpg",
+   "rrp": 29.99,
+   "newMin": 27.91,
+   "newAvg": 47.0665,
+   "newMax": 72.99,
+   "usedMin": 21.39,
+   "usedAvg": 24.5071,
+   "usedMax": 35.66,
+   "appreciation": 57,
+   "retired": "2018-12-21"
+  },
+  {
    "set": "21245-1",
    "name": "The Panda Haven",
    "year": 2023,
@@ -4352,6 +4784,38 @@
    "usedMax": 146.1,
    "appreciation": 52,
    "retired": "2024-03-01"
+  },
+  {
+   "set": "75293-1",
+   "name": "Resistance I-TS Transport",
+   "year": 2020,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75293-1/67370.jpg",
+   "rrp": 99.99,
+   "newMin": 86.47,
+   "newAvg": 151.4604,
+   "newMax": 300,
+   "usedMin": 97.2,
+   "usedAvg": 95.7135,
+   "usedMax": 158.95,
+   "appreciation": 51,
+   "retired": "2021-11-30"
+  },
+  {
+   "set": "60026-1",
+   "name": "Town Square",
+   "year": 2013,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/60026-1/6090.jpg",
+   "rrp": 119.99,
+   "newMin": 114.35,
+   "newAvg": 181.5927,
+   "newMax": 369.53,
+   "usedMin": 46.31,
+   "usedAvg": 106.1832,
+   "usedMax": 170.38,
+   "appreciation": 51,
+   "retired": "2014-12-28"
   },
   {
    "set": "76224-1",
@@ -6002,6 +6466,22 @@
    "retired": "2021-12-17"
   },
   {
+   "set": "41381-1",
+   "name": "Rescue Mission Boat",
+   "year": 2019,
+   "theme": "Friends",
+   "image": "https://cdn.rebrickable.com/media/sets/41381-1/100.jpg",
+   "rrp": 89.99,
+   "newMin": 80,
+   "newAvg": 113.3227,
+   "newMax": 216.73,
+   "usedMin": 39.5,
+   "usedAvg": 57.7264,
+   "usedMax": 124.64,
+   "appreciation": 26,
+   "retired": "2021-01-19"
+  },
+  {
    "set": "10307-1",
    "name": "Eiffel Tower",
    "year": 2022,
@@ -6162,6 +6642,22 @@
    "retired": null
   },
   {
+   "set": "75948-1",
+   "name": "Hogwarts Clock Tower",
+   "year": 2019,
+   "theme": "Harry Potter",
+   "image": "https://cdn.rebrickable.com/media/sets/75948-1/21661.jpg",
+   "rrp": 89.99,
+   "newMin": 62,
+   "newAvg": 110.3181,
+   "newMax": 457.4,
+   "usedMin": 45,
+   "usedAvg": 64.6947,
+   "usedMax": 121,
+   "appreciation": 23,
+   "retired": "2022-12-01"
+  },
+  {
    "set": "10281-1",
    "name": "Bonsai Tree",
    "year": 2021,
@@ -6224,6 +6720,22 @@
    "usedMax": 68.42,
    "appreciation": 22,
    "retired": "2024-01-19"
+  },
+  {
+   "set": "21174-1",
+   "name": "The Modern Treehouse",
+   "year": 2021,
+   "theme": "Minecraft",
+   "image": "https://cdn.rebrickable.com/media/sets/21174-1/87976.jpg",
+   "rrp": 119.99,
+   "newMin": 99,
+   "newAvg": 146.5919,
+   "newMax": 239.98,
+   "usedMin": 29.16,
+   "usedAvg": 74.5084,
+   "usedMax": 102.91,
+   "appreciation": 22,
+   "retired": "2023-01-06"
   },
   {
    "set": "43230-1",
@@ -6416,6 +6928,22 @@
    "usedMax": 70.6,
    "appreciation": 19,
    "retired": "2018-12-07"
+  },
+  {
+   "set": "11005-1",
+   "name": "Creative Fun",
+   "year": 2019,
+   "theme": "Classic",
+   "image": "https://cdn.rebrickable.com/media/sets/11005-1/14811.jpg",
+   "rrp": 39.99,
+   "newMin": 37.08,
+   "newAvg": 47.4,
+   "newMax": 62.05,
+   "usedMin": 25,
+   "usedAvg": 30.7733,
+   "usedMax": 37.32,
+   "appreciation": 19,
+   "retired": "2021-10-26"
   },
   {
    "set": "71391-1",

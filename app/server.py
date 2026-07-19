@@ -897,6 +897,7 @@ class H(BaseHTTPRequestHandler):
         # static — locale-aware routing
         LOCS = ("fr", "de", "es", "it", "nl", "sv", "da")
         def resolve(p):
+            if len(p) > 1 and p.endswith("/"): p = p.rstrip("/")  # /admin/ -> /admin, /pricing/ -> /pricing
             noext = "." not in p.rsplit("/", 1)[-1]
             if p in ("", "/"): return "/index.html"
             if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies", "/contact"): return p + ".html"
