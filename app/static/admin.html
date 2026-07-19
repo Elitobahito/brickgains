@@ -74,8 +74,15 @@ table.adm th{color:var(--slate);font-weight:700;font-size:12px;text-transform:up
   </div>
 
   <div class="adm-card">
-    <h2>Traffic</h2>
-    <p style="color:var(--slate);font-weight:500;font-size:14px;line-height:1.6">Live search traffic (clicks, impressions, top queries) is in Google Search Console. GA4 / in-dashboard traffic is coming next.</p>
+    <h2>Traffic (last 7 days)</h2>
+    <div class="kpis" style="margin-bottom:18px">
+      <div class="kpi hot"><div class="k">Visitors 7d</div><div class="v" id="kVis7">-</div></div>
+      <div class="kpi"><div class="k">Page views 7d</div><div class="v" id="kView7">-</div></div>
+    </div>
+    <table class="adm"><thead><tr><th>Day</th><th style="text-align:right">Visitors</th><th style="text-align:right">Page views</th></tr></thead><tbody id="trafRows"></tbody></table>
+    <h2 style="margin-top:22px">Top pages (7 days)</h2>
+    <table class="adm"><thead><tr><th>Page</th><th style="text-align:right">Views</th></tr></thead><tbody id="topPageRows"></tbody></table>
+    <p style="color:var(--slate);font-weight:500;font-size:13px;margin-top:12px">Counted server-side (privacy-friendly, no ad cookies). For search queries &amp; impressions, use Search Console.</p>
     <a class="btn" href="https://search.google.com/search-console?resource_id=https://brickgains.com/" target="_blank" rel="noopener">Open Search Console</a>
   </div>
 </div>
@@ -109,6 +116,12 @@ async function load(){
   document.getElementById('mrrNote').textContent='Estimated MRR from plans: '+money(s.mrr_est)+(s.stripe_error?(' · Stripe: '+JSON.stringify(s.stripe_error)):'');
   var rec=s.recent||[];
   document.getElementById('recentRows').innerHTML=rec.length?rec.map(function(u){var p=u.plan||'free';return '<tr><td>'+(u.email||'')+'</td><td><span class="pill '+p+'">'+p+'</span></td><td style="color:var(--slate)">'+String(u.created||'').slice(0,16).replace('T',' ')+'</td></tr>';}).join(''):'<tr><td colspan="3" style="color:var(--slate)">No signups yet</td></tr>';
+  document.getElementById('kVis7').textContent=s.visitors_7d!=null?s.visitors_7d:'-';
+  document.getElementById('kView7').textContent=s.views_7d!=null?s.views_7d:'-';
+  var tr=s.traffic||[];
+  document.getElementById('trafRows').innerHTML=tr.length?tr.map(function(d){return '<tr><td>'+d.day+'</td><td style="text-align:right;font-family:var(--disp);font-weight:800">'+(d.uniques||0)+'</td><td style="text-align:right">'+(d.views||0)+'</td></tr>';}).join(''):'<tr><td colspan="3" style="color:var(--slate)">No traffic recorded yet</td></tr>';
+  var tp=s.top_pages||[];
+  document.getElementById('topPageRows').innerHTML=tp.length?tp.map(function(p){return '<tr><td style="font-family:var(--mono,monospace)">'+p.path+'</td><td style="text-align:right;font-family:var(--disp);font-weight:800">'+p.hits+'</td></tr>';}).join(''):'<tr><td colspan="2" style="color:var(--slate)">No traffic recorded yet</td></tr>';
 }
 load();
 </script>

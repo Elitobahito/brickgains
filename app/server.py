@@ -82,6 +82,20 @@ def qx(sql, params=(), returning=False, ignore=False):
         c.commit(); return val
     finally: c.close()
 
+def track_view(day, path, new_visitor):
+    """Compteur de trafic interne (privé, sans cookie pub) -> alimente /admin."""
+    try:
+        if PG:
+            qx("INSERT INTO traffic(day,path,hits) VALUES(?,?,1) ON CONFLICT(day,path) DO UPDATE SET hits=traffic.hits+1", (day, path))
+        else:
+            qx("INSERT INTO traffic(day,path,hits) VALUES(?,?,1) ON CONFLICT(day,path) DO UPDATE SET hits=hits+1", (day, path))
+        if new_visitor:
+            if PG:
+                qx("INSERT INTO traffic_days(day,uniques) VALUES(?,1) ON CONFLICT(day) DO UPDATE SET uniques=traffic_days.uniques+1", (day,))
+            else:
+                qx("INSERT INTO traffic_days(day,uniques) VALUES(?,1) ON CONFLICT(day) DO UPDATE SET uniques=uniques+1", (day,))
+    except Exception: pass
+
 def db_init():
     ai = "SERIAL PRIMARY KEY" if PG else "INTEGER PRIMARY KEY AUTOINCREMENT"
     ts = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP" if PG else "TEXT DEFAULT CURRENT_TIMESTAMP"
@@ -96,6 +110,11 @@ def db_init():
     qx(f"""CREATE TABLE IF NOT EXISTS price_history(
         id {ai}, set_num TEXT NOT NULL, day TEXT NOT NULL, new_avg REAL, appreciation REAL,
         UNIQUE(set_num, day))""")
+    qx("""CREATE TABLE IF NOT EXISTS traffic(
+        day TEXT NOT NULL, path TEXT NOT NULL, hits INTEGER DEFAULT 0,
+        UNIQUE(day, path))""")
+    qx("""CREATE TABLE IF NOT EXISTS traffic_days(
+        day TEXT PRIMARY KEY, uniques INTEGER DEFAULT 0)""")
     # migration: public share link on users
     try: qx("ALTER TABLE users ADD COLUMN share_id TEXT")
     except Exception: pass
@@ -784,6 +803,20 @@ class H(BaseHTTPRequestHandler):
                     s["stripe_error"] = (sub.get("error") if isinstance(sub, dict) else "no data")
             except Exception as e:
                 s["stripe_error"] = str(e)
+            # traffic (compteur interne)
+            try:
+                since7 = time.strftime("%Y-%m-%d", time.gmtime(time.time() - 7 * 86400))
+                daily = qa("SELECT day, SUM(hits) AS views FROM traffic GROUP BY day ORDER BY day DESC LIMIT 14")
+                uq = {r["day"]: r["uniques"] for r in qa("SELECT day, uniques FROM traffic_days ORDER BY day DESC LIMIT 14")}
+                for r in daily:
+                    r["views"] = int(r["views"] or 0); r["uniques"] = int(uq.get(r["day"], 0))
+                s["traffic"] = daily
+                s["views_7d"] = sum(r["views"] for r in daily if r["day"] >= since7)
+                s["visitors_7d"] = sum(r["uniques"] for r in daily if r["day"] >= since7)
+                s["top_pages"] = qa("SELECT path, SUM(hits) AS hits FROM traffic WHERE day>=? GROUP BY path ORDER BY hits DESC LIMIT 12", (since7,))
+                for r in s["top_pages"]: r["hits"] = int(r["hits"] or 0)
+            except Exception as e:
+                s["traffic_error"] = str(e)
             return self._send(200, json.dumps(s, default=str))
         if u.path == "/api/portfolio":
             me = self._me()
@@ -896,7 +929,18 @@ class H(BaseHTTPRequestHandler):
         ext = fp.rsplit(".", 1)[-1]
         ctype = {"html": "text/html", "css": "text/css", "js": "application/javascript",
                  "svg": "image/svg+xml"}.get(ext, "text/plain")
-        self._send(200, open(fp, "rb").read(), ctype + ("; charset=utf-8" if ext in ("html","css","js") else ""))
+        cookie = None
+        if ext == "html" and "admin" not in fp:
+            try:
+                day = time.strftime("%Y-%m-%d")
+                seen = self._cookie("bg_v")
+                new_v = (seen != day)
+                track_view(day, u.path[:120], new_v)
+                if new_v:
+                    cookie = "bg_v=%s; Path=/; Max-Age=63072000; SameSite=Lax" % day
+            except Exception: cookie = None
+        self._send(200, open(fp, "rb").read(),
+                   ctype + ("; charset=utf-8" if ext in ("html","css","js") else ""), cookie=cookie)
 
 if __name__ == "__main__":
     db_init()
