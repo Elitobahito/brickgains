@@ -355,7 +355,8 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .app-side .side-logo{margin:2px 6px 20px;font-size:22px}
 .side-nav{display:flex;flex-direction:column;gap:4px}
 .side-item{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:700;font-size:15px;color:var(--slate);background:transparent;border:2px solid transparent;border-radius:12px;padding:11px 14px;cursor:pointer;text-align:left;text-decoration:none;width:100%}
-.side-item .si-ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.side-item .si-ic{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.side-item .si-ic svg{width:19px;height:19px;display:block}
 .side-item:hover{background:var(--paper);color:var(--ink)}
 .side-item.on{background:var(--ink);color:#fff}
 .side-foot{margin-top:auto;display:flex;flex-direction:column;gap:4px;border-top:2px solid var(--line);padding-top:10px}

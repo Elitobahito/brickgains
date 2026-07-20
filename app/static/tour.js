@@ -1,6 +1,6 @@
 /* BrickGains - onboarding product tour (coach-marks). Vanilla, CSP-safe.
    Dark overlay + spotlight on the target + tooltip card with Back/Next/Skip.
-   Shown once (localStorage bg_tour_v2). Replayable via the "Tour" button. */
+   Shown once (localStorage bg_tour_v3). Replayable via the "Tour" button. */
 (function(){
   var FR = (document.documentElement.lang === 'fr');
   var LOC = document.documentElement.lang || 'en';
@@ -9,20 +9,22 @@
       steps:[
         {t:'Welcome to your portfolio', d:'This is your BrickGains dashboard. Here you track what your LEGO is worth in real time. Let me show you around in 20 seconds.'},
         {t:'1. Add your sets', d:'Type a set number (suggestions pop up as you type), the price you paid, and its condition. We fetch the real BrickLink market value automatically.'},
-        {t:'2. See your value and ROI', d:'These update live: how many sets you track, what you paid, what they are worth now, and your total return.'},
-        {t:'3. Market Movers', d:'The biggest gainers and laggards versus retail price. A quick way to spot which sets are heating up.'},
-        {t:'4. Watchlist', d:'Track sets you do not own yet. We flag when they move in price or retire, so you know the right moment to buy.'},
-        {t:'5. eBay profit calculator', d:'Before you sell, see your real profit after eBay fees and shipping. No surprises.'},
+        {t:'2. Or just scan the box', d:'No typing on mobile: open Scan a box, point your phone at the barcode on the LEGO box, and we add the set for you in one tap.'},
+        {t:'3. See your value and ROI', d:'These update live: how many sets you track, what you paid, what they are worth now, and your total return.'},
+        {t:'4. Market Movers', d:'The biggest gainers and laggards versus retail price. A quick way to spot which sets are heating up.'},
+        {t:'5. Watchlist', d:'Track sets you do not own yet. We flag when they move in price or retire, so you know the right moment to buy.'},
+        {t:'6. eBay profit calculator', d:'Before you sell, see your real profit after eBay fees and shipping. No surprises.'},
         {t:'You are all set!', d:'That is the whole dashboard. Add your first set to get started. Upgrade to Pro anytime for price alerts and unlimited tracking.'}
       ]},
     fr: {skip:'Passer', back:'Précédent', next:'Suivant', done:'Compris', tour:'Tuto', of:'sur',
       steps:[
         {t:'Bienvenue dans votre portefeuille', d:'Voici votre tableau de bord BrickGains. Vous y suivez la valeur de vos LEGO en temps réel. Petit tour en 20 secondes.'},
         {t:'1. Ajoutez vos sets', d:'Tapez un numéro de set (des suggestions apparaissent), le prix payé et son état. On récupère automatiquement la vraie valeur marché BrickLink.'},
-        {t:'2. Votre valeur et votre ROI', d:'Mis à jour en direct : nombre de sets suivis, total payé, valeur actuelle et rendement total.'},
-        {t:'3. Market Movers', d:'Les plus fortes hausses et les retardataires face au prix de vente. Repérez vite les sets qui chauffent.'},
-        {t:'4. Watchlist', d:'Suivez des sets que vous ne possédez pas encore. On vous alerte quand le prix bouge ou qu ils partent en retraite.'},
-        {t:'5. Calculateur de profit eBay', d:'Avant de vendre, voyez votre profit réel après les frais eBay et la livraison. Aucune surprise.'},
+        {t:'2. Ou scannez la boîte', d:'Sans rien taper sur mobile : ouvrez « Scan a box », pointez votre téléphone sur le code-barres de la boîte LEGO, et on ajoute le set en un tap.'},
+        {t:'3. Votre valeur et votre ROI', d:'Mis à jour en direct : nombre de sets suivis, total payé, valeur actuelle et rendement total.'},
+        {t:'4. Market Movers', d:'Les plus fortes hausses et les retardataires face au prix de vente. Repérez vite les sets qui chauffent.'},
+        {t:'5. Watchlist', d:'Suivez des sets que vous ne possédez pas encore. On vous alerte quand le prix bouge ou qu ils partent en retraite.'},
+        {t:'6. Calculateur de profit eBay', d:'Avant de vendre, voyez votre profit réel après les frais eBay et la livraison. Aucune surprise.'},
         {t:'Tout est prêt !', d:'Voilà tout le tableau de bord. Ajoutez votre premier set pour démarrer. Passez Pro quand vous voulez pour les alertes de prix et le suivi illimité.'}
       ]}
   }[FR?'fr':'en'] || null;
@@ -33,6 +35,7 @@
     return [
       null,
       document.querySelector('.add-row'),
+      document.querySelector('#panel-scan .scan-page') || document.querySelector('.tbtn.accent'),
       document.querySelector('.portfolio-head'),
       movers[0] || null,
       movers[1] || null,
@@ -53,7 +56,7 @@
   }
   function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
 
-  var STEP_TAB = [null, 'portfolio', 'portfolio', 'movers', 'watch', 'ebay', null];
+  var STEP_TAB = [null, 'portfolio', 'scan', 'portfolio', 'movers', 'watch', 'ebay', null];
   function show(i){
     idx = i;
     var step = L.steps[i]; if(!step) return end();
@@ -116,7 +119,7 @@
   function end(){
     if(overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
     overlay=null;
-    try{ localStorage.setItem('bg_tour_v2','1'); }catch(e){}
+    try{ localStorage.setItem('bg_tour_v3','1'); }catch(e){}
     window.removeEventListener('resize', reposition);
     window.removeEventListener('scroll', reposition, true);
   }
@@ -134,7 +137,7 @@
   function init(){
     if(!document.querySelector('.portfolio-head')) return; // only on /app
     addButton();
-    var seen; try{ seen = localStorage.getItem('bg_tour_v2'); }catch(e){ seen='1'; }
+    var seen; try{ seen = localStorage.getItem('bg_tour_v3'); }catch(e){ seen='1'; }
     if(!seen) setTimeout(start, 700);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
