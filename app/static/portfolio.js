@@ -457,3 +457,14 @@ function ebayCalc(){
   document.getElementById('ecMargin').textContent=margin+'%';
 }
 ebayCalc();
+
+// Prefill the add-set field when arriving from a homepage result CTA (/app?add=70732)
+(function(){
+  try{
+    var s = new URLSearchParams(location.search).get('add');
+    if(!s) return;
+    var run = function(){ if(typeof pickSet==='function') pickSet(s); };
+    if(document.readyState!=='loading') setTimeout(run,400);
+    else document.addEventListener('DOMContentLoaded', function(){ setTimeout(run,400); });
+  }catch(e){}
+})();

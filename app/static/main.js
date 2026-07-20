@@ -14,7 +14,8 @@ fr: {
   vAvail:`🟡 Encore en rayon. La valeur grimpe souvent après la retraite.`,
   vRet:`Retiré. Surveillez-le pour la meilleure fenêtre de vente.`,
   exLoading:`Chargement des exemples...`, exUnavail:`Exemples indisponibles pour l'instant.`,
-  to:` à `, retailWord:`Prix sortie`
+  to:` à `, retailWord:`Prix sortie`,
+  track:`➕ Suivre ce set`, full:`Voir l'analyse complète →`
 },
 en: {
   left:(n)=>`<b id="freeLeft">${n}</b> free checks left · no signup`,
@@ -30,7 +31,8 @@ en: {
   vAvail:`🟡 Still on shelves. Value usually climbs after retirement.`,
   vRet:`Retired. Track it for the best selling window.`,
   exLoading:`Loading live examples...`, exUnavail:`Examples unavailable right now.`,
-  to:` to `, retailWord:`Retail`
+  to:` to `, retailWord:`Retail`,
+  track:`➕ Track this set`, full:`See full analysis →`
 },
 de: {
   left:(n)=>`<b id="freeLeft">${n}</b> kostenlose Abfragen übrig · ohne Anmeldung`,
@@ -46,7 +48,8 @@ de: {
   vAvail:`🟡 Noch im Handel. Der Wert steigt oft nach dem EOL.`,
   vRet:`Aus dem Handel. Behalte es für das beste Verkaufsfenster im Blick.`,
   exLoading:`Live-Beispiele werden geladen...`, exUnavail:`Beispiele derzeit nicht verfügbar.`,
-  to:` bis `, retailWord:`UVP`
+  to:` bis `, retailWord:`UVP`,
+  track:`➕ Set verfolgen`, full:`Vollständige Analyse →`
 },
 es: {
   left:(n)=>`<b id="freeLeft">${n}</b> consultas gratis restantes · sin registro`,
@@ -62,7 +65,8 @@ es: {
   vAvail:`🟡 Todavía en tiendas. El valor suele subir tras su retirada.`,
   vRet:`Descatalogado. Vigílalo para encontrar la mejor ventana de venta.`,
   exLoading:`Cargando ejemplos en vivo...`, exUnavail:`Ejemplos no disponibles ahora mismo.`,
-  to:` a `, retailWord:`Precio de salida`
+  to:` a `, retailWord:`Precio de salida`,
+  track:`➕ Seguir este set`, full:`Ver análisis completo →`
 },
 it: {
   left:(n)=>`<b id="freeLeft">${n}</b> ricerche gratuite rimaste · senza registrazione`,
@@ -78,7 +82,8 @@ it: {
   vAvail:`🟡 Ancora in vendita. Il valore di solito sale dopo il ritiro.`,
   vRet:`Ritirato. Tienilo d'occhio per la migliore finestra di vendita.`,
   exLoading:`Caricamento esempi in tempo reale...`, exUnavail:`Esempi non disponibili al momento.`,
-  to:` a `, retailWord:`Prezzo di listino`
+  to:` a `, retailWord:`Prezzo di listino`,
+  track:`➕ Segui questo set`, full:`Vedi analisi completa →`
 },
 nl: {
   left:(n)=>`<b id="freeLeft">${n}</b> gratis checks over · zonder registratie`,
@@ -94,7 +99,8 @@ nl: {
   vAvail:`🟡 Nog in de winkel. De waarde stijgt meestal na het uit productie gaan.`,
   vRet:`Uit productie. Houd hem in de gaten voor het beste verkoopmoment.`,
   exLoading:`Live voorbeelden laden...`, exUnavail:`Voorbeelden momenteel niet beschikbaar.`,
-  to:` tot `, retailWord:`Adviesprijs`
+  to:` tot `, retailWord:`Adviesprijs`,
+  track:`➕ Volg deze set`, full:`Bekijk volledige analyse →`
 },
 sv: {
   left:(n)=>`<b id="freeLeft">${n}</b> gratis koll kvar · utan registrering`,
@@ -110,7 +116,8 @@ sv: {
   vAvail:`🟡 Fortfarande i butik. Värdet stiger ofta efter att setet utgått.`,
   vRet:`Utgått. Håll koll på det för bästa säljläget.`,
   exLoading:`Laddar liveexempel...`, exUnavail:`Exempel är inte tillgängliga just nu.`,
-  to:` till `, retailWord:`Nypris`
+  to:` till `, retailWord:`Nypris`,
+  track:`➕ Följ detta set`, full:`Se fullständig analys →`
 },
 da: {
   left:(n)=>`<b id="freeLeft">${n}</b> gratis tjek tilbage · uden oprettelse`,
@@ -126,7 +133,8 @@ da: {
   vAvail:`🟡 Stadig i butikkerne. Værdien stiger ofte, efter sættet udgår.`,
   vRet:`Udgået. Hold øje med det for det bedste salgstidspunkt.`,
   exLoading:`Indlæser live-eksempler...`, exUnavail:`Eksempler er ikke tilgængelige lige nu.`,
-  to:` til `, retailWord:`Vejl. pris`
+  to:` til `, retailWord:`Vejl. pris`,
+  track:`➕ Følg dette sæt`, full:`Se fuld analyse →`
 }
 };
 const T = STR[window.LANG] || STR.en;
@@ -173,6 +181,10 @@ function cardHTML(d){
       <div class="cell"><div class="k">${T.range}</div><div class="v" style="font-size:16px">${money(d.newMin)}${T.to}${money(d.newMax)}</div></div>
     </div>
     <div class="verdict ${d.retired?'retired':''}">${verdict}</div>
+    <div class="vcta">
+      <a class="btn" href="/app?add=${encodeURIComponent(String(d.set||'').replace('-1',''))}">${T.track}</a>
+      <a class="vcta-link" href="/set/${encodeURIComponent(String(d.set||'').replace('-1',''))}">${T.full}</a>
+    </div>
   </div>`;
 }
 
