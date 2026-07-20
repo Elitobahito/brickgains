@@ -204,26 +204,33 @@ section{padding:78px 0}
 
 /* ---- pricing ---- */
 #pricing{background:linear-gradient(180deg,#fff,var(--paper))}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:60px;align-items:start}
-.plan{position:relative;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:32px 30px;box-shadow:var(--sh);display:flex;flex-direction:column}
-.plan.pop{background:var(--yellow);color:var(--ink);box-shadow:var(--sh-lg);padding-top:42px;margin-top:-16px}
-.plan.pop h3,.plan.pop .price{color:var(--ink)}
-.plan.pop .price span{color:var(--slate)}
-.plan.pop li{color:var(--ink)}
-.plan.pop .tag{background:var(--red);color:#fff}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px;align-items:stretch}
+.plan{position:relative;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:36px 30px 30px;box-shadow:var(--sh);display:flex;flex-direction:column;transition:transform .12s ease,box-shadow .12s ease}
+.plan:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
+.plan.pop{background:var(--ink);color:#fff;box-shadow:var(--sh-lg)}
+.plan.pop:hover{transform:translateY(-4px)}
+.plan.pop h3{color:#fff}
+.plan.pop .price{color:var(--yellow)}
+.plan.pop .price span{color:rgba(255,255,255,.6)}
+.plan.pop li{color:rgba(255,255,255,.92)}
+.plan.pop ul{border-top-color:rgba(255,255,255,.16)}
+.plan.pop li.soon{color:rgba(255,255,255,.6)}
+.plan.pop .tag{background:var(--yellow);color:var(--ink)}
+.plan.pop .btn{background:var(--yellow);color:var(--ink);border-color:var(--ink)}
 .plan .tag{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);background:var(--yellow);color:var(--ink);font-family:var(--disp);font-weight:700;font-size:12.5px;letter-spacing:.3px;padding:7px 17px;border-radius:999px;border:2.5px solid var(--ink);box-shadow:var(--sh-sm);white-space:nowrap}
-.plan h3{font-size:23px;font-weight:800}
-.plan .price{font-size:44px;font-weight:800;margin:6px 0 4px}
-.plan .price span{font-size:16px;color:var(--slate);font-weight:700}
-.plan .price .pr-m,.plan .price .pr-y{font-size:44px;font-weight:800;color:inherit}
-.plan .price .pr-m>span,.plan .price .pr-y>span{font-size:16px;color:var(--slate);font-weight:700}
-.plan ul{list-style:none;margin:22px 0;display:flex;flex-direction:column;gap:14px;flex:1}
-.plan li{padding-left:32px;position:relative;font-weight:500;font-size:15px;min-height:24px;display:flex;align-items:center}
-.plan li::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:22px;height:22px;
+.plan h3{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--slate)}
+.plan.pop h3{color:rgba(255,255,255,.75)}
+.plan .price{font-size:46px;font-weight:800;margin:8px 0 2px;letter-spacing:-1px}
+.plan .price span{font-size:15px;color:var(--slate);font-weight:700;letter-spacing:0}
+.plan .price .pr-m,.plan .price .pr-y{font-size:46px;font-weight:800;color:inherit}
+.plan .price .pr-m>span,.plan .price .pr-y>span{font-size:15px;color:var(--slate);font-weight:700}
+.plan ul{list-style:none;margin:24px 0 22px;padding-top:22px;border-top:2px solid var(--line);display:flex;flex-direction:column;gap:13px;flex:1}
+.plan li{padding-left:32px;position:relative;font-weight:500;font-size:15px;line-height:1.4}
+.plan li::before{content:"";position:absolute;left:0;top:0;width:21px;height:21px;
   background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300A94F' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M7 12.5l3.2 3.2L17 8.3'/%3E%3C/svg%3E") center/contain no-repeat}
 .plan li.off{color:#a9a49a}
 .plan li.off::before{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23cfcabf' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3C/svg%3E") center/contain no-repeat}
-.plan .btn{margin-top:8px}
+.plan .btn{margin-top:6px;width:100%}
 .btn.dark{background:var(--ink);color:#fff}
 
 /* ---- guarantee strip (pricing page) ---- */
