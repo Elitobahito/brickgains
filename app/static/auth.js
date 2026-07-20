@@ -135,11 +135,6 @@
       <div class="authlogo"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</div>
       <h3 id="authTitle">${S.welcome}</h3>
       <p id="authSub">${S.loginSub}</p>
-      <button class="gbtn" onclick="BG.google()">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.7-2.4 3.6v3h3.9c2.3-2.1 3.5-5.2 3.5-8.8z"/><path fill="#34A853" d="M12 24c3.2 0 5.9-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.1-4 1.1-3.1 0-5.7-2.1-6.6-4.9H1.4v3.1C3.4 21.3 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.4 14.3c-.2-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3V6.6H1.4C.5 8.3 0 10.1 0 12s.5 3.7 1.4 5.4l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.4 0 3.4 2.7 1.4 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z"/></svg>
-        ${S.google}
-      </button>
-      <div class="ordiv"><span>${S.or}</span></div>
       <form onsubmit="BG.submit(event)">
         <input id="authEmail" type="email" placeholder="${S.email}" autocomplete="email" required>
         <input id="authPass" type="password" placeholder="${S.pass}" autocomplete="current-password" required>
