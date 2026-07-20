@@ -480,9 +480,10 @@ def get_value(raw):
 
 class H(BaseHTTPRequestHandler):
     def log_message(self, *a): pass
-    def _send(self, code, body, ctype="application/json", cookie=None):
+    def _send(self, code, body, ctype="application/json", cookie=None, cache=None):
         self.send_response(code)
         self.send_header("Content-Type", ctype)
+        self.send_header("Cache-Control", cache or "no-store")
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "SAMEORIGIN")
@@ -497,6 +498,14 @@ class H(BaseHTTPRequestHandler):
         if cookie: self.send_header("Set-Cookie", cookie)
         self.end_headers()
         self.wfile.write(body if isinstance(body, bytes) else body.encode())
+
+    def _404(self):
+        try:
+            p = os.path.join(STATIC, "404.html")
+            if os.path.isfile(p):
+                return self._send(404, open(p, "rb").read(), "text/html; charset=utf-8")
+        except Exception: pass
+        return self._send(404, "Not found", "text/plain")
 
     def _ip(self):
         xff = self.headers.get("X-Forwarded-For", "")
@@ -1121,11 +1130,22 @@ class H(BaseHTTPRequestHandler):
         fp = os.path.realpath(os.path.join(STATIC, path.lstrip("/")))
         # security: confine to STATIC root (block path traversal ../ escaping the web root)
         if not (fp == _STATIC_ROOT or fp.startswith(_STATIC_ROOT + os.sep)):
-            return self._send(404, "Not found", "text/plain")
-        if not os.path.isfile(fp): return self._send(404, "Not found", "text/plain")
+            return self._404()
+        if not os.path.isfile(fp): return self._404()
         ext = fp.rsplit(".", 1)[-1]
         ctype = {"html": "text/html", "css": "text/css", "js": "application/javascript",
-                 "svg": "image/svg+xml"}.get(ext, "text/plain")
+                 "svg": "image/svg+xml", "png": "image/png", "jpg": "image/jpeg",
+                 "jpeg": "image/jpeg", "webp": "image/webp", "gif": "image/gif",
+                 "ico": "image/x-icon", "json": "application/json", "xml": "application/xml",
+                 "txt": "text/plain", "woff": "font/woff", "woff2": "font/woff2"}.get(ext, "application/octet-stream")
+        # cache : assets = 1 an immutable ; pages HTML de contenu = 5 min ; app/u/admin = non caché
+        ASSET = ("css", "js", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "woff", "woff2")
+        if ext in ASSET:
+            cache = "public, max-age=31536000, immutable"
+        elif ext == "html" and not fp.endswith(("app.html", "u.html", "admin.html")):
+            cache = "public, max-age=300"
+        else:
+            cache = "no-store"
         cookie = None
         if ext == "html" and "admin" not in fp:
             try:
@@ -1137,7 +1157,8 @@ class H(BaseHTTPRequestHandler):
                     cookie = "bg_v=%s; Path=/; Max-Age=63072000; SameSite=Lax" % day
             except Exception: cookie = None
         self._send(200, open(fp, "rb").read(),
-                   ctype + ("; charset=utf-8" if ext in ("html","css","js") else ""), cookie=cookie)
+                   ctype + ("; charset=utf-8" if ext in ("html", "css", "js", "svg") else ""),
+                   cookie=cookie, cache=cache)
 
 if __name__ == "__main__":
     db_init()
