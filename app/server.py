@@ -852,6 +852,20 @@ class H(BaseHTTPRequestHandler):
                 if uid and cust:
                     try: qx("UPDATE users SET stripe_customer_id=? WHERE id=?", (cust, int(uid)))
                     except Exception: pass
+                # notify founder of the new order
+                try:
+                    if SUPPORT_NOTIFY:
+                        cust_email = (obj.get("customer_details") or {}).get("email") or obj.get("customer_email") or "?"
+                        amount = (obj.get("amount_total") or 0) / 100.0
+                        cur = (obj.get("currency") or "usd").upper()
+                        bill = meta.get("billing") or "monthly"
+                        send_email(SUPPORT_NOTIFY, f"💰 New BrickGains order: {plan} ({bill})",
+                            email_shell("New subscription 🎉",
+                                f"<p style='font-weight:500;line-height:1.6'><b>Plan:</b> {html.escape(plan)} ({html.escape(bill)})<br>"
+                                f"<b>Amount:</b> {amount:.2f} {cur}<br>"
+                                f"<b>Customer:</b> {html.escape(str(cust_email))}</p>",
+                                "Open admin", SITE_URL + "/elitobahito"))
+                except Exception: pass
             elif typ == "customer.subscription.updated":
                 uid = meta.get("user_id")
                 status = obj.get("status", "")
