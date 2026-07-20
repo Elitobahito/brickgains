@@ -274,8 +274,8 @@
   };
   window.BG = BG;
 
-  // Monthly / Annual billing toggle (pricing sections)
-  window.__bgBilling = 'monthly';
+  // Monthly / Annual billing toggle (pricing sections) — annual is the default
+  window.__bgBilling = 'annual';
   function setBilling(b){
     window.__bgBilling = b;
     document.querySelectorAll('.bt-opt').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-bill')===b); });
@@ -289,6 +289,7 @@
 
   document.addEventListener('DOMContentLoaded', async ()=>{
     document.body.insertAdjacentHTML('beforeend', authHTML);
+    try{ setBilling('annual'); }catch(e){}  // default the pricing toggle to annual on load
     const btn = el('accountBtn');
     if(btn) btn.addEventListener('click', ()=> me ? BG.openAcct() : BG.openAuth('login'));
     document.addEventListener('click', function(e){
