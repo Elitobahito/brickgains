@@ -211,7 +211,7 @@
         const d = await r.json();
         if(d.ok){ me = d.user; msg.className='authmsg ok'; msg.textContent=S.success;
           const intent = sessionStorage.getItem('bg_intent');
-          if(intent){ sessionStorage.removeItem('bg_intent'); setTimeout(()=>BG.checkout(intent), 400); }
+          if(intent){ sessionStorage.removeItem('bg_intent'); const ip=intent.split('|'); setTimeout(()=>BG.checkout(ip[0], ip[1]||'monthly'), 400); }
           else { setTimeout(()=>{ location.href = '/app'; }, 500); } }
         else { msg.className='authmsg err'; msg.textContent = d.error || S.err; }
       }catch(err){ msg.className='authmsg err'; msg.textContent=S.net; }
@@ -243,10 +243,11 @@
     }
   };
   // Stripe checkout: POST /api/checkout -> redirect to hosted page. If not logged in, open auth then resume.
-  BG.checkout = async function(plan){
+  BG.checkout = async function(plan, billing){
+    billing = billing || window.__bgBilling || 'monthly';
     try{
-      const r = await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan})});
-      if(r.status===401){ sessionStorage.setItem('bg_intent', plan); BG.openAuth('signup'); return; }
+      const r = await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan, billing})});
+      if(r.status===401){ sessionStorage.setItem('bg_intent', plan+'|'+billing); BG.openAuth('signup'); return; }
       const d = await r.json();
       if(d && d.ok && d.url){ location.href = d.url; }
       else { alert((d && d.error) || (FRA ? "Paiement indisponible" : "Checkout unavailable")); }
@@ -264,13 +265,26 @@
   };
   window.BG = BG;
 
+  // Monthly / Annual billing toggle (pricing sections)
+  window.__bgBilling = 'monthly';
+  function setBilling(b){
+    window.__bgBilling = b;
+    document.querySelectorAll('.bt-opt').forEach(function(x){ x.classList.toggle('on', x.getAttribute('data-bill')===b); });
+    document.querySelectorAll('.pr-m').forEach(function(x){ x.style.display = (b==='annual'?'none':''); });
+    document.querySelectorAll('.pr-y').forEach(function(x){ x.style.display = (b==='annual'?'':'none'); });
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target.closest && e.target.closest('[data-bill]');
+    if(t){ e.preventDefault(); setBilling(t.getAttribute('data-bill')); }
+  });
+
   document.addEventListener('DOMContentLoaded', async ()=>{
     document.body.insertAdjacentHTML('beforeend', authHTML);
     const btn = el('accountBtn');
     if(btn) btn.addEventListener('click', ()=> me ? BG.openAcct() : BG.openAuth('login'));
     document.addEventListener('click', function(e){
       const a = e.target.closest('[data-plan]');
-      if(a){ e.preventDefault(); BG.checkout(a.getAttribute('data-plan')); }
+      if(a){ e.preventDefault(); BG.checkout(a.getAttribute('data-plan'), window.__bgBilling||'monthly'); }
     });
     await BG.refreshMe();
     if(document.getElementById('promoWall') && !location.pathname.startsWith('/app')) BG.maybePromo();

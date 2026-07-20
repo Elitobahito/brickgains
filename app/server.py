@@ -184,6 +184,7 @@ def _norm(sn):
 STRIPE_SK = ENV.get("STRIPE_SECRET_KEY", "")
 STRIPE_WHSEC = ENV.get("STRIPE_WEBHOOK_SECRET", "")
 PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR", "")}
+ANNUAL_PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO_ANNUAL", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR_ANNUAL", "")}
 STRIPE_PORTAL_CONFIG = ENV.get("STRIPE_PORTAL_CONFIG", "")
 SITE_URL = ENV.get("SITE_URL", "https://brickgains.com")
 
@@ -760,7 +761,10 @@ class H(BaseHTTPRequestHandler):
                 return self._send(401, json.dumps({"ok": False, "error": "login required"}))
             d = self._body()
             plan = (d.get("plan") or "").strip().lower()
-            price = PRICE_IDS.get(plan)
+            billing = (d.get("billing") or "monthly").strip().lower()
+            price = (ANNUAL_PRICE_IDS.get(plan) if billing == "annual" else PRICE_IDS.get(plan))
+            if not price:  # fallback to monthly if annual price missing
+                price = PRICE_IDS.get(plan); billing = "monthly"
             if not price:
                 return self._send(400, json.dumps({"ok": False, "error": "invalid plan"}))
             if not STRIPE_SK:
@@ -776,6 +780,7 @@ class H(BaseHTTPRequestHandler):
                 "allow_promotion_codes": "true",
                 "metadata[user_id]": str(me["id"]),
                 "metadata[plan]": plan,
+                "metadata[billing]": billing,
                 "subscription_data[metadata][user_id]": str(me["id"]),
                 "subscription_data[metadata][plan]": plan,
             }
