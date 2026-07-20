@@ -1284,15 +1284,11 @@ class H(BaseHTTPRequestHandler):
         else:
             cache = "no-store"
         cookie = None
+        # NB: no Set-Cookie on HTML -> Cloudflare can edge-cache the pages (fixes cold-start).
+        # track_view runs only on cache MISS (edge HITs never reach origin); use GSC/GA for real traffic.
         if ext == "html" and "admin" not in fp:
-            try:
-                day = time.strftime("%Y-%m-%d")
-                seen = self._cookie("bg_v")
-                new_v = (seen != day)
-                track_view(day, u.path[:120], new_v)
-                if new_v:
-                    cookie = "bg_v=%s; Path=/; Max-Age=63072000; SameSite=Lax" % day
-            except Exception: cookie = None
+            try: track_view(time.strftime("%Y-%m-%d"), u.path[:120], False)
+            except Exception: pass
         self._send(200, open(fp, "rb").read(),
                    ctype + ("; charset=utf-8" if ext in ("html", "css", "js", "svg") else ""),
                    cookie=cookie, cache=cache)
