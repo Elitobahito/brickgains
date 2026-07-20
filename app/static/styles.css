@@ -474,7 +474,7 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 @media(min-width:1300px){ .art-rail{display:block} }
 
 /* ---- promo card (blog -> pricing) ---- */
-.promo-card{background:var(--paper);color:var(--ink);border:3px solid var(--ink);border-radius:var(--radius);
+.promo-card{background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:var(--radius);
   box-shadow:var(--sh);padding:28px 30px;margin:34px 0;display:flex;gap:22px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .promo-card .pc-l{flex:1;min-width:240px}
 .promo-card .pc-eyebrow{font-family:var(--disp);font-weight:700;color:var(--red);font-size:13px;text-transform:uppercase;letter-spacing:.5px}
@@ -484,8 +484,10 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .article a.btn,.article .promo-card .btn{color:#fff;text-decoration:none}
 .related{margin-top:44px;border-top:2px solid var(--line);padding-top:24px}
 .related h4{font-family:var(--disp);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
-.related a{display:block;color:var(--red);font-weight:700;margin-bottom:8px}
-@media(max-width:820px){ .bloggrid{grid-template-columns:1fr} .article p,.article li{font-size:16px} }
+.rel-grid{margin:16px 0 8px}
+.rel-grid .blogcard .thumb{height:150px}
+.rel-grid .blogcard h3{font-size:16px}
+@media(max-width:820px){ .bloggrid{grid-template-columns:1fr} .rel-grid{grid-template-columns:1fr} .article p,.article li{font-size:16px} }
 
 /* ---- set value pages (catalog) ---- */
 .setpage{max-width:960px;margin:0 auto;padding:40px 0 72px}
