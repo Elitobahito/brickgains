@@ -146,6 +146,7 @@
         <div class="authmsg" id="authMsg"></div>
         <button class="btn lg" type="submit" id="authSubmit" style="width:100%">${S.login}</button>
       </form>
+      <a class="altlink" id="authForgot" onclick="BG.forgot()" style="display:block;margin-top:12px;font-size:13px;cursor:pointer">Forgot password?</a>
       <div class="authswitch">
         <span id="authSwitchTxt">${S.newHere}</span>
         <a onclick="BG.toggle()" id="authSwitchLink">${S.doCreate}</a>
@@ -190,6 +191,13 @@
     openAcct(){ if(me){ el('acctEmail').textContent = me.email; el('acctPlan').textContent = S.plan+(me.plan||'free'); el('acctWall').classList.add('on'); } },
     closeAcct(){ el('acctWall').classList.remove('on'); },
     toggle(){ BG.mode = BG.mode==='login' ? 'signup' : 'login'; BG.render(); },
+    forgot(){
+      var em = ((el('authEmail')||{}).value||'').trim();
+      if(!em){ em = (prompt('Enter your account email and we\'ll send a reset link:')||'').trim(); }
+      if(!em) return;
+      try{ fetch('/api/forgot',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:em})}); }catch(e){}
+      var m=el('authMsg'); if(m){ m.style.color='#0a7d2b'; m.textContent='If that email has an account, a reset link is on its way. Check your inbox.'; }
+    },
     render(){
       const login = BG.mode==='login';
       el('authTitle').textContent = login ? S.welcome : S.createTitle;
@@ -199,6 +207,7 @@
       el('authSwitchTxt').textContent = login ? S.newHere : S.already;
       el('authSwitchLink').textContent = login ? S.doCreate : S.doLogin;
       el('authMsg').textContent = '';
+      var fg=el('authForgot'); if(fg) fg.style.display = login ? 'block' : 'none';
     },
     async submit(e){
       e.preventDefault();

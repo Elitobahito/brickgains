@@ -136,6 +136,9 @@ def db_init():
     qx(f"""CREATE TABLE IF NOT EXISTS watchlist(
         id {ai}, user_id INTEGER NOT NULL, set_num TEXT NOT NULL,
         target REAL, created {ts}, UNIQUE(user_id, set_num))""")
+    # password reset tokens (expire after 1h, checked at use)
+    qx(f"""CREATE TABLE IF NOT EXISTS resets(
+        token TEXT PRIMARY KEY, user_id INTEGER NOT NULL, created {ts})""")
 
 def hash_pw(pw, salt=None):
     salt = salt or secrets.token_hex(16)
@@ -585,9 +588,14 @@ class H(BaseHTTPRequestHandler):
             try:
                 send_email(email, "Welcome to BrickGains 🧱", email_shell(
                     "Welcome to BrickGains!",
-                    "<p style='font-weight:500;line-height:1.6'>Your free account is ready. Add your LEGO sets and instantly see what they are really worth, "
-                    "track your ROI, and watch the sets you want to buy. Real BrickLink prices, updated daily.</p>",
-                    "Open my portfolio", SITE_URL + "/app"))
+                    "<p style='font-weight:500;line-height:1.6'>Your free account is ready. Real BrickLink prices, updated daily. "
+                    "Here's how to get value in the next 2 minutes:</p>"
+                    "<ol style='line-height:1.8;padding-left:18px;font-weight:500'>"
+                    "<li><b>Add your first 3 sets</b> — see instantly what they're worth and your ROI.</li>"
+                    "<li><b>Import your whole collection</b> — paste your set numbers, we value them all.</li>"
+                    "<li><b>Add a watchlist</b> — track sets you want and get a signal when it's time to buy.</li>"
+                    "</ol>",
+                    "Add my first set", SITE_URL + "/app"))
             except Exception: pass
             return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": "free"}}),
                               cookie=self._sess_cookie(tok))
@@ -610,6 +618,42 @@ class H(BaseHTTPRequestHandler):
             if tok:
                 qx("DELETE FROM sessions WHERE token=?", (tok,))
             return self._send(200, json.dumps({"ok": True}), cookie=self._sess_cookie("", clear=True))
+
+        if u.path == "/api/forgot":
+            if not rate_ok("forgot:" + self._ip(), 5, 900):
+                return self._send(200, json.dumps({"ok": True}))  # silent (no enumeration)
+            d = self._body()
+            email = (d.get("email") or "").strip().lower()
+            row = q1("SELECT id FROM users WHERE email=?", (email,))
+            if row:
+                rtok = secrets.token_urlsafe(32)
+                qx("DELETE FROM resets WHERE created < " + ("now() - interval '1 day'" if PG else "datetime('now','-1 day')"))
+                qx("INSERT INTO resets(token,user_id) VALUES(?,?)", (rtok, row["id"]))
+                try:
+                    send_email(email, "Reset your BrickGains password", email_shell(
+                        "Reset your password",
+                        "<p style='font-weight:500;line-height:1.6'>We got a request to reset your BrickGains password. "
+                        "Click below to choose a new one. This link expires in 1 hour.</p>"
+                        "<p style='color:#8a877e;font-size:13px'>If you didn't ask for this, just ignore this email — nothing changes.</p>",
+                        "Choose a new password", SITE_URL + "/reset?token=" + rtok))
+                except Exception: pass
+            return self._send(200, json.dumps({"ok": True}))  # always ok
+
+        if u.path == "/api/reset":
+            d = self._body()
+            rtok = (d.get("token") or "").strip()
+            new = d.get("new_password") or ""
+            if len(new) < 8:
+                return self._send(400, json.dumps({"ok": False, "error": "Password must be at least 8 characters."}))
+            fresh = q1("SELECT user_id FROM resets WHERE token=? AND created > "
+                       + ("now() - interval '1 hour'" if PG else "datetime('now','-1 hour')"), (rtok,))
+            if not fresh:
+                qx("DELETE FROM resets WHERE token=?", (rtok,))
+                return self._send(400, json.dumps({"ok": False, "error": "This reset link is invalid or expired. Request a new one."}))
+            qx("UPDATE users SET pw_hash=? WHERE id=?", (hash_pw(new), fresh["user_id"]))
+            qx("DELETE FROM resets WHERE token=?", (rtok,))
+            qx("DELETE FROM sessions WHERE user_id=?", (fresh["user_id"],))  # invalidate other sessions
+            return self._send(200, json.dumps({"ok": True}))
 
         if u.path == "/api/change-password":
             me = self._me()
@@ -894,13 +938,50 @@ class H(BaseHTTPRequestHandler):
                                 f"<b>Customer:</b> {html.escape(str(cust_email))}</p>",
                                 "Open admin", SITE_URL + "/elitobahito"))
                 except Exception: pass
+                # confirmation email to the customer (welcome to Pro/Investor)
+                try:
+                    cust_email = (obj.get("customer_details") or {}).get("email") or obj.get("customer_email")
+                    if not cust_email and uid:
+                        r = q1("SELECT email FROM users WHERE id=?", (int(uid),)); cust_email = (r or {}).get("email")
+                    if cust_email:
+                        feats = ("<li>Unlimited value checks</li><li>Full portfolio dashboard + ROI</li>"
+                                 "<li>Market Movers &amp; watchlist buy/hold signals</li><li>eBay profit calculator</li>"
+                                 "<li>Bulk import + shareable portfolio</li><li>Email price + retirement alerts</li>") if plan == "pro" else \
+                                ("<li>Everything in Pro</li><li>Multi-copy tracking for resellers</li>"
+                                 "<li>Bulk CSV export</li><li>Insurance PDF reports</li>"
+                                 "<li>Sold-set profit &amp; loss</li>")
+                        send_email(cust_email, f"You're on BrickGains {plan.title()} \U0001F389", email_shell(
+                            f"Welcome to BrickGains {plan.title()}!",
+                            "<p style='font-weight:500;line-height:1.6'>Your payment went through — your account is now "
+                            f"<b>{plan.title()}</b>. Here's what you just unlocked:</p>"
+                            f"<ul style='line-height:1.7;padding-left:18px;font-weight:500'>{feats}</ul>"
+                            "<p style='font-weight:500;line-height:1.6'>Add your collection to see your full ROI. "
+                            "You can manage or cancel your plan anytime from your account — no lock-in.</p>",
+                            "Open my dashboard", SITE_URL + "/app"))
+                except Exception: pass
             elif typ == "customer.subscription.updated":
                 uid = meta.get("user_id")
                 status = obj.get("status", "")
                 plan = meta.get("plan") or "pro"
                 set_user_plan(uid, plan if status in ("active", "trialing") else "free")
             elif typ == "customer.subscription.deleted":
-                set_user_plan(meta.get("user_id"), "free")
+                cuid = meta.get("user_id")
+                set_user_plan(cuid, "free")
+                # cancellation email to the customer (feedback + win-back)
+                try:
+                    if cuid:
+                        r = q1("SELECT email FROM users WHERE id=?", (int(cuid),))
+                        cem = (r or {}).get("email")
+                        if cem:
+                            send_email(cem, "Your BrickGains subscription is canceled", email_shell(
+                                "Sorry to see you go",
+                                "<p style='font-weight:500;line-height:1.6'>Your subscription is canceled and your account is back "
+                                "on the free plan. Your portfolio and data are safe — nothing is deleted.</p>"
+                                "<p style='font-weight:500;line-height:1.6'>If you come back on an <b>annual</b> plan you save "
+                                "<b>30%</b>. And if something was missing or didn't work for you, just reply to this email and "
+                                "tell us — we read every message and it genuinely helps.</p>",
+                                "Reactivate my plan", SITE_URL + "/pricing"))
+                except Exception: pass
             return self._send(200, json.dumps({"ok": True}))
 
         if u.path == "/api/admin/login":
@@ -1124,7 +1205,7 @@ class H(BaseHTTPRequestHandler):
             if len(p) > 1 and p.endswith("/"): p = p.rstrip("/")  # /admin/ -> /admin, /pricing/ -> /pricing
             noext = "." not in p.rsplit("/", 1)[-1]
             if p in ("", "/"): return "/index.html"
-            if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies", "/contact"): return p + ".html"
+            if p in ("/pricing", "/terms", "/privacy", "/refunds", "/cookies", "/contact", "/reset"): return p + ".html"
             if p == "/elitobahito": return "/admin.html"
             if p == "/blog": return "/blog/index.html"
             if p.startswith("/blog/") and noext: return p + ".html"

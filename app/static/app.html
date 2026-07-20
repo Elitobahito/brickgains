@@ -216,6 +216,12 @@
   </div>
 </div>
 
+<div id="upgradeToast" class="upgrade-toast" style="display:none">
+  <span class="ut-emoji">🎉</span>
+  <div><b>You're upgraded!</b><span>Your new features are unlocked. Welcome aboard.</span></div>
+  <button class="ut-x" onclick="this.parentElement.style.display='none'" aria-label="Close">✕</button>
+</div>
+
 <script src="/auth.js"></script>
 <script src="/portfolio.js"></script>
 <script src="/suggest.js"></script>
@@ -278,6 +284,12 @@ document.addEventListener('DOMContentLoaded', function(){
   if(b){ b.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopImmediatePropagation(); showTab('account'); }, true); }
   var h=(location.hash||'').replace('#','');
   if(['portfolio','movers','watch','ebay','compare','account'].indexOf(h)>=0) showTab(h);
+  if(/[?&]upgraded=1/.test(location.search)){
+    showTab('portfolio');
+    var t=document.getElementById('upgradeToast');
+    if(t){ t.style.display='flex'; requestAnimationFrame(function(){ t.classList.add('on'); }); setTimeout(function(){ t.classList.remove('on'); setTimeout(function(){t.style.display='none';},400); }, 9000); }
+    try{ if(history.replaceState) history.replaceState(null,'',location.pathname); }catch(e){}
+  }
 });
 </script>
 </body>

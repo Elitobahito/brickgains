@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset password · BrickGains</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='3' y='9' width='26' height='19' rx='3' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='8' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3Crect x='17' y='4' width='7' height='7' rx='2' fill='%23E3000B' stroke='%23141414' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.rp-wrap{max-width:420px;margin:0 auto;padding:70px 20px 100px}
+.rp-card{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:var(--sh-lg);padding:30px}
+.rp-card h1{font-family:var(--disp);font-weight:800;font-size:26px;margin:0 0 6px}
+.rp-card p{color:var(--slate);margin:0 0 20px}
+.rp-card input{width:100%;border:3px solid var(--ink);border-radius:13px;padding:14px 16px;font-size:16px;font-family:inherit;margin-bottom:14px}
+.rp-card .btn{width:100%}
+.rp-msg{margin-top:14px;font-weight:600;font-size:14px}
+.rp-msg.ok{color:#0a7d2b}.rp-msg.err{color:var(--red-d)}
+.rp-logo{display:flex;justify-content:center;margin-bottom:22px}
+</style>
+<meta property="og:site_name" content="BrickGains"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:title" content="Reset password · BrickGains"><meta property="og:description" content=""><meta property="og:url" content="https://brickgains.com/reset"><meta property="og:image" content="https://brickgains.com/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Reset password · BrickGains"><meta name="twitter:description" content=""><meta name="twitter:image" content="https://brickgains.com/og.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Reset password · BrickGains", "url": "https://brickgains.com/reset"}</script>
+</head>
+<body>
+<div class="rp-wrap">
+  <div class="rp-logo"><a class="logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a></div>
+  <div class="rp-card">
+    <h1>Choose a new password</h1>
+    <p>Enter a new password for your account. At least 8 characters.</p>
+    <form id="rpForm" onsubmit="return doReset(event)">
+      <input id="rpNew" type="password" placeholder="New password" autocomplete="new-password" minlength="8" required>
+      <input id="rpNew2" type="password" placeholder="Confirm new password" autocomplete="new-password" minlength="8" required>
+      <button class="btn" type="submit">Update password</button>
+      <div id="rpMsg" class="rp-msg"></div>
+    </form>
+  </div>
+</div>
+<script>
+function qp(k){return new URLSearchParams(location.search).get(k)||'';}
+async function doReset(e){
+  e.preventDefault();
+  var m=document.getElementById('rpMsg'); m.className='rp-msg';
+  var a=document.getElementById('rpNew').value, b=document.getElementById('rpNew2').value;
+  var token=qp('token');
+  if(!token){ m.className='rp-msg err'; m.textContent='Missing reset link. Request a new one from the login screen.'; return false; }
+  if(a!==b){ m.className='rp-msg err'; m.textContent='Passwords do not match.'; return false; }
+  m.textContent='…';
+  try{
+    var r=await fetch('/api/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:token,new_password:a})});
+    var d=await r.json().catch(function(){return {};});
+    if(d.ok){ m.className='rp-msg ok'; m.textContent='Password updated. Redirecting to sign in…'; setTimeout(function(){location.href='/app';},1500); }
+    else { m.className='rp-msg err'; m.textContent=d.error||'Something went wrong.'; }
+  }catch(err){ m.className='rp-msg err'; m.textContent='Network error. Try again.'; }
+  return false;
+}
+</script>
+</body>
+</html>
