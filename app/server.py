@@ -1014,6 +1014,20 @@ class H(BaseHTTPRequestHandler):
             cookie = f"bg_admin={ADMIN_TOKEN}; Path=/; HttpOnly; SameSite=Lax{sec}; Max-Age=604800"
             return self._send(200, json.dumps({"ok": True}), cookie=cookie)
 
+        if u.path == "/api/admin/set-plan":
+            if not self._is_admin():
+                return self._send(401, json.dumps({"ok": False, "error": "admin login required"}))
+            d = self._body()
+            email = (d.get("email") or "").strip().lower()
+            plan = (d.get("plan") or "").strip().lower()
+            if not email or plan not in ("free", "pro", "investor"):
+                return self._send(400, json.dumps({"ok": False, "error": "email + plan (free/pro/investor) requis"}))
+            row = q1("SELECT id FROM users WHERE lower(email)=?", (email,))
+            if not row:
+                return self._send(404, json.dumps({"ok": False, "error": "user introuvable"}))
+            qx("UPDATE users SET plan=? WHERE id=?", (plan, row["id"]))
+            return self._send(200, json.dumps({"ok": True, "email": email, "plan": plan}))
+
         if u.path == "/api/admin/delete-user":
             if not self._is_admin():
                 return self._send(401, json.dumps({"ok": False, "error": "admin login required"}))
