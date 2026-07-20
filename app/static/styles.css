@@ -767,3 +767,12 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .scan-page .btn.lg{display:inline-flex;align-items:center}
 .scan-note{margin-top:16px;background:#fffdf5;border:2px dashed var(--ink);border-radius:12px;padding:13px 16px;font-size:14px;color:var(--slate);line-height:1.55}
 @media(min-width:640px){ .scan-steps{grid-template-columns:1fr 1fr 1fr} }
+
+/* ---- set page: keep reading (internal links to blog) ---- */
+.read-more{margin-top:26px;border:3px solid var(--ink);border-radius:16px;background:#fff;box-shadow:var(--sh-sm);padding:20px 24px}
+.read-more h4{font-family:var(--disp);font-weight:800;font-size:18px;margin:0 0 12px}
+.read-more ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.read-more li{position:relative;padding-left:22px}
+.read-more li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:800}
+.read-more a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:2px solid var(--yellow)}
+.read-more a:hover{color:var(--red)}
