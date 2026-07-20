@@ -756,3 +756,14 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .upgrade-toast b{display:block;font-family:var(--disp);font-size:16px}
 .upgrade-toast span{font-size:13px;color:rgba(255,255,255,.8)}
 .upgrade-toast .ut-x{margin-left:8px;background:none;border:0;color:#fff;font-size:15px;cursor:pointer;opacity:.7}
+
+/* ---- Scan page (dashboard) ---- */
+.scan-page{max-width:720px}
+.scan-steps{display:grid;grid-template-columns:1fr;gap:14px;margin:20px 0 26px}
+.scan-step{position:relative;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh-sm);padding:18px 20px 18px 64px}
+.scan-step .ss-n{position:absolute;left:16px;top:16px;width:34px;height:34px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;font-size:17px}
+.scan-step b{display:block;font-family:var(--disp);font-weight:700;font-size:17px}
+.scan-step p{margin:3px 0 0;color:var(--slate);font-size:14.5px;line-height:1.5}
+.scan-page .btn.lg{display:inline-flex;align-items:center}
+.scan-note{margin-top:16px;background:#fffdf5;border:2px dashed var(--ink);border-radius:12px;padding:13px 16px;font-size:14px;color:var(--slate);line-height:1.55}
+@media(min-width:640px){ .scan-steps{grid-template-columns:1fr 1fr 1fr} }

@@ -19,6 +19,7 @@
     <a class="logo side-logo" href="/"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</a>
     <nav class="side-nav">
       <button class="side-item on" data-tab="portfolio" onclick="showTab('portfolio')"><span class="si-ic">📊</span>Portfolio</button>
+      <button class="side-item" data-tab="scan" onclick="showTab('scan')"><span class="si-ic">📷</span>Scan a box</button>
       <button class="side-item" data-tab="movers" onclick="showTab('movers')"><span class="si-ic">📈</span>Market Movers</button>
       <button class="side-item" data-tab="watch" onclick="showTab('watch')"><span class="si-ic">👀</span>Watchlist</button>
       <button class="side-item" data-tab="ebay" onclick="showTab('ebay')"><span class="si-ic">💵</span>eBay Calculator</button>
@@ -77,6 +78,23 @@
     <div id="pfChartCard" class="pf-chart-card" style="display:none">
       <h3>📈 Portfolio value over time</h3>
       <div id="pfChart"></div>
+    </div>
+  </section>
+
+  <!-- SCAN -->
+  <section class="app-panel" id="panel-scan">
+    <div class="panel-head">
+      <h1>📷 Scan a box</h1>
+      <p>Use your phone camera to scan a LEGO box barcode and add the set to your portfolio in one tap — no typing.</p>
+    </div>
+    <div class="scan-page">
+      <div class="scan-steps">
+        <div class="scan-step"><span class="ss-n">1</span><b>Open the camera</b><p>Tap the button below and allow camera access when your browser asks.</p></div>
+        <div class="scan-step"><span class="ss-n">2</span><b>Point at the barcode</b><p>Frame the barcode printed on the LEGO box — we read it automatically, no need to press anything.</p></div>
+        <div class="scan-step"><span class="ss-n">3</span><b>Added for you</b><p>We identify the set and drop it into your portfolio. Just add the price you paid and you're done.</p></div>
+      </div>
+      <button class="btn lg" onclick="openScanner()" style="margin-top:6px"><span style="font-size:20px">📷</span>&nbsp; Open camera &amp; scan</button>
+      <p class="scan-note">📱 Works best on <b>Android Chrome</b>. On <b>iPhone</b>, Safari doesn't support live camera scanning yet — tap the button and you'll be able to type the set number instead (it's printed right next to the barcode).</p>
     </div>
   </section>
 
@@ -283,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function(){
   var b=document.getElementById('accountBtn');
   if(b){ b.addEventListener('click', function(ev){ ev.preventDefault(); ev.stopImmediatePropagation(); showTab('account'); }, true); }
   var h=(location.hash||'').replace('#','');
-  if(['portfolio','movers','watch','ebay','compare','account'].indexOf(h)>=0) showTab(h);
+  if(['portfolio','scan','movers','watch','ebay','compare','account'].indexOf(h)>=0) showTab(h);
   if(/[?&]upgraded=1/.test(location.search)){
     showTab('portfolio');
     var t=document.getElementById('upgradeToast');
