@@ -135,6 +135,8 @@
       <div class="authlogo"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</div>
       <h3 id="authTitle">${S.welcome}</h3>
       <p id="authSub">${S.loginSub}</p>
+      <div id="gsiBtn" style="display:flex;justify-content:center;min-height:44px"></div>
+      <div class="ordiv" id="authOr">or</div>
       <form onsubmit="BG.submit(event)">
         <input id="authEmail" type="email" placeholder="${S.email}" autocomplete="email" required>
         <input id="authPass" type="password" placeholder="${S.pass}" autocomplete="current-password" required>
@@ -181,7 +183,7 @@
 
   const BG = {
     mode: 'login',
-    openAuth(mode){ BG.mode = mode||'login'; BG.render(); el('authWall').classList.add('on'); },
+    openAuth(mode){ BG.mode = mode||'login'; BG.render(); el('authWall').classList.add('on'); renderGSI(); },
     closeAuth(){ el('authWall').classList.remove('on'); },
     openAcct(){ if(me){ el('acctEmail').textContent = me.email; el('acctPlan').textContent = S.plan+(me.plan||'free'); el('acctWall').classList.add('on'); } },
     closeAcct(){ el('acctWall').classList.remove('on'); },
@@ -282,8 +284,35 @@
     if(t){ e.preventDefault(); setBilling(t.getAttribute('data-bill')); }
   });
 
+  // ---- Google Sign-In (GIS, ID-token flow) ----
+  var GID = "749739827069-59pu4bdqpqra1h9ll554d2f8sle8uccq.apps.googleusercontent.com";
+  var _gsiReady = false;
+  var OR = {en:'or',fr:'ou',de:'oder',es:'o',it:'o',nl:'of',sv:'eller',da:'eller'};
+  window.handleGoogleCredential = async function(resp){
+    var m = el('authMsg');
+    try{
+      var r = await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({credential:(resp&&resp.credential)||''})});
+      var d = await r.json();
+      if(d && d.ok){ location.href = '/app'; return; }
+      if(m){ m.textContent = (d&&d.error)||'Google sign-in failed.'; m.className='authmsg err'; }
+    }catch(e){ if(m){ m.textContent='Network error. Try again.'; m.className='authmsg err'; } }
+  };
+  function initGSI(){
+    if(_gsiReady || !(window.google && google.accounts && google.accounts.id)) return;
+    try{ google.accounts.id.initialize({client_id:GID, callback:window.handleGoogleCredential}); _gsiReady=true; renderGSI(); }catch(e){}
+  }
+  function renderGSI(){
+    if(!_gsiReady){ initGSI(); return; }
+    var c = el('gsiBtn'); if(!c) return;
+    var orEl = el('authOr');
+    if(orEl){ var lg=(location.pathname.match(/^\/(fr|de|es|it|nl|sv|da)(\/|$)/)||[])[1]||'en'; orEl.textContent = OR[lg]||'or'; }
+    try{ c.innerHTML=''; google.accounts.id.renderButton(c,{theme:'outline',size:'large',width:320,text:'continue_with',shape:'rectangular'}); }catch(e){}
+  }
+
   document.addEventListener('DOMContentLoaded', async ()=>{
     document.body.insertAdjacentHTML('beforeend', authHTML);
+    var gs=document.createElement('script'); gs.src='https://accounts.google.com/gsi/client'; gs.async=true; gs.defer=true; gs.onload=initGSI; document.head.appendChild(gs);
     try{ setBilling('annual'); }catch(e){}  // default the pricing toggle to annual on load
     const btn = el('accountBtn');
     if(btn) btn.addEventListener('click', ()=> me ? BG.openAcct() : BG.openAuth('login'));

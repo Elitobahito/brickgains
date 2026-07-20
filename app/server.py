@@ -193,6 +193,28 @@ def rate_ok(key, limit, window):
     if len(q) >= limit: return False
     q.append(now); return True
 
+GOOGLE_CLIENT_ID = "749739827069-59pu4bdqpqra1h9ll554d2f8sle8uccq.apps.googleusercontent.com"
+
+def verify_google_idtoken(credential):
+    """Validate a Google Identity Services ID token. Uses Google's tokeninfo endpoint
+    (checks signature + expiry server-side) then verifies audience/issuer/email. -> email or None."""
+    if not credential:
+        return None
+    try:
+        url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + urllib.parse.quote(credential)
+        with urllib.request.urlopen(url, timeout=10) as r:
+            info = json.loads(r.read().decode())
+    except Exception:
+        return None
+    if info.get("aud") != GOOGLE_CLIENT_ID:
+        return None
+    if info.get("iss") not in ("accounts.google.com", "https://accounts.google.com"):
+        return None
+    if str(info.get("email_verified")).lower() not in ("true", "1"):
+        return None
+    email = (info.get("email") or "").strip().lower()
+    return email if ("@" in email and "." in email) else None
+
 def make_session(user_id):
     tok = secrets.token_urlsafe(32)
     qx("DELETE FROM sessions WHERE created < " + ("now() - interval '30 days'" if PG else "datetime('now','-30 days')"))
@@ -530,11 +552,11 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
         self.send_header("Content-Security-Policy",
             "default-src 'self'; img-src 'self' https: data:; "
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com; "
             "font-src 'self' https://fonts.gstatic.com; "
-            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://*.clarity.ms; "
-            "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com https://googleads.g.doubleclick.net https://www.google.com; "
-            "frame-src https://td.doubleclick.net https://www.googletagmanager.com; "
+            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://*.clarity.ms https://accounts.google.com https://accounts.google.com/gsi/client; "
+            "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com https://googleads.g.doubleclick.net https://www.google.com https://accounts.google.com https://oauth2.googleapis.com; "
+            "frame-src https://td.doubleclick.net https://www.googletagmanager.com https://accounts.google.com; "
             "frame-ancestors 'self'; base-uri 'self'")
         if cookie: self.send_header("Set-Cookie", cookie)
         self.end_headers()
@@ -631,6 +653,31 @@ class H(BaseHTTPRequestHandler):
                     "Add my first set", SITE_URL + "/app"))
             except Exception: pass
             return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": "free"}}),
+                              cookie=self._sess_cookie(tok))
+
+        if u.path == "/api/auth/google":
+            if not rate_ok("auth:" + self._ip(), 20, 900):
+                return self._send(429, json.dumps({"ok": False, "error": "Too many attempts. Please try again in a few minutes."}))
+            d = self._body()
+            email = verify_google_idtoken(d.get("credential") or "")
+            if not email:
+                return self._send(401, json.dumps({"ok": False, "error": "Google sign-in failed. Please try again."}))
+            row = q1("SELECT id,plan FROM users WHERE email=?", (email,))
+            if row:
+                uid, plan = row["id"], row["plan"]
+            else:
+                uid = qx("INSERT INTO users(email,pw_hash,provider) VALUES(?,?,?)",
+                         (email, hash_pw(secrets.token_urlsafe(24)), "google"), returning=True)
+                plan = "free"
+                try:
+                    send_email(email, "Welcome to BrickGains 🧱", email_shell(
+                        "Welcome to BrickGains!",
+                        "<p style='font-weight:500;line-height:1.6'>Your free account is ready — you signed in with Google. "
+                        "Real BrickLink prices, updated daily. Add your first sets and see instantly what they're worth.</p>",
+                        "Add my first set", SITE_URL + "/app"))
+                except Exception: pass
+            tok = make_session(uid)
+            return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": plan}}),
                               cookie=self._sess_cookie(tok))
 
         if u.path == "/api/login":
