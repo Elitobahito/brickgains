@@ -212,6 +212,7 @@ section{padding:78px 0}
 .plan.pop h3{color:#fff}
 .plan.pop .price{color:#fff}
 .plan.pop .price span{color:rgba(255,255,255,.6)}
+.plan.pop .price .pr-m,.plan.pop .price .pr-y{color:#fff}
 .plan.pop li{color:rgba(255,255,255,.92)}
 .plan.pop ul{border-top-color:rgba(255,255,255,.16)}
 .plan.pop li.soon{color:rgba(255,255,255,.6)}
