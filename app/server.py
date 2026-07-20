@@ -38,6 +38,26 @@ def save_cache():
     try: json.dump(CACHE, open(CACHE_FILE, "w"))
     except Exception: pass
 
+# --- exchange rates (USD base), fetched daily, cached to disk ---
+RATES_FILE = os.path.join(BASE, "rates.json")
+def get_rates():
+    try:
+        if os.path.exists(RATES_FILE):
+            d = json.load(open(RATES_FILE))
+            if time.time() - d.get("_ts", 0) < 20 * 3600 and d.get("rates"):
+                return d.get("rates", {})
+    except Exception: pass
+    try:
+        r = json.loads(urllib.request.urlopen("https://open.er-api.com/v6/latest/USD", timeout=15).read())
+        rates = r.get("rates") or {}
+        if rates:
+            try: json.dump({"rates": rates, "_ts": time.time(), "day": time.strftime("%Y-%m-%d")}, open(RATES_FILE, "w"))
+            except Exception: pass
+            return rates
+    except Exception: pass
+    try: return json.load(open(RATES_FILE)).get("rates", {})
+    except Exception: return {}
+
 # ---------- DB / auth (Postgres in prod via DATABASE_URL, SQLite locally) ----------
 DB_FILE = os.path.join(BASE, "brickgains.db")
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -1190,6 +1210,9 @@ class H(BaseHTTPRequestHandler):
             if not sn:
                 return self._send(200, json.dumps({"ok": False, "notfound": True, "code": code}))
             return self._send(200, json.dumps({"ok": True, "set": sn}))
+        if u.path == "/api/rates":
+            return self._send(200, json.dumps({"base": "USD", "rates": get_rates()}),
+                              cache="public, max-age=3600")
         if u.path == "/api/movers":
             me = self._me()
             if not (me and me.get("plan") in PAID_PLANS):

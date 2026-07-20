@@ -1,4 +1,4 @@
-function money(v){ return v==null?'-':'$'+Math.round(v).toLocaleString('en-US'); }
+function money(v){ if(v==null) return '-'; var c=window.BGCUR||{rate:1,symbol:'$'}; return c.symbol+Math.round(v*(c.rate||1)).toLocaleString('en-US'); }
 
 // account state: ME=null => local (localStorage) mode; ME set => server (DB) mode
 let ME = null;
