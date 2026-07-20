@@ -613,7 +613,7 @@ table.pf td.num{font-weight:800;text-align:right;font-variant-numeric:tabular-nu
 .empty{text-align:center;padding:54px;color:var(--slate);font-weight:600;background:#fff;border:3px dashed var(--ink);border-radius:16px;margin-top:22px}
 
 /* market movers */
-.movers-sec{margin-top:56px;border-top:3px solid var(--ink);padding-top:36px}
+.movers-sec{margin-top:0;padding-top:0}
 .movers-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
 .mv-note{color:var(--slate);font-weight:600;font-size:13px}
 .mv-tabs{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 6px}

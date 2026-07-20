@@ -82,11 +82,10 @@
   <!-- MARKET MOVERS -->
   <section class="app-panel" id="panel-movers">
     <div class="movers-sec">
-      <div class="movers-head">
-        <div class="h2" style="text-align:left;font-size:27px">📈 Market Movers</div>
-        <span class="mv-note" id="moversUpdated"></span>
+      <div class="panel-head">
+        <h1>Market Movers</h1>
+        <p>Biggest gains and laggards versus retail price across popular collectible sets. Click any set to open it. <span class="mv-note" id="moversUpdated"></span></p>
       </div>
-      <p style="color:var(--slate);font-weight:500;margin:-6px 0 4px">Biggest gains and laggards versus retail price across popular collectible sets. Click any set to add it or check it on the home page.</p>
       <div class="mv-tabs">
         <button class="mv-tab on" data-view="gainers" onclick="moversView('gainers')">🚀 Top gainers</button>
         <button class="mv-tab" data-view="losers" onclick="moversView('losers')">🧊 Laggards</button>
@@ -100,7 +99,7 @@
   <!-- WATCHLIST -->
   <section class="app-panel" id="panel-watch">
     <div class="movers-sec">
-      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">👀 Watchlist</div><span class="mv-note">Sets you don't own yet. Set a target price and we email you (Pro) when it drops to it.</span></div>
+      <div class="panel-head"><h1>Watchlist</h1><p>Sets you don't own yet. Set a target price and we email you (Pro) when it drops to it.</p></div>
       <div class="add-row" style="margin-top:16px">
         <input id="wset" placeholder="Set number to watch (e.g. 10307)" onkeydown="if(event.key==='Enter')addWatch()">
         <input id="wtarget" type="number" placeholder="Target price ($, optional)" onkeydown="if(event.key==='Enter')addWatch()">
@@ -113,7 +112,7 @@
   <!-- EBAY PROFIT CALCULATOR -->
   <section class="app-panel" id="panel-ebay">
     <div class="movers-sec">
-      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">💵 eBay profit calculator</div><span class="mv-note">See your real profit after fees before you sell.</span></div>
+      <div class="panel-head"><h1>eBay profit calculator</h1><p>See your real profit after eBay fees and shipping before you sell.</p></div>
       <div class="ebay-calc">
         <div class="ec-inputs">
           <label>Sell price ($)<input id="ecSell" type="number" oninput="ebayCalc()" placeholder="0"></label>
@@ -135,7 +134,7 @@
   <!-- COMPARE SETS -->
   <section class="app-panel" id="panel-compare">
     <div class="movers-sec">
-      <div class="movers-head"><div class="h2" style="text-align:left;font-size:27px">⚖️ Compare two sets</div><span class="mv-note">Value, appreciation, price-per-piece side by side before you buy.</span></div>
+      <div class="panel-head"><h1>Compare two sets</h1><p>Value, appreciation and price-per-piece side by side before you buy.</p></div>
       <div class="add-row" style="margin-top:16px">
         <input id="cmpA" placeholder="First set number (e.g. 10276)" onkeydown="if(event.key==='Enter')compareSets()">
         <input id="cmpB" placeholder="Second set number (e.g. 10307)" onkeydown="if(event.key==='Enter')compareSets()">
