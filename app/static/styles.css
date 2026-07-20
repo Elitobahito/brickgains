@@ -210,7 +210,7 @@ section{padding:78px 0}
 .plan.pop{background:var(--ink);color:#fff;box-shadow:var(--sh-lg)}
 .plan.pop:hover{transform:translateY(-4px)}
 .plan.pop h3{color:#fff}
-.plan.pop .price{color:var(--yellow)}
+.plan.pop .price{color:#fff}
 .plan.pop .price span{color:rgba(255,255,255,.6)}
 .plan.pop li{color:rgba(255,255,255,.92)}
 .plan.pop ul{border-top-color:rgba(255,255,255,.16)}
