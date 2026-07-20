@@ -776,3 +776,8 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .read-more li::before{content:"→";position:absolute;left:0;color:var(--red);font-weight:800}
 .read-more a{color:var(--ink);font-weight:600;text-decoration:none;border-bottom:2px solid var(--yellow)}
 .read-more a:hover{color:var(--red)}
+
+/* ---- locked Investor features shown to lower plans (drives upgrade) ---- */
+.linkish.feat-locked{opacity:.72}
+.linkish.feat-locked::after{content:" 🔒 Investor";font-weight:700;font-size:12px;color:var(--slate)}
+.del.sell.feat-locked{opacity:.85;background:#fffdf5}

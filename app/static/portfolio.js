@@ -144,7 +144,7 @@ async function render(){
                         : (d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`);
     const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?'Opened':'Sealed'}</span>`;
     const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
-    const sellBtn = (inv && item.sid) ? `<button class="del sell" title="${sold?'Edit sale price':'Mark as sold'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">💰</button>` : '';
+    const sellBtn = item.sid ? `<button class="del sell${inv?'':' feat-locked'}" title="${inv?(sold?'Edit sale price':'Mark as sold'):'Sold-set P&L — upgrade to Investor'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">${inv?'💰':'🔒'}</button>` : '';
     const valCell = sold ? `${money(item.sold)} <span style="color:#999;font-size:11px">sold</span>` : money(val);
     const qtyCell = inv ? `<td class="num" style="text-align:center">${item.sid?`<span class="qty-step"><button onclick="setQty(${item.sid},${q-1})">−</button><b>${q}</b><button onclick="setQty(${item.sid},${q+1})">+</button></span>`:q}</td>` : '';
     const row = document.getElementById('r'+i);
@@ -190,8 +190,9 @@ let PF_LAST=[];
 
 function applyExportGate(){
   var inv = ME && ME.plan==='investor';
-  var b=document.getElementById('csvBtn'); if(b) b.style.display = inv ? '' : 'none';
-  var p=document.getElementById('pdfBtn'); if(p) p.style.display = inv ? '' : 'none';
+  // Investor features stay VISIBLE for everyone (locked look if not Investor) -> drives upgrades
+  var b=document.getElementById('csvBtn'); if(b){ b.style.display=''; b.classList.toggle('feat-locked', !inv); }
+  var p=document.getElementById('pdfBtn'); if(p){ p.style.display=''; p.classList.toggle('feat-locked', !inv); }
   var q=document.getElementById('pqtyWrap'); if(q) q.style.display = inv ? '' : 'none';
 }
 
