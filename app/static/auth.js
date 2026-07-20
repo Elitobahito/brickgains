@@ -292,6 +292,6 @@
       if(a){ e.preventDefault(); BG.checkout(a.getAttribute('data-plan'), window.__bgBilling||'monthly'); }
     });
     await BG.refreshMe();
-    if(document.getElementById('promoWall') && !location.pathname.startsWith('/app')) BG.maybePromo();
+    if(document.getElementById('promoWall') && !location.pathname.startsWith('/app') && !/\/blog(\/|$)/.test(location.pathname)) BG.maybePromo();
   });
 })();
