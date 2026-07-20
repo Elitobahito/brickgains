@@ -153,6 +153,29 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 .verdict.retired{color:var(--green-d)}
 .loading{text-align:center;padding:34px;font-weight:700;color:var(--slate)}
 
+/* ---- loading skeleton + progress bar ---- */
+.skloading{padding:16px 18px 20px}
+.bg-bar{height:6px;background:rgba(20,20,20,.09);border-radius:99px;overflow:hidden}
+.bg-bar-fill{height:100%;width:8%;background:var(--red);border-radius:99px;transition:width .25s cubic-bezier(.4,0,.2,1)}
+.skloading .lbl{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--slate);font-size:15px;margin:13px 2px 4px}
+.skloading .lbl .dot{width:9px;height:9px;border-radius:50%;background:var(--red);animation:blink 1s ease-in-out infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+.sk{position:relative;overflow:hidden;background:#ece9df;border-radius:8px}
+.sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:shimmer 1.25s infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.skrow{display:flex;gap:18px;margin-top:6px}
+.sk-img{width:120px;height:120px;border-radius:12px;flex-shrink:0}
+.sk-lines{flex:1;display:flex;flex-direction:column;gap:11px;padding-top:6px;min-width:0}
+.sk-l{height:14px}
+.sk-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:20px}
+.sk-cell{height:54px}
+@media(max-width:520px){.sk-img{width:84px;height:84px}.sk-grid{gap:8px}}
+/* button loading spinner (adapts to any button text color) */
+.btn.loading{pointer-events:none}
+.btn .spin{width:15px;height:15px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .6s linear infinite;display:none;opacity:.9;flex-shrink:0}
+.btn.loading .spin{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* ---- generic section ---- */
 section{padding:78px 0}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--yellow);color:var(--ink);font-family:var(--disp);font-weight:700;

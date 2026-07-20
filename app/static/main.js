@@ -176,25 +176,59 @@ function cardHTML(d){
   </div>`;
 }
 
+function skeletonHTML(){
+  return `<div class="vcard skloading" aria-busy="true" aria-label="Loading">
+    <div class="bg-bar"><div class="bg-bar-fill" id="bgProg"></div></div>
+    <div class="lbl"><span class="dot"></span>${T.loading}</div>
+    <div class="skrow">
+      <div class="sk sk-img"></div>
+      <div class="sk-lines">
+        <div class="sk sk-l" style="width:62%;height:23px"></div>
+        <div class="sk sk-l" style="width:46%"></div>
+        <div class="sk sk-l" style="width:34%"></div>
+        <div class="sk sk-l" style="width:26%;height:27px;border-radius:99px;margin-top:5px"></div>
+      </div>
+    </div>
+    <div class="sk-grid"><div class="sk sk-cell"></div><div class="sk sk-cell"></div><div class="sk sk-cell"></div></div>
+  </div>`;
+}
+
 async function doSearch(){
   const q = document.getElementById('setInput').value.trim();
   if(!q) return;
   if(freeUsed() >= FREE_LIMIT){ openWall(); return; }
   const box = document.getElementById('result');
-  box.innerHTML = `<div class="vcard"><div class="loading">${T.loading}</div></div>`;
+  const btn = document.querySelector('button.btn[onclick*="doSearch"]');
+  const btnHTML = btn ? btn.innerHTML : '';
+  if(btn){ btn.classList.add('loading'); btn.innerHTML = '<span class="spin"></span>'+btnHTML; }
+  box.innerHTML = skeletonHTML();
+  const fill = document.getElementById('bgProg');
+  let p = 8;
+  const timer = setInterval(function(){ p += (92-p)*0.13; if(fill) fill.style.width = p.toFixed(1)+'%'; }, 220);
+  let finished = false;
+  function done(){ if(finished) return; finished = true; clearInterval(timer); if(fill) fill.style.width='100%';
+    if(btn){ btn.classList.remove('loading'); btn.innerHTML = btnHTML; } }
   try{
     const r = await fetch('/api/value?u=1&set='+encodeURIComponent(q));
-    if(r.status===429){ box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
+    if(r.status===429){ done(); box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
     const d = await r.json();
-    if(d.limit){ box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
-    box.innerHTML = cardHTML(d);
+    if(d.limit){ done(); box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
+    done();
+    setTimeout(function(){ box.innerHTML = cardHTML(d); }, 200); // let the bar visibly complete, then swap
     if(!d.error) setFree(freeUsed()+1);
-  }catch(e){ box.innerHTML = `<div class="vcard"><div class="loading">${T.wrong}</div></div>`; }
+  }catch(e){ done(); box.innerHTML = `<div class="vcard"><div class="loading">${T.wrong}</div></div>`; }
 }
 
 async function loadExamples(){
   const sets = ['10276','10265','10281'];
   const wrap = document.getElementById('exampleCards');
+  if(wrap) wrap.innerHTML = Array(3).fill(
+    '<div class="ex" aria-busy="true">'+
+      '<div class="sk" style="width:100%;height:140px;border-radius:10px"></div>'+
+      '<div class="sk" style="width:60%;height:16px;margin:16px auto 0"></div>'+
+      '<div class="sk" style="width:82%;height:12px;margin:11px auto 0"></div>'+
+      '<div class="sk" style="width:42%;height:24px;border-radius:99px;margin:15px auto 0"></div>'+
+    '</div>').join('');
   try{
     const data = await Promise.all(sets.map(s=>fetch('/api/value?set='+s).then(r=>r.json())));
     wrap.innerHTML = data.map(d=>{
