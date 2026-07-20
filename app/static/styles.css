@@ -452,7 +452,9 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .gbtn:hover{transform:translateY(-1px)}.gbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 .ordiv{display:flex;align-items:center;gap:12px;color:var(--slate);font-weight:600;font-size:13px;margin:16px 0}
 .ordiv::before,.ordiv::after{content:"";flex:1;height:2px;background:var(--line)}
-.authmsg{font-weight:700;font-size:13.5px;min-height:16px;text-align:left}
+.authmsg{font-weight:700;font-size:13.5px;text-align:left;margin-top:2px}
+.authmsg:empty{display:none}
+.modal.auth form .btn{margin-top:6px}
 .authmsg.ok{color:var(--green-d)}.authmsg.err{color:var(--red-d)}
 .authswitch{margin-top:16px;font-size:14px;font-weight:600;color:var(--slate)}
 .authswitch a{color:var(--red);font-weight:800;text-decoration:underline;cursor:pointer;margin-left:5px}
