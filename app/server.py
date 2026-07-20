@@ -479,10 +479,21 @@ def apify_price(sn):
                 "usedMin": p.get("usedMinPrice"), "usedAvg": p.get("usedAvgPrice"), "usedMax": p.get("usedMaxPrice")}
     except Exception: return {}
 
+def local_webp(sn, fallback):
+    """Prefer the self-hosted WebP (fast, Cloudflare-cached) over a hotlinked CDN JPG."""
+    n = str(sn or "").replace("-1", "")
+    try:
+        if n and os.path.exists(os.path.join(STATIC, "img", "sets", n + ".webp")):
+            return "https://brickgains.com/img/sets/" + n + ".webp"
+    except Exception:
+        pass
+    return fallback
+
 def get_value(raw):
     sn = _norm(raw)
     hit = CACHE.get(sn)
     if hit and time.time() - hit.get("_ts", 0) < CACHE_TTL:
+        hit["image"] = local_webp(sn, hit.get("image"))  # upgrade cached entries to self-hosted WebP
         return hit
     rb, bs, pr = rebrickable(sn), brickset(sn), apify_price(sn)
     if not bs and not rb and not pr:
@@ -496,7 +507,7 @@ def get_value(raw):
         "year": bs.get("year") or rb.get("year"),
         "theme": bs.get("theme"),
         "pieces": bs.get("pieces") or rb.get("pieces"),
-        "image": rb.get("image") or bs.get("image_bs"),
+        "image": local_webp(sn, rb.get("image") or bs.get("image_bs")),
         "rrp": rrp, "retired": bs.get("retired"),
         "newMin": pr.get("newMin"), "newAvg": new_avg, "newMax": pr.get("newMax"),
         "usedMin": pr.get("usedMin"), "usedAvg": pr.get("usedAvg"), "usedMax": pr.get("usedMax"),
