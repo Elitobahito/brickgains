@@ -521,7 +521,9 @@ class H(BaseHTTPRequestHandler):
             "default-src 'self'; img-src 'self' https: data:; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com; "
-            "script-src 'self' 'unsafe-inline'; connect-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://*.clarity.ms; "
+            "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com https://googleads.g.doubleclick.net https://www.google.com; "
+            "frame-src https://td.doubleclick.net https://www.googletagmanager.com; "
             "frame-ancestors 'self'; base-uri 'self'")
         if cookie: self.send_header("Set-Cookie", cookie)
         self.end_headers()
