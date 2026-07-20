@@ -127,6 +127,11 @@ def db_init():
     # migration: multi-copy quantity (Investor)
     try: qx("ALTER TABLE portfolio ADD COLUMN qty INTEGER DEFAULT 1")
     except Exception: pass
+    # migration: sold-set profit & loss (Investor)
+    try: qx("ALTER TABLE portfolio ADD COLUMN sold_price REAL")
+    except Exception: pass
+    try: qx("ALTER TABLE portfolio ADD COLUMN sold_date TEXT")
+    except Exception: pass
     # server-side watchlist (with optional buy target)
     qx(f"""CREATE TABLE IF NOT EXISTS watchlist(
         id {ai}, user_id INTEGER NOT NULL, set_num TEXT NOT NULL,
@@ -696,6 +701,20 @@ class H(BaseHTTPRequestHandler):
                 except Exception: qty = 1
                 qx("UPDATE portfolio SET qty=? WHERE id=? AND user_id=?", (qty, rid, uid))
                 return self._send(200, json.dumps({"ok": True, "qty": qty}))
+            if u.path == "/api/portfolio/sell":
+                if me.get("plan") != "investor":
+                    return self._send(403, json.dumps({"ok": False, "locked": True,
+                        "error": "Sold-set profit & loss is an Investor feature."}))
+                rid = d.get("id")
+                sp = d.get("sold_price")
+                if sp in (None, ""):
+                    qx("UPDATE portfolio SET sold_price=NULL, sold_date=NULL WHERE id=? AND user_id=?", (rid, uid))
+                    return self._send(200, json.dumps({"ok": True, "sold": False}))
+                try: sp = float(sp)
+                except Exception: return self._send(400, json.dumps({"ok": False, "error": "invalid price"}))
+                qx("UPDATE portfolio SET sold_price=?, sold_date=? WHERE id=? AND user_id=?",
+                   (sp, time.strftime("%Y-%m-%d"), rid, uid))
+                return self._send(200, json.dumps({"ok": True, "sold": True}))
             if u.path == "/api/portfolio/remove":
                 rid = d.get("id")
                 qx("DELETE FROM portfolio WHERE id=? AND user_id=?", (rid, uid))
@@ -989,7 +1008,7 @@ class H(BaseHTTPRequestHandler):
             try:
                 c = _conn()
                 cur = c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) if PG else c.cursor()
-                cur.execute(_conv("SELECT id,set_num,paid,condition,qty FROM portfolio WHERE user_id=? ORDER BY id DESC"), (me["id"],))
+                cur.execute(_conv("SELECT id,set_num,paid,condition,qty,sold_price,sold_date FROM portfolio WHERE user_id=? ORDER BY id DESC"), (me["id"],))
                 rows = [dict(r) for r in cur.fetchall()]
                 c.close()
             except Exception: pass

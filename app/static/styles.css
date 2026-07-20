@@ -742,3 +742,9 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .scan-msg.warn{color:var(--red-d)}
 .scan-foot{display:flex;justify-content:flex-end;gap:10px;padding:0 16px 16px}
 @media(max-width:520px){ .scan-reticle{inset:20% 8%} }
+
+/* ---- sold-set P&L (Investor) ---- */
+.chip.sold{background:#141414;color:#fff}
+.del.sell{filter:grayscale(.2)}
+.realized-row{margin-top:14px;padding:12px 16px;border:2px dashed var(--ink);border-radius:12px;background:#fffdf5;font-weight:600;font-size:15px}
+.realized-row b{font-family:var(--disp);font-size:17px;margin-left:4px}

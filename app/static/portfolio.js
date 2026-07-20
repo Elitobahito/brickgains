@@ -39,7 +39,7 @@ async function getPF(){
   if(ME){
     try{
       const items = (await fetch('/api/portfolio').then(r=>r.json())).items||[];
-      return items.map(r=>({sid:r.id, set:r.set_num, paid:r.paid, condition:r.condition||'sealed', qty:r.qty||1}));
+      return items.map(r=>({sid:r.id, set:r.set_num, paid:r.paid, condition:r.condition||'sealed', qty:r.qty||1, sold:(r.sold_price==null?null:r.sold_price), soldDate:r.sold_date||null}));
     }catch(e){ return []; }
   }
   return lload().map(it=>({sid:null, set:it.set, paid:it.paid, condition:it.condition||'sealed', qty:1}));
@@ -122,7 +122,7 @@ async function render(){
     ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="${inv?8:7}" style="color:#999">Loading…</td></tr>`).join('')}
     </tbody></table>`;
 
-  let paidTot=0, valTot=0; PF_LAST=[];
+  let paidTot=0, valTot=0, realizedPL=0, soldCount=0; PF_LAST=[];
   for(let i=0;i<pf.length;i++){
     const item = pf[i];
     let d={};
@@ -131,14 +131,21 @@ async function render(){
     const val = item.condition==='opened' ? (d.usedAvg||d.newAvg) : d.newAvg;
     const paid = item.paid;
     const q = item.qty||1;
-    if(paid) paidTot += paid*q;
-    if(val) valTot += val*q;
+    const sold = item.sold!=null;
+    if(!sold && paid) paidTot += paid*q;
+    if(!sold && val) valTot += val*q;
     PF_LAST.push({set:item.set, name:(d.name||''), condition:item.condition, qty:q, paid:(paid==null?'':paid), value:(val==null?'':Math.round(val)), retired:(d.retired?'retired':'available')});
     let gain='-', gcls='';
-    if(paid && val){ const g=(val-paid)*q; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
-    const status = d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`;
+    if(sold){
+      const pl=(item.sold-(paid||0))*q; gain=(pl>=0?'+':'')+money(pl); gcls=pl>=0?'up-t':'down-t';
+      realizedPL+=pl; soldCount++;
+    } else if(paid && val){ const g=(val-paid)*q; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
+    const status = sold ? `<span class="chip sold">Sold${item.soldDate?' · '+item.soldDate:''}</span>`
+                        : (d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`);
     const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?'Opened':'Sealed'}</span>`;
     const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
+    const sellBtn = (inv && item.sid) ? `<button class="del sell" title="${sold?'Edit sale price':'Mark as sold'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">💰</button>` : '';
+    const valCell = sold ? `${money(item.sold)} <span style="color:#999;font-size:11px">sold</span>` : money(val);
     const qtyCell = inv ? `<td class="num" style="text-align:center">${item.sid?`<span class="qty-step"><button onclick="setQty(${item.sid},${q-1})">−</button><b>${q}</b><button onclick="setQty(${item.sid},${q+1})">+</button></span>`:q}</td>` : '';
     const row = document.getElementById('r'+i);
     if(row) row.innerHTML = (d.error||!d.name)
@@ -148,9 +155,9 @@ async function render(){
          <td>${status}</td>
          ${qtyCell}
          <td class="num">${money(paid)}</td>
-         <td class="num">${money(val)}</td>
+         <td class="num">${valCell}</td>
          <td class="num ${gcls}">${gain}</td>
-         <td><button class="del" onclick="${rm}">✕</button></td>`;
+         <td style="white-space:nowrap">${sellBtn}<button class="del" onclick="${rm}">✕</button></td>`;
   }
   document.getElementById('stPaid').textContent = money(paidTot);
   document.getElementById('stValue').textContent = money(valTot);
@@ -160,9 +167,24 @@ async function render(){
     roiEl.textContent = (roi>=0?'+':'')+roi+'%';
     roiEl.className = 'v '+(roi>=0?'up-t':'down-t');
   } else roiEl.textContent='0%';
+  if(inv && soldCount>0){
+    wrap.insertAdjacentHTML('beforeend', '<div class="realized-row">💰 Realized P&L on '+soldCount+' sold set'+(soldCount>1?'s':'')+': <b class="'+(realizedPL>=0?'up-t':'down-t')+'">'+(realizedPL>=0?'+':'')+money(realizedPL)+'</b></div>');
+  }
   loadPortfolioChart();
   applyExportGate();
 }
+
+async function sellSet(id, current){
+  if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
+  var v = prompt('Sale price ($) — leave empty to un-mark as sold:', (current===''||current==null)?'':current);
+  if(v===null) return;
+  v = String(v).trim();
+  var price = (v==='') ? null : parseFloat(v);
+  if(v!=='' && !(price>=0)){ alert('Enter a valid sale price.'); return; }
+  await fetch('/api/portfolio/sell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id, sold_price:price})});
+  render();
+}
+window.sellSet = sellSet;
 
 let PF_LAST=[];
 
