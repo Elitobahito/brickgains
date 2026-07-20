@@ -112,9 +112,11 @@ async function render(){
     document.getElementById('stPaid').textContent='$0';
     document.getElementById('stValue').textContent='$0';
     document.getElementById('stRoi').textContent='0%';
+    var pth=document.getElementById('pfTools'); if(pth) pth.style.display='none';
     return;
   }
   var inv = ME && ME.plan==='investor';
+  var pts=document.getElementById('pfTools'); if(pts) pts.style.display = pf.length>1 ? 'flex' : 'none';
   wrap.innerHTML = `<table class="pf"><thead><tr>
     <th>Set</th><th>Condition</th><th>Status</th>${inv?'<th style="text-align:center">Qty</th>':''}<th style="text-align:right">Paid</th>
     <th style="text-align:right">Value (new)</th><th style="text-align:right">Gain</th><th></th>
@@ -158,6 +160,7 @@ async function render(){
          <td class="num">${valCell}</td>
          <td class="num ${gcls}">${gain}</td>
          <td style="white-space:nowrap">${sellBtn}<button class="del" onclick="${rm}">✕</button></td>`;
+    if(row){ row.dataset.set=item.set; row.dataset.name=((d.name||item.set)+'').toLowerCase(); row.dataset.gain=sold?((item.sold-(paid||0))*q):((paid&&val)?((val-paid)*q):0); row.dataset.value=sold?(item.sold*q):((val||0)*q); }
   }
   document.getElementById('stPaid').textContent = money(paidTot);
   document.getElementById('stValue').textContent = money(valTot);
@@ -172,7 +175,28 @@ async function render(){
   }
   loadPortfolioChart();
   applyExportGate();
+  pfApply();
 }
+
+function pfApply(){
+  var tb=document.getElementById('tb'); if(!tb) return;
+  var se=document.getElementById('pfSearch'), so=document.getElementById('pfSort');
+  var q=((se&&se.value)||'').toLowerCase().trim();
+  var sort=(so&&so.value)||'added';
+  var rows=Array.prototype.slice.call(tb.querySelectorAll('tr'));
+  rows.forEach(function(r){
+    var name=r.dataset.name||'', set=r.dataset.set||'';
+    r.style.display=(!q || name.indexOf(q)>=0 || set.indexOf(q)>=0) ? '' : 'none';
+  });
+  if(sort!=='added'){
+    rows.sort(function(a,b){
+      if(sort==='name') return (a.dataset.name||'').localeCompare(b.dataset.name||'');
+      return (parseFloat(b.dataset[sort])||0)-(parseFloat(a.dataset[sort])||0);
+    });
+    rows.forEach(function(r){ tb.appendChild(r); });
+  }
+}
+window.pfApply = pfApply;
 
 async function sellSet(id, current){
   if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
@@ -238,50 +262,7 @@ function exportCSV(){
   a.download='brickgains-portfolio.csv'; a.click(); URL.revokeObjectURL(a.href);
 }
 
-// ---- Mobile barcode scanner (native BarcodeDetector, no external lib) ----
-async function openScanner(){
-  var input=document.getElementById('pset');
-  if(!('BarcodeDetector' in window)){
-    alert('Scanning works on Android Chrome. On iPhone, just type the set number - it also works.');
-    if(input) input.focus();
-    return;
-  }
-  var det;
-  try{ det=new BarcodeDetector({formats:['ean_13','upc_a','ean_8','upc_e']}); }
-  catch(e){ alert('Scanner not available on this device.'); return; }
-  var ov=document.createElement('div'); ov.className='scan-ov';
-  ov.innerHTML='<div class="scan-box"><video playsinline muted></video><div class="scan-frame"></div><div class="scan-hint">Point at the barcode on the LEGO box</div><button class="scan-close" aria-label="Close">✕</button></div>';
-  document.body.appendChild(ov);
-  var video=ov.querySelector('video'), stream=null, timer=null;
-  function close(){ if(timer)clearInterval(timer); if(stream)stream.getTracks().forEach(function(t){t.stop();}); ov.remove(); }
-  ov.querySelector('.scan-close').onclick=close;
-  ov.onclick=function(e){ if(e.target===ov) close(); };
-  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}); }
-  catch(e){ alert('Camera access denied. Allow the camera to scan.'); close(); return; }
-  video.srcObject=stream; try{ await video.play(); }catch(e){}
-  var busy=false;
-  timer=setInterval(async function(){
-    if(busy||!video.videoWidth) return; busy=true;
-    try{
-      var codes=await det.detect(video);
-      if(codes&&codes.length){
-        var raw=codes[0].rawValue; clearInterval(timer); timer=null;
-        var d={}; try{ d=await fetch('/api/scan?code='+encodeURIComponent(raw)).then(function(r){return r.json();}); }catch(e){}
-        close();
-        if(d&&d.ok&&d.set){ onScanResult(d.set); }
-        else { alert('Barcode read ('+raw+') but this set is not in our catalog yet. Type the set number instead.'); if(input) input.focus(); }
-        return;
-      }
-    }catch(e){}
-    busy=false;
-  },500);
-}
-function onScanResult(setnum){
-  var input=document.getElementById('pset');
-  if(input){ input.value=setnum; input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'}); }
-  var note=document.getElementById('syncNote');
-  if(note){ note.textContent='✓ Scanned LEGO '+setnum+' - set the price and tap Add.'; }
-}
+// Barcode scanner lives in scan.js (window.openScanner / camera overlay #scanOverlay).
 
 async function loadPortfolioChart(){
   var card=document.getElementById('pfChartCard'); if(!card) return;

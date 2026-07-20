@@ -74,6 +74,15 @@
       <textarea id="importRaw" placeholder="Paste set numbers, any separator: 10276, 10307 42115&#10;75192"></textarea>
       <div><button class="btn" onclick="doImport()">Import all</button> <button class="linkish" onclick="toggleImport()">Cancel</button></div>
     </div>
+    <div class="pf-tools" id="pfTools" style="display:none">
+      <input id="pfSearch" placeholder="🔍 Search your sets…" oninput="pfApply()">
+      <select id="pfSort" onchange="pfApply()" title="Sort">
+        <option value="added">Recently added</option>
+        <option value="gain">Biggest gain</option>
+        <option value="value">Highest value</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
     <div id="tableWrap"></div>
     <div id="pfChartCard" class="pf-chart-card" style="display:none">
       <h3>📈 Portfolio value over time</h3>
