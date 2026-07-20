@@ -791,3 +791,8 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .product-shot{padding:6px 0 10px}
 .product-img{width:100%;max-width:1040px;height:auto;display:block;margin:26px auto 0;border:3px solid var(--ink);border-radius:18px;box-shadow:var(--sh-lg)}
 .product-cap{text-align:center;color:var(--slate);font-weight:600;font-size:16px;margin:16px auto 0;max-width:560px}
+
+/* ---- home final CTA ---- */
+.cta-final{text-align:center;padding:64px 0 72px;background:linear-gradient(180deg,var(--paper),#fff)}
+.cta-final .cta-sub{color:var(--slate);font-size:18px;font-weight:600;margin:12px auto 26px;max-width:520px}
+.cta-final .cta-fine{color:var(--slate);font-weight:600;font-size:13px;margin-top:14px}
