@@ -38,31 +38,6 @@ def save_cache():
     try: json.dump(CACHE, open(CACHE_FILE, "w"))
     except Exception: pass
 
-# ---------- Barcode index (EAN/UPC -> set_num) for the box scanner ----------
-BARCODE_FILE = os.path.join(BASE, "barcode_index.json")
-BARCODES = {}
-if os.path.exists(BARCODE_FILE):
-    try: BARCODES = {str(k): str(v) for k, v in json.load(open(BARCODE_FILE)).items()}
-    except Exception: BARCODES = {}
-
-def save_barcodes():
-    try: json.dump(BARCODES, open(BARCODE_FILE, "w"))
-    except Exception: pass
-
-def _norm_barcode(code):
-    """Garde uniquement les chiffres. Un EAN-13 dont le 1er chiffre est 0 == UPC-A 12."""
-    return "".join(ch for ch in str(code or "") if ch.isdigit())
-
-def barcode_lookup(code):
-    """Renvoie le set_num (avec -1) pour un code-barres scanné, sinon None."""
-    c = _norm_barcode(code)
-    if not c: return None
-    if c in BARCODES: return BARCODES[c]
-    # EAN-13 avec 0 en tête <-> UPC-A 12 chiffres : on teste les deux formes
-    if len(c) == 13 and c[0] == "0" and c[1:] in BARCODES: return BARCODES[c[1:]]
-    if len(c) == 12 and ("0" + c) in BARCODES: return BARCODES["0" + c]
-    return None
-
 # ---------- DB / auth (Postgres in prod via DATABASE_URL, SQLite locally) ----------
 DB_FILE = os.path.join(BASE, "brickgains.db")
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -459,36 +434,9 @@ def brickset(sn):
             if b.get("retailPrice") and rrp is None: rrp = float(b["retailPrice"])
             if b.get("dateLastAvailable") and retired is None: retired = b["dateLastAvailable"][:10]
         img = (s.get("image") or {}).get("imageURL")
-        bc = s.get("barcode") or {}
         return {"name": s.get("name"), "year": s.get("year"), "theme": s.get("theme"),
-                "pieces": s.get("pieces"), "rrp": rrp, "retired": retired, "image_bs": img,
-                "ean": _norm_barcode(bc.get("EAN")), "upc": _norm_barcode(bc.get("UPC"))}
+                "pieces": s.get("pieces"), "rrp": rrp, "retired": retired, "image_bs": img}
     except Exception: return {}
-
-def build_barcode_index(limit=None, sleep=0.15):
-    """Parcourt catalog.json, interroge Brickset pour chaque set et construit
-    l'index code-barres -> set_num. Renvoie (nb_codes, nb_sets_couverts)."""
-    sets, seen = [], set()
-    for p in (os.path.join(BASE, "catalog.json"),):
-        try:
-            for s in json.load(open(p)).get("sets", []):
-                sn = str(s.get("set", "")).strip()
-                if sn and sn not in seen:
-                    seen.add(sn); sets.append(sn)
-        except Exception: pass
-    if limit: sets = sets[:limit]
-    covered = 0
-    for sn in sets:
-        bs = brickset(sn.replace("-1", ""))
-        got = False
-        for key in ("ean", "upc"):
-            code = bs.get(key)
-            if code and len(code) >= 8:
-                BARCODES[code] = sn; got = True
-        if got: covered += 1
-        if sleep: time.sleep(sleep)
-    save_barcodes()
-    return len(BARCODES), covered
 
 def apify_price(sn):
     try:
@@ -1077,29 +1025,6 @@ class H(BaseHTTPRequestHandler):
                             "error": "You have used your %d free checks for today. Subscribe for unlimited." % FREE_CHECKS_PER_DAY}))
                     check_inc(ip)
             return self._send(200, json.dumps(get_value(q)))
-        if u.path == "/api/scan":
-            code = urllib.parse.parse_qs(u.query).get("code", [""])[0]
-            if not _norm_barcode(code):
-                return self._send(400, json.dumps({"ok": False, "error": "no barcode"}))
-            sn = barcode_lookup(code)
-            if not sn:
-                return self._send(200, json.dumps({"ok": False,
-                    "error": "This barcode isn't in our tracked sets yet. Type the set number instead.",
-                    "code": _norm_barcode(code)}))
-            v = get_value(sn)
-            return self._send(200, json.dumps({"ok": True, "set": str(sn).replace("-1", ""),
-                "name": v.get("name"), "value": v}))
-        if u.path == "/api/admin/build-barcodes":
-            if not self._is_admin():
-                return self._send(401, json.dumps({"ok": False, "error": "admin login required"}))
-            qs = urllib.parse.parse_qs(u.query)
-            lim = qs.get("limit", [""])[0]
-            try:
-                total, covered = build_barcode_index(limit=int(lim) if lim.isdigit() else None)
-                return self._send(200, json.dumps({"ok": True, "codes": total,
-                    "sets_covered": covered, "index": BARCODES}))
-            except Exception as e:
-                return self._send(500, json.dumps({"ok": False, "error": str(e)}))
         if u.path == "/api/history":
             s = urllib.parse.parse_qs(u.query).get("set", [""])[0].replace("-1", "")
             if not s: return self._send(400, json.dumps({"error": "set manquant"}))
@@ -1139,6 +1064,23 @@ class H(BaseHTTPRequestHandler):
             roi = round((tot_val - tot_paid) / tot_paid * 100) if tot_paid > 0 else None
             return self._send(200, json.dumps({"ok": True, "count": len(items),
                 "totalValue": round(tot_val), "roi": roi, "items": items}))
+        if u.path == "/api/scan":
+            qs = urllib.parse.parse_qs(u.query)
+            code = re.sub(r"\D", "", qs.get("code", [""])[0])[:14]
+            if not code:
+                return self._send(400, json.dumps({"ok": False, "error": "no code"}))
+            try:
+                idx = json.load(open(os.path.join(BASE, "barcodes.json")))
+            except Exception:
+                idx = {}
+            sn = idx.get(code)
+            if not sn and len(code) == 13 and code[0] == "0":
+                sn = idx.get(code[1:])          # EAN-13 avec 0 en tete == UPC-A 12
+            if not sn and len(code) == 12:
+                sn = idx.get("0" + code)         # UPC-A 12 == EAN-13 avec 0 en tete
+            if not sn:
+                return self._send(200, json.dumps({"ok": False, "notfound": True, "code": code}))
+            return self._send(200, json.dumps({"ok": True, "set": sn}))
         if u.path == "/api/movers":
             me = self._me()
             if not (me and me.get("plan") in PAID_PLANS):

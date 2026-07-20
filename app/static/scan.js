@@ -1,55 +1,47 @@
-/* BrickGains - box barcode scanner
-   Uses the native BarcodeDetector API (Chrome/Android). No external library.
-   Safari/iOS does not support it -> graceful fallback to manual set entry. */
+/* BrickGains - box barcode scanner.
+   Native BarcodeDetector API (Chrome/Android). No external library.
+   Safari/iOS has no support -> graceful fallback to manual set entry. */
 (function () {
   var stream = null, detector = null, raf = 0, busy = false, lastCode = "", lastAt = 0;
 
   function el(id) { return document.getElementById(id); }
   function msg(t, kind) {
     var m = el("scanMsg"); if (!m) return;
-    m.textContent = t;
-    m.className = "scan-msg" + (kind ? " " + kind : "");
+    m.textContent = t; m.className = "scan-msg" + (kind ? " " + kind : "");
   }
-
   function supported() {
     return ("BarcodeDetector" in window) &&
            navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
   }
-
   function stop() {
     if (raf) { cancelAnimationFrame(raf); raf = 0; }
     if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
     var v = el("scanVideo"); if (v) v.srcObject = null;
   }
-
-  function close() {
+  function closeScanner() {
     stop();
     var o = el("scanOverlay"); if (o) o.style.display = "none";
   }
 
   async function resolve(code) {
     if (busy) return;
-    // debounce identical reads within 2.5s
     var now = Date.now();
     if (code === lastCode && now - lastAt < 2500) return;
-    lastCode = code; lastAt = now;
-    busy = true;
+    lastCode = code; lastAt = now; busy = true;
     msg("Looking up " + code + "…");
     try {
       var r = await fetch("/api/scan?code=" + encodeURIComponent(code));
       var d = await r.json();
       if (d && d.ok && d.set) {
-        msg("✓ " + (d.name || ("Set " + d.set)) + " (" + d.set + ")", "ok");
-        if (window.pickSet) pickSet(d.set); else {
-          var i = el("pset"); if (i) i.value = d.set;
-        }
-        setTimeout(close, 700);
-        var pp = el("pprice"); if (pp) setTimeout(function () { pp.focus(); }, 750);
+        msg("✓ Set " + d.set + " found", "ok");
+        if (window.pickSet) pickSet(d.set);
+        else { var i = el("pset"); if (i) i.value = d.set; }
+        setTimeout(closeScanner, 650);
+        var pp = el("pprice"); if (pp) setTimeout(function () { pp.focus(); }, 700);
         return;
       }
-      // known-format barcode but not in our tracked sets
-      msg((d && d.error) || "Not found. Type the set number instead.", "warn");
-      busy = false; // keep scanning, maybe another barcode on the box
+      msg("Barcode not in our tracked sets yet. Type the set number instead.", "warn");
+      busy = false;
     } catch (e) {
       msg("Network error. Try again or type the set number.", "warn");
       busy = false;
@@ -63,22 +55,20 @@
       var codes = await detector.detect(v);
       if (codes && codes.length) {
         var raw = (codes[0].rawValue || "").replace(/\D/g, "");
-        if (raw.length >= 8) { await resolve(raw); }
+        if (raw.length >= 8) await resolve(raw);
       }
     } catch (e) { /* frame decode hiccup - ignore */ }
     raf = requestAnimationFrame(tick);
   }
 
-  async function open() {
-    var o = el("scanOverlay");
+  async function openScanner() {
     if (!supported()) {
-      // Fallback: no camera scan on this browser (iOS Safari). Guide to manual entry.
       alert("Camera scanning isn't supported on this browser (e.g. iPhone Safari). " +
-            "Type the set number instead - it's printed on the box near the barcode.");
+            "Type the set number instead - it's printed on the box next to the barcode.");
       var i = el("pset"); if (i) { i.focus(); i.scrollIntoView({ behavior: "smooth", block: "center" }); }
       return;
     }
-    if (o) o.style.display = "flex";
+    var o = el("scanOverlay"); if (o) o.style.display = "flex";
     busy = false; lastCode = "";
     msg("Point your camera at the barcode on the box.");
     try {
@@ -91,23 +81,20 @@
       stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "environment" } }, audio: false
       });
-      var v = el("scanVideo");
-      v.srcObject = stream;
-      await v.play();
+      var v = el("scanVideo"); v.srcObject = stream; await v.play();
       raf = requestAnimationFrame(tick);
     } catch (e) {
       msg("Couldn't access the camera. Check permissions, or type the set number.", "warn");
     }
   }
 
-  // close on backdrop click / Esc
   document.addEventListener("click", function (ev) {
-    var o = el("scanOverlay");
-    if (o && ev.target === o) close();
+    var o = el("scanOverlay"); if (o && ev.target === o) closeScanner();
   });
   document.addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape") close();
+    if (ev.key === "Escape") closeScanner();
   });
 
-  window.BGScan = { open: open, close: close };
+  window.openScanner = openScanner;
+  window.closeScanner = closeScanner;
 })();

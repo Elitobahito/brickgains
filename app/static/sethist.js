@@ -41,7 +41,33 @@
         '<line class="lb-grid" x1="0" y1="'+(H*0.5)+'" x2="'+W+'" y2="'+(H*0.5)+'"/>'+
         '<polyline class="lb-area" points="'+area+'"/>'+
         '<polyline class="lb-line" points="'+line+'"/>'+dots+
-      '</svg></div>'+
+        '<line class="hl-cursor" x1="0" y1="0" x2="0" y2="'+H+'"/>'+
+      '</svg><span class="hl-dot"></span><div class="hl-tip"></div></div>'+
       '<div class="hl-meta"><span>'+fmtDate(first.day)+'</span><span>'+(FR?(pts.length+' points, mis à jour mensuellement'):(pts.length+' points, updated monthly'))+'</span><span>'+fmtDate(last.day)+'</span></div>';
+
+    // --- hover: show value + date at the nearest point ---
+    var chart = locked.querySelector('.hl-chart');
+    var svg = chart.querySelector('svg');
+    var cursor = locked.querySelector('.hl-cursor');
+    var hdot = locked.querySelector('.hl-dot');
+    var tip = locked.querySelector('.hl-tip');
+    function at(clientX){
+      var s = svg.getBoundingClientRect(), c = chart.getBoundingClientRect();
+      var frac = Math.max(0, Math.min(1, (clientX - s.left) / s.width));
+      var i = pts.length>1 ? Math.round(frac*(pts.length-1)) : 0;
+      var p = pts[i], lx = X(i), ly = Y(p.new_avg);
+      cursor.setAttribute('x1', lx); cursor.setAttribute('x2', lx);
+      var pxL = (lx/W)*s.width + (s.left - c.left);
+      var pxT = (ly/H)*s.height + (s.top - c.top);
+      hdot.style.left = pxL+'px'; hdot.style.top = pxT+'px';
+      tip.innerHTML = '<b>'+money(p.new_avg)+'</b><span>'+fmtDate(p.day)+'</span>';
+      tip.style.left = Math.max(0, Math.min(c.width, pxL))+'px';
+      chart.classList.add('is-hover');
+    }
+    function move(e){ at(e.touches ? e.touches[0].clientX : e.clientX); }
+    chart.addEventListener('mousemove', move);
+    chart.addEventListener('mouseleave', function(){ chart.classList.remove('is-hover'); });
+    chart.addEventListener('touchstart', move, {passive:true});
+    chart.addEventListener('touchmove', move, {passive:true});
   }
 })();

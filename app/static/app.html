@@ -63,7 +63,7 @@
       <button class="btn" onclick="addSet()">Add to portfolio</button>
     </div>
     <div class="add-tools">
-      <button class="linkish" id="scanBtn" onclick="BGScan.open()">📷 Scan a box</button>
+      <button class="linkish" id="scanBtn" onclick="openScanner()">📷 Scan a box</button>
       <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
       <button class="linkish" id="csvBtn" onclick="exportCSV()">⬇️ Export CSV</button>
       <button class="linkish" id="pdfBtn" onclick="pdfReport()">🧾 Insurance report (PDF)</button>
@@ -203,7 +203,7 @@
   <div class="scan-box">
     <div class="scan-head">
       <b>📷 Scan a LEGO box</b>
-      <button class="scan-x" onclick="BGScan.close()" aria-label="Close">✕</button>
+      <button class="scan-x" onclick="closeScanner()" aria-label="Close">✕</button>
     </div>
     <div class="scan-video-wrap">
       <video id="scanVideo" playsinline muted></video>
@@ -211,7 +211,7 @@
     </div>
     <p class="scan-msg" id="scanMsg">Point your camera at the barcode on the box.</p>
     <div class="scan-foot">
-      <button class="btn ghost" onclick="BGScan.close()">Cancel</button>
+      <button class="btn ghost" onclick="closeScanner()">Cancel</button>
     </div>
   </div>
 </div>

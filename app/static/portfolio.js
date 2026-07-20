@@ -215,6 +215,51 @@ function exportCSV(){
   a.download='brickgains-portfolio.csv'; a.click(); URL.revokeObjectURL(a.href);
 }
 
+// ---- Mobile barcode scanner (native BarcodeDetector, no external lib) ----
+async function openScanner(){
+  var input=document.getElementById('pset');
+  if(!('BarcodeDetector' in window)){
+    alert('Scanning works on Android Chrome. On iPhone, just type the set number - it also works.');
+    if(input) input.focus();
+    return;
+  }
+  var det;
+  try{ det=new BarcodeDetector({formats:['ean_13','upc_a','ean_8','upc_e']}); }
+  catch(e){ alert('Scanner not available on this device.'); return; }
+  var ov=document.createElement('div'); ov.className='scan-ov';
+  ov.innerHTML='<div class="scan-box"><video playsinline muted></video><div class="scan-frame"></div><div class="scan-hint">Point at the barcode on the LEGO box</div><button class="scan-close" aria-label="Close">✕</button></div>';
+  document.body.appendChild(ov);
+  var video=ov.querySelector('video'), stream=null, timer=null;
+  function close(){ if(timer)clearInterval(timer); if(stream)stream.getTracks().forEach(function(t){t.stop();}); ov.remove(); }
+  ov.querySelector('.scan-close').onclick=close;
+  ov.onclick=function(e){ if(e.target===ov) close(); };
+  try{ stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}); }
+  catch(e){ alert('Camera access denied. Allow the camera to scan.'); close(); return; }
+  video.srcObject=stream; try{ await video.play(); }catch(e){}
+  var busy=false;
+  timer=setInterval(async function(){
+    if(busy||!video.videoWidth) return; busy=true;
+    try{
+      var codes=await det.detect(video);
+      if(codes&&codes.length){
+        var raw=codes[0].rawValue; clearInterval(timer); timer=null;
+        var d={}; try{ d=await fetch('/api/scan?code='+encodeURIComponent(raw)).then(function(r){return r.json();}); }catch(e){}
+        close();
+        if(d&&d.ok&&d.set){ onScanResult(d.set); }
+        else { alert('Barcode read ('+raw+') but this set is not in our catalog yet. Type the set number instead.'); if(input) input.focus(); }
+        return;
+      }
+    }catch(e){}
+    busy=false;
+  },500);
+}
+function onScanResult(setnum){
+  var input=document.getElementById('pset');
+  if(input){ input.value=setnum; input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'}); }
+  var note=document.getElementById('syncNote');
+  if(note){ note.textContent='✓ Scanned LEGO '+setnum+' - set the price and tap Add.'; }
+}
+
 async function loadPortfolioChart(){
   var card=document.getElementById('pfChartCard'); if(!card) return;
   try{
