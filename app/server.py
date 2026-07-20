@@ -839,6 +839,19 @@ class H(BaseHTTPRequestHandler):
                 qx("UPDATE portfolio SET sold_price=?, sold_date=? WHERE id=? AND user_id=?",
                    (sp, time.strftime("%Y-%m-%d"), rid, uid))
                 return self._send(200, json.dumps({"ok": True, "sold": True}))
+            if u.path == "/api/portfolio/edit":
+                # correct the purchase price of a row (no delete/re-add needed)
+                rid = d.get("id")
+                pd = d.get("paid")
+                if pd in (None, ""):
+                    qx("UPDATE portfolio SET paid=NULL WHERE id=? AND user_id=?", (rid, uid))
+                    return self._send(200, json.dumps({"ok": True}))
+                try: pd = float(pd)
+                except Exception: return self._send(400, json.dumps({"ok": False, "error": "invalid price"}))
+                if pd < 0:
+                    return self._send(400, json.dumps({"ok": False, "error": "invalid price"}))
+                qx("UPDATE portfolio SET paid=? WHERE id=? AND user_id=?", (pd, rid, uid))
+                return self._send(200, json.dumps({"ok": True}))
             if u.path == "/api/portfolio/remove":
                 rid = d.get("id")
                 qx("DELETE FROM portfolio WHERE id=? AND user_id=?", (rid, uid))

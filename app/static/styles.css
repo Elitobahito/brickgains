@@ -674,6 +674,9 @@ table.pf th,table.pf td{padding:15px;text-align:left;border-bottom:2px solid var
 table.pf tr:last-child td{border-bottom:none}
 table.pf th{background:var(--ink);color:#fff;font-family:var(--disp);font-size:13px;text-transform:uppercase;letter-spacing:.5px}
 table.pf td.num{font-weight:800;text-align:right;font-variant-numeric:tabular-nums}
+table.pf .editable{cursor:pointer;border-bottom:1.5px dashed var(--slate);padding-bottom:1px}
+table.pf .editable:hover{color:var(--red);border-bottom-color:var(--red)}
+table.pf .editable::after{content:" ✎";font-size:11px;color:var(--slate)}
 .up-t{color:var(--green-d);font-weight:800}.down-t{color:var(--red-d);font-weight:800}
 .chip{display:inline-block;padding:4px 11px;border-radius:9px;font-size:12px;font-weight:800;border:2px solid var(--ink)}
 .chip.ret{background:#c9f5da;color:var(--green-d)}

@@ -124,7 +124,7 @@ async function render(){
     ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="${inv?8:7}" style="color:#999">Loading…</td></tr>`).join('')}
     </tbody></table>`;
 
-  let paidTot=0, valTot=0, realizedPL=0, soldCount=0; PF_LAST=[];
+  let paidTot=0, valTot=0, realizedPL=0, soldCount=0; PF_LAST=[]; var themesSeen={};
   for(let i=0;i<pf.length;i++){
     const item = pf[i];
     let d={};
@@ -148,6 +148,8 @@ async function render(){
     const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
     const sellBtn = item.sid ? `<button class="del sell${inv?'':' feat-locked'}" title="${inv?(sold?'Edit sale price':'Mark as sold'):'Sold-set P&L — upgrade to Investor'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">${inv?'💰':'🔒'}</button>` : '';
     const valCell = sold ? `${money(item.sold)} <span style="color:#999;font-size:11px">sold</span>` : money(val);
+    const paidCell = item.sid ? `<span class="editable" title="Edit purchase price" onclick="editPaid(${item.sid},${paid==null?"''":paid})">${money(paid)}</span>` : money(paid);
+    if(d.theme) themesSeen[d.theme]=1;
     const qtyCell = inv ? `<td class="num" style="text-align:center">${item.sid?`<span class="qty-step"><button onclick="setQty(${item.sid},${q-1})">−</button><b>${q}</b><button onclick="setQty(${item.sid},${q+1})">+</button></span>`:q}</td>` : '';
     const row = document.getElementById('r'+i);
     if(row) row.innerHTML = (d.error||!d.name)
@@ -156,11 +158,11 @@ async function render(){
          <td>${cond}</td>
          <td>${status}</td>
          ${qtyCell}
-         <td class="num">${money(paid)}</td>
+         <td class="num">${paidCell}</td>
          <td class="num">${valCell}</td>
          <td class="num ${gcls}">${gain}</td>
          <td style="white-space:nowrap">${sellBtn}<button class="del" onclick="${rm}">✕</button></td>`;
-    if(row){ row.dataset.set=item.set; row.dataset.name=((d.name||item.set)+'').toLowerCase(); row.dataset.gain=sold?((item.sold-(paid||0))*q):((paid&&val)?((val-paid)*q):0); row.dataset.value=sold?(item.sold*q):((val||0)*q); }
+    if(row){ row.dataset.set=item.set; row.dataset.name=((d.name||item.set)+'').toLowerCase(); row.dataset.theme=((d.theme||'')+'').toLowerCase(); row.dataset.gain=sold?((item.sold-(paid||0))*q):((paid&&val)?((val-paid)*q):0); row.dataset.value=sold?(item.sold*q):((val||0)*q); }
   }
   document.getElementById('stPaid').textContent = money(paidTot);
   document.getElementById('stValue').textContent = money(valTot);
@@ -173,20 +175,43 @@ async function render(){
   if(inv && soldCount>0){
     wrap.insertAdjacentHTML('beforeend', '<div class="realized-row">💰 Realized P&L on '+soldCount+' sold set'+(soldCount>1?'s':'')+': <b class="'+(realizedPL>=0?'up-t':'down-t')+'">'+(realizedPL>=0?'+':'')+money(realizedPL)+'</b></div>');
   }
+  var thSel=document.getElementById('pfTheme');
+  if(thSel){
+    var cur=thSel.value, keys=Object.keys(themesSeen).sort();
+    thSel.style.display = keys.length>1 ? '' : 'none';
+    thSel.innerHTML='<option value="">All themes</option>'+keys.map(function(t){
+      var lv=t.toLowerCase(); return '<option value="'+lv+'"'+(cur===lv?' selected':'')+'>'+t+'</option>';
+    }).join('');
+  }
   loadPortfolioChart();
   applyExportGate();
   pfApply();
 }
 
+async function editPaid(id, current){
+  if(!(ME && id)) return;
+  var v = prompt('Purchase price ($) — what you paid for this set:', (current===''||current==null)?'':current);
+  if(v===null) return;
+  v=String(v).trim();
+  var price=(v==='')?null:parseFloat(v);
+  if(v!=='' && !(price>=0)){ alert('Enter a valid price.'); return; }
+  await fetch('/api/portfolio/edit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,paid:price})});
+  render();
+}
+window.editPaid = editPaid;
+
 function pfApply(){
   var tb=document.getElementById('tb'); if(!tb) return;
-  var se=document.getElementById('pfSearch'), so=document.getElementById('pfSort');
+  var se=document.getElementById('pfSearch'), so=document.getElementById('pfSort'), th=document.getElementById('pfTheme');
   var q=((se&&se.value)||'').toLowerCase().trim();
   var sort=(so&&so.value)||'added';
+  var theme=((th&&th.value)||'').toLowerCase();
   var rows=Array.prototype.slice.call(tb.querySelectorAll('tr'));
   rows.forEach(function(r){
     var name=r.dataset.name||'', set=r.dataset.set||'';
-    r.style.display=(!q || name.indexOf(q)>=0 || set.indexOf(q)>=0) ? '' : 'none';
+    var okText=(!q || name.indexOf(q)>=0 || set.indexOf(q)>=0);
+    var okTheme=(!theme || (r.dataset.theme||'')===theme);
+    r.style.display=(okText && okTheme) ? '' : 'none';
   });
   if(sort!=='added'){
     rows.sort(function(a,b){
