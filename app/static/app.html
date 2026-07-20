@@ -22,6 +22,8 @@
 
 
 
+
+
 <!--bg-analytics--><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var _bc;try{_bc=localStorage.getItem('bg_consent')==='granted'?'granted':'denied';}catch(e){_bc='denied';}gtag('consent','default',{ad_storage:_bc,analytics_storage:_bc,ad_user_data:_bc,ad_personalization:_bc,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('js',new Date());gtag('config','G-BRDK3Q41YF');gtag('config','AW-18303479328'); window.BG_CLARITY="xpeqecccdw";</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-BRDK3Q41YF"></script><script src="/consent.js" defer></script><!--/bg-analytics-->
 </head>
 <body>
@@ -76,10 +78,11 @@
       <button class="btn" onclick="addSet()">Add to portfolio</button>
     </div>
     <div class="add-tools">
-      <button class="linkish" id="scanBtn" onclick="openScanner()">📷 Scan a box</button>
-      <button class="linkish" onclick="toggleImport()">📥 Import a list of set numbers</button>
-      <button class="linkish" id="csvBtn" onclick="exportCSV()">⬇️ Export CSV</button>
-      <button class="linkish" id="pdfBtn" onclick="pdfReport()">🧾 Insurance report (PDF)</button>
+      <button class="tbtn accent" id="scanBtn" onclick="openScanner()"><span class="ic">📷</span>Scan a box</button>
+      <button class="tbtn" onclick="toggleImport()"><span class="ic">📥</span>Import list</button>
+      <span class="tool-sep"></span>
+      <button class="tbtn" id="csvBtn" onclick="exportCSV()" title="Export your portfolio (Investor)"><span class="ic">⬇️</span>Export CSV</button>
+      <button class="tbtn" id="pdfBtn" onclick="pdfReport()" title="Insurance report PDF (Investor)"><span class="ic">🧾</span>Insurance PDF</button>
       <span class="sync-note" id="syncNote"></span>
     </div>
     <div id="importBox" class="import-box" style="display:none">
