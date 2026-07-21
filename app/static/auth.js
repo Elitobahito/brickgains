@@ -4,6 +4,29 @@
   const FRA = (window.LANG === 'fr');
   const LANG = window.LANG || 'en';
   const HOME = (LANG && LANG !== 'en') ? '/' + LANG : '/';
+
+  // --- Payment-flow clarity: redirect overlay + "payment next" upgrade context ---
+  var CKt = ({
+    en:{redir:'Taking you to secure checkout…', next:'Next: secure payment', for_:'for'},
+    fr:{redir:'Redirection vers le paiement sécurisé…', next:'Ensuite : paiement sécurisé', for_:'pour'},
+    de:{redir:'Weiterleitung zur sicheren Kasse…', next:'Nächster Schritt: sichere Zahlung', for_:'für'},
+    es:{redir:'Redirigiendo al pago seguro…', next:'Después: pago seguro', for_:'para'},
+    it:{redir:'Reindirizzamento al pagamento sicuro…', next:'Poi: pagamento sicuro', for_:'per'},
+    nl:{redir:'Je wordt doorgestuurd naar de beveiligde betaling…', next:'Daarna: veilige betaling', for_:'voor'},
+    sv:{redir:'Skickar dig till säker kassa…', next:'Sedan: säker betalning', for_:'för'},
+    da:{redir:'Sender dig til sikker betaling…', next:'Derefter: sikker betaling', for_:'til'}
+  })[LANG] || {redir:'Taking you to secure checkout…', next:'Next: secure payment', for_:'for'};
+  function planLabel(p){ return p==='investor' ? 'Investor' : (p==='pro' ? 'Pro' : p); }
+  function showRedirect(){
+    if(document.getElementById('bgRedir')) return;
+    var o=document.createElement('div'); o.id='bgRedir';
+    o.style.cssText='position:fixed;inset:0;z-index:2147483600;background:rgba(255,247,230,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px';
+    o.innerHTML='<div style="width:44px;height:44px;border:4px solid #141414;border-top-color:transparent;border-radius:50%;animation:bgspin .8s linear infinite"></div>'+
+      '<div style="font-family:\'Baloo 2\',Inter,system-ui,sans-serif;font-weight:800;font-size:17px;color:#141414;text-align:center;padding:0 24px">'+CKt.redir+'</div>'+
+      '<style>@keyframes bgspin{to{transform:rotate(360deg)}}</style>';
+    document.body.appendChild(o);
+  }
+  function hideRedirect(){ var o=document.getElementById('bgRedir'); if(o) o.remove(); }
   const SP = {
   fr: {
     welcome:"Bon retour", loginSub:"Connectez-vous pour suivre votre collection.",
@@ -205,6 +228,15 @@
       el('authSwitchLink').textContent = login ? S.doCreate : S.doLogin;
       el('authMsg').textContent = '';
       var fg=el('authForgot'); if(fg) fg.style.display = login ? 'block' : 'none';
+      // Upgrade context: if the visitor clicked a paid plan, make it clear payment comes right after.
+      var intent=null; try{ intent=sessionStorage.getItem('bg_intent'); }catch(e){}
+      var sub=el('authSub');
+      if(intent && sub){
+        var pl=planLabel(intent.split('|')[0]);
+        sub.innerHTML='<span style="display:inline-flex;align-items:center;gap:6px;background:#FFCF00;border:2px solid #141414;border-radius:999px;padding:5px 13px;font-family:var(--disp),\'Baloo 2\',sans-serif;font-weight:800;font-size:13px;color:#141414">'+
+          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'+
+          CKt.next+' '+CKt.for_+' '+pl+'</span>';
+      }
     },
     async submit(e){
       e.preventDefault();
@@ -252,13 +284,14 @@
   // Stripe checkout: POST /api/checkout -> redirect to hosted page. If not logged in, open auth then resume.
   BG.checkout = async function(plan, billing){
     billing = billing || window.__bgBilling || 'monthly';
+    showRedirect();   // visible feedback so the jump to Stripe never looks frozen
     try{
       const r = await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan, billing})});
-      if(r.status===401){ sessionStorage.setItem('bg_intent', plan+'|'+billing); BG.openAuth('signup'); return; }
+      if(r.status===401){ hideRedirect(); sessionStorage.setItem('bg_intent', plan+'|'+billing); BG.openAuth('signup'); return; }
       const d = await r.json();
-      if(d && d.ok && d.url){ location.href = d.url; }
-      else { alert((d && d.error) || (FRA ? "Paiement indisponible" : "Checkout unavailable")); }
-    }catch(e){ alert(FRA ? "Erreur réseau" : "Network error"); }
+      if(d && d.ok && d.url){ location.href = d.url; }   // keep overlay until the page navigates
+      else { hideRedirect(); alert((d && d.error) || (FRA ? "Paiement indisponible" : "Checkout unavailable")); }
+    }catch(e){ hideRedirect(); alert(FRA ? "Erreur réseau" : "Network error"); }
   };
   // Stripe billing portal: manage / cancel subscription. Free users go to pricing.
   BG.billingPortal = async function(){
