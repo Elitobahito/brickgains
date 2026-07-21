@@ -636,7 +636,7 @@ def apify_price(sn):
         body = json.dumps({"query": sn, "itemType": "S", "priceGuideDetail": True, "maxItems": 1}).encode()
         items = json.loads(urllib.request.urlopen(
             urllib.request.Request(url, data=body, headers={"Content-Type": "application/json"}),
-            timeout=180).read())
+            timeout=30).read())
         p = items[0] if items else {}
         return {"newMin": p.get("newMinPrice"), "newAvg": p.get("newAvgPrice"), "newMax": p.get("newMaxPrice"),
                 "usedMin": p.get("usedMinPrice"), "usedAvg": p.get("usedAvgPrice"), "usedMax": p.get("usedMaxPrice")}
