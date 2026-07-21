@@ -128,6 +128,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 .freehint b{color:var(--ink)}
 .trychips{margin-top:16px;display:flex;gap:9px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:13.5px;color:var(--slate);font-weight:600}
 .trychips button{font-family:var(--disp);font-weight:700;font-size:13.5px;background:#fff;border:2px solid var(--ink);border-radius:9px;
+  color:var(--ink);-webkit-text-fill-color:var(--ink);appearance:none;-webkit-appearance:none;
   padding:6px 12px;cursor:pointer;box-shadow:var(--sh-sm);transition:transform .06s,box-shadow .06s}
 .trychips button:hover{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--ink)}
 .trychips button:active{transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
@@ -441,6 +442,22 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .acct.in{background:var(--green);color:#fff}
 .acct.light{background:transparent;border-color:#4a4a4a;color:#fff;box-shadow:none}
 .acct.light.in{background:var(--green);border-color:var(--ink)}
+/* mobile header: "See prices" button + hamburger (shown only <=820px via media query) */
+.see-prices,.hamb{display:none}
+.see-prices{align-items:center;justify-content:center;font-family:var(--disp);font-weight:700;font-size:13.5px;
+  color:#fff;-webkit-text-fill-color:#fff;background:var(--red);border:2.5px solid var(--ink);border-radius:11px;
+  padding:10px 14px;cursor:pointer;box-shadow:0 4px 0 var(--ink);white-space:nowrap;text-decoration:none;line-height:1}
+.see-prices:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.hamb{align-items:center;justify-content:center;width:46px;height:46px;flex:0 0 auto;background:#fff;color:var(--ink);
+  border:2.5px solid var(--ink);border-radius:12px;box-shadow:3px 4px 0 var(--ink);cursor:pointer;padding:0}
+.hamb:active{transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
+.hamb svg{width:24px;height:24px}
+.mobmenu{position:fixed;top:70px;left:0;right:0;z-index:120;background:#fff;border-bottom:3px solid var(--ink);
+  box-shadow:0 8px 0 rgba(20,20,20,.12);display:none;flex-direction:column;padding:8px 16px 16px}
+.mobmenu.on{display:flex}
+.mobmenu a,.mobmenu button{font-family:var(--disp);font-weight:700;font-size:17px;color:var(--ink);-webkit-text-fill-color:var(--ink);
+  background:none;border:none;border-bottom:2px solid var(--line);text-align:left;text-decoration:none;padding:15px 4px;cursor:pointer;width:100%}
+.mobmenu .mm-signin{color:#fff;-webkit-text-fill-color:#fff;background:var(--ink);border:none;border-radius:12px;text-align:center;margin-top:12px;padding:14px}
 
 /* ---- auth modal ---- */
 .modal.auth{max-width:420px;text-align:center}
@@ -798,6 +815,9 @@ table.mv tr.clik:hover td{background:#fbf7ea}
   .ec-inputs{grid-template-columns:1fr 1fr}
   .nav .links{display:none}
   .navcta .btn{display:none}
+  .navcta .acct{display:none}          /* login icon -> moved into hamburger menu */
+  .see-prices{display:inline-flex}     /* mobile: "See prices" button */
+  .hamb{display:inline-flex}           /* mobile: hamburger */
   .steps,.feats,.excards,.plans,.reviews{grid-template-columns:1fr}
   .alertbox{grid-template-columns:1fr;padding:28px}
   .plan.pop{transform:none;margin-top:0}
