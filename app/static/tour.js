@@ -138,7 +138,12 @@
     if(!document.querySelector('.portfolio-head')) return; // only on /app
     addButton();
     var seen; try{ seen = localStorage.getItem('bg_tour_v3'); }catch(e){ seen='1'; }
-    if(!seen) setTimeout(start, 700);
+    if(!seen) setTimeout(function(){
+      var g=document.getElementById('appGate');
+      // don't auto-start the tour while the signup gate is showing (logged-out visitor)
+      if(g && getComputedStyle(g).display!=='none') return;
+      start();
+    }, 900);
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
   else init();
