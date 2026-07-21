@@ -328,7 +328,7 @@ def email_shell(title, body_html, cta_label=None, cta_url=None):
 
 # ---------- AI support chat (Gemini) ----------
 GEMINI_API_KEY = ENV.get("GEMINI_API_KEY", "")
-GEMINI_MODEL = ENV.get("GEMINI_MODEL", "gemini-2.5-flash-lite")
+GEMINI_MODEL = ENV.get("GEMINI_MODEL", "gemini-flash-lite-latest")
 
 # Knowledge base — the ONLY source of truth the assistant may use.
 BG_KB = """BrickGains — product knowledge base.
