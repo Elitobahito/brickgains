@@ -1,4 +1,4 @@
-// BrickGains — auth modal (email/password + Google placeholder) + 10% discount popup
+// BrickGains - auth modal (email/password + Google placeholder) + 10% discount popup
 (function(){
   let me = null;
   const FRA = (window.LANG === 'fr');
@@ -271,7 +271,7 @@
   };
   window.BG = BG;
 
-  // Monthly / Annual billing toggle (pricing sections) — annual is the default
+  // Monthly / Annual billing toggle (pricing sections) - annual is the default
   window.__bgBilling = 'annual';
   function setBilling(b){
     window.__bgBilling = b;

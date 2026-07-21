@@ -1,4 +1,4 @@
-/* BrickGains — GDPR cookie consent (Google Consent Mode v2).
+/* BrickGains - GDPR cookie consent (Google Consent Mode v2).
    Trackers default to DENIED (set inline in <head>). This banner lets the visitor
    accept or reject; on accept it unlocks GA4 + Google Ads cookies and loads Clarity. */
 (function () {

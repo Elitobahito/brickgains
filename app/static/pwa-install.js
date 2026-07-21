@@ -1,4 +1,4 @@
-/* BrickGains — "Install app" prompt. Makes the PWA actually discoverable/installable.
+/* BrickGains - "Install app" prompt. Makes the PWA actually discoverable/installable.
    - Chrome/Edge/Android: captures beforeinstallprompt → 1-click Install button.
    - iOS Safari (no prompt API): shows the Share → Add to Home Screen hint.
    Only in the dashboard, hidden once installed or dismissed. */

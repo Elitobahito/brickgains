@@ -146,7 +146,7 @@ async function render(){
                         : (d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`);
     const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?'Opened':'Sealed'}</span>`;
     const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
-    const sellBtn = item.sid ? `<button class="del sell${inv?'':' feat-locked'}" title="${inv?(sold?'Edit sale price':'Mark as sold'):'Sold-set P&L — upgrade to Investor'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">${inv?'💰':'🔒'}</button>` : '';
+    const sellBtn = item.sid ? `<button class="del sell${inv?'':' feat-locked'}" title="${inv?(sold?'Edit sale price':'Mark as sold'):'Sold-set P&L: upgrade to Investor'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">${inv?'💰':'🔒'}</button>` : '';
     const valCell = sold ? `${money(item.sold)} <span style="color:#999;font-size:11px">sold</span>` : money(val);
     const paidCell = item.sid ? `<span class="editable" title="Edit purchase price" onclick="editPaid(${item.sid},${paid==null?"''":paid})">${money(paid)}</span>` : money(paid);
     if(d.theme) themesSeen[d.theme]=1;
@@ -190,7 +190,7 @@ async function render(){
 
 async function editPaid(id, current){
   if(!(ME && id)) return;
-  var v = prompt('Purchase price ($) — what you paid for this set:', (current===''||current==null)?'':current);
+  var v = prompt('Purchase price you paid for this set ($):', (current===''||current==null)?'':current);
   if(v===null) return;
   v=String(v).trim();
   var price=(v==='')?null:parseFloat(v);
@@ -225,7 +225,7 @@ window.pfApply = pfApply;
 
 async function sellSet(id, current){
   if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
-  var v = prompt('Sale price ($) — leave empty to un-mark as sold:', (current===''||current==null)?'':current);
+  var v = prompt('Sale price ($), leave empty to un-mark as sold:', (current===''||current==null)?'':current);
   if(v===null) return;
   v = String(v).trim();
   var price = (v==='') ? null : parseFloat(v);

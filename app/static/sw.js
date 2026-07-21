@@ -1,4 +1,4 @@
-/* BrickGains service worker — installability + light offline, safe for a live-data app.
+/* BrickGains service worker - installability + light offline, safe for a live-data app.
    - /api/* : never cached (always live prices/portfolio)
    - navigations & CSS/JS : network-first (fresh), cache only as offline fallback
    - images/fonts : cache-first with background refresh */

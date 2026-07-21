@@ -36,6 +36,10 @@
 
 
 
+
+
+
+
 <!--bg-analytics--><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var _bc;try{_bc=localStorage.getItem('bg_consent')==='granted'?'granted':'denied';}catch(e){_bc='denied';}gtag('consent','default',{ad_storage:_bc,analytics_storage:_bc,ad_user_data:_bc,ad_personalization:_bc,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('js',new Date());gtag('config','G-BRDK3Q41YF');gtag('config','AW-18303479328'); window.BG_CLARITY="xpeqecccdw";</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-BRDK3Q41YF"></script><script src="/consent.js" defer></script><!--/bg-analytics-->
 <!--bg-pwa--><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#E3000B"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="BrickGains"><script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><!--/bg-pwa-->
 </head>
@@ -108,7 +112,7 @@
         <option value="added">Recently added</option>
         <option value="gain">Biggest gain</option>
         <option value="value">Highest value</option>
-        <option value="name">Name A–Z</option>
+        <option value="name">Name A-Z</option>
       </select>
       <select id="pfTheme" onchange="pfApply()" title="Theme" style="display:none">
         <option value="">All themes</option>
@@ -124,17 +128,26 @@
   <!-- SCAN -->
   <section class="app-panel" id="panel-scan">
     <div class="panel-head">
-      <h1>📷 Scan a box</h1>
-      <p>Use your phone camera to scan a LEGO box barcode and add the set to your portfolio in one tap — no typing.</p>
+      <h1><svg class="h1-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Scan a box</h1>
+      <p>Use your phone camera to scan a LEGO box barcode and add the set to your portfolio in one tap, no typing.</p>
     </div>
     <div class="scan-page">
       <div class="scan-steps">
-        <div class="scan-step"><span class="ss-n">1</span><b>Open the camera</b><p>Tap the button below and allow camera access when your browser asks.</p></div>
-        <div class="scan-step"><span class="ss-n">2</span><b>Point at the barcode</b><p>Frame the barcode printed on the LEGO box — we read it automatically, no need to press anything.</p></div>
-        <div class="scan-step"><span class="ss-n">3</span><b>Added for you</b><p>We identify the set and drop it into your portfolio. Just add the price you paid and you're done.</p></div>
+        <div class="scan-step">
+          <span class="ss-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
+          <b>Open the camera</b><p>Tap the button below and allow camera access when your browser asks.</p>
+        </div>
+        <div class="scan-step">
+          <span class="ss-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M20 16v2a2 2 0 0 1-2 2h-2"/><path d="M8 20H6a2 2 0 0 1-2-2v-2"/><line x1="4" y1="12" x2="20" y2="12"/></svg></span>
+          <b>Point at the barcode</b><p>Frame the barcode printed on the LEGO box. We read it automatically, no need to press anything.</p>
+        </div>
+        <div class="scan-step">
+          <span class="ss-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+          <b>Added for you</b><p>We identify the set and drop it into your portfolio. Just add the price you paid and you're done.</p>
+        </div>
       </div>
-      <button class="btn lg" onclick="openScanner()" style="margin-top:6px"><span style="font-size:20px">📷</span>&nbsp; Open camera &amp; scan</button>
-      <p class="scan-note">📱 Works best on <b>Android Chrome</b>. On <b>iPhone</b>, Safari doesn't support live camera scanning yet — tap the button and you'll be able to type the set number instead (it's printed right next to the barcode).</p>
+      <button class="btn lg" onclick="openScanner()" style="margin-top:6px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Open camera &amp; scan</button>
+      <p class="scan-note">Works best on <b>Android Chrome</b>. On <b>iPhone</b>, Safari doesn't support live camera scanning yet, so tap the button and type the set number instead (it's printed right next to the barcode).</p>
     </div>
   </section>
 

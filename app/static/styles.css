@@ -844,10 +844,12 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 /* ---- Scan page (dashboard) ---- */
 .scan-page{max-width:720px}
 .scan-steps{display:grid;grid-template-columns:1fr;gap:14px;margin:20px 0 26px}
-.scan-step{position:relative;background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh-sm);padding:18px 20px 18px 64px}
-.scan-step .ss-n{position:absolute;left:16px;top:16px;width:34px;height:34px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-weight:800;font-size:17px}
+.scan-step{background:#fff;border:3px solid var(--ink);border-radius:16px;box-shadow:var(--sh-sm);padding:20px}
+.scan-step .ss-ic{display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:13px;background:var(--yellow);border:2.5px solid var(--ink);box-shadow:var(--sh-sm);margin-bottom:14px}
+.scan-step .ss-ic svg{width:23px;height:23px;color:var(--ink)}
 .scan-step b{display:block;font-family:var(--disp);font-weight:700;font-size:17px}
-.scan-step p{margin:3px 0 0;color:var(--slate);font-size:14.5px;line-height:1.5}
+.scan-step p{margin:6px 0 0;color:var(--slate);font-size:14.5px;line-height:1.5}
+.panel-head h1 .h1-ic{width:26px;height:26px;vertical-align:-4px;margin-right:9px}
 .scan-page .btn.lg{display:inline-flex;align-items:center}
 .scan-note{margin-top:16px;background:#fffdf5;border:2px dashed var(--ink);border-radius:12px;padding:13px 16px;font-size:14px;color:var(--slate);line-height:1.55}
 @media(min-width:640px){ .scan-steps{grid-template-columns:1fr 1fr 1fr} }
