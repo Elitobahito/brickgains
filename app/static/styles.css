@@ -788,6 +788,9 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .ec-row.big{font-family:var(--disp);font-size:20px}
 .ec-row.big span:last-child{font-size:24px}
 .ec-row .up-t{color:var(--green-d)}.ec-row .down-t{color:var(--red)}
+.ec-inputs label{min-width:0}
+.ec-inputs input{width:100%;box-sizing:border-box;min-width:0}
+@media(max-width:520px){ .ec-inputs{grid-template-columns:1fr} }
 
 @media(max-width:820px){
   .ebay-calc{grid-template-columns:1fr}
