@@ -298,9 +298,15 @@
       if(d && d.ok){
         if(d.new){ // Ads: account created (only for a brand-new Google account, not a re-login)
           try{ if(window.gtag) gtag('event','conversion',{send_to:'AW-18303479328/hzN3CO3QidQcEKDc45dE'}); }catch(e){}
-          setTimeout(function(){ location.href='/app'; }, 400); return;
         }
-        location.href = '/app'; return;
+        // Resume a pending plan checkout (e.g. clicked "Go Pro" then signed up with Google).
+        var intent=null; try{ intent=sessionStorage.getItem('bg_intent'); }catch(e){}
+        if(intent){
+          try{ sessionStorage.removeItem('bg_intent'); }catch(e){}
+          var ip=intent.split('|');
+          setTimeout(function(){ BG.checkout(ip[0], ip[1]||'monthly'); }, 400); return;
+        }
+        setTimeout(function(){ location.href='/app'; }, 400); return;
       }
       if(m){ m.textContent = (d&&d.error)||'Google sign-in failed.'; m.className='authmsg err'; }
     }catch(e){ if(m){ m.textContent='Network error. Try again.'; m.className='authmsg err'; } }

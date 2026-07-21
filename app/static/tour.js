@@ -45,19 +45,35 @@
   function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
 
   var STEP_TAB = [null, 'portfolio', 'scan', 'portfolio', 'movers', 'watch', 'ebay', null];
+  // Wait until the page has actually stopped scrolling before painting the spotlight,
+  // so the highlight + card line up with the real section (esp. on mobile / after a tab switch).
+  function afterScrollSettled(cb){
+    var last = null, stable = 0, tries = 0;
+    (function poll(){
+      var y = Math.round(window.scrollY);
+      if(y === last){ if(++stable >= 2) return cb(); }
+      else { stable = 0; last = y; }
+      if(++tries > 24) return cb();   // ~1.2s hard cap
+      setTimeout(poll, 50);
+    })();
+  }
   function show(i){
     idx = i;
     var step = L.steps[i]; if(!step) return end();
-    if(STEP_TAB[i] && window.showTab){ window.showTab(STEP_TAB[i]); }
-    var el = targets()[i];
-    // spotlight
-    if(el){
-      el.scrollIntoView({block:'center', behavior:'smooth'});
-      setTimeout(function(){ paint(el, step); }, 260);
-    } else {
-      spot.style.display='none';
-      paint(null, step);
-    }
+    var switched = STEP_TAB[i] && window.showTab;
+    if(switched){ window.showTab(STEP_TAB[i]); }   // switch panel first (it lays out + scrolls to top)
+    var render = function(){
+      var el = targets()[i];
+      if(el){
+        el.scrollIntoView({block:'center', behavior:'smooth'});
+        afterScrollSettled(function(){ paint(targets()[i], step); });  // re-measure after scroll settles
+      } else {
+        spot.style.display='none';
+        paint(null, step);
+      }
+    };
+    // let the tab switch (and its own scroll-to-top) settle before we scroll to the target
+    setTimeout(render, switched ? 240 : 0);
   }
   function paint(el, step){
     if(el){
