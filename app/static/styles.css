@@ -160,6 +160,21 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 .vcta-link{font-family:var(--disp);font-weight:700;color:var(--slate);text-decoration:none;font-size:15px;white-space:nowrap}
 .vcta-link:hover{color:var(--ink);text-decoration:underline}
 @media(max-width:520px){.vcta{gap:12px}.vcta .btn{width:100%}}
+/* Pro: "value in your country" block inside the result card */
+.localbox{margin:16px 22px 0;padding-top:16px;border-top:2px solid var(--line)}
+.localbox:empty{display:none;margin:0;padding:0;border:0}
+.lp-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.lp-ttl{font-family:var(--disp);font-weight:800;font-size:15px;color:var(--ink)}
+.lp-sel{margin-left:auto;font-family:var(--disp);font-weight:700;font-size:13px;border:2px solid var(--ink);border-radius:9px;padding:6px 8px;background:#fff;box-shadow:2px 2px 0 var(--ink);cursor:pointer;color:var(--ink);max-width:52%}
+.lp-vals{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lp-vals>div{background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:9px 12px;box-shadow:2px 2px 0 var(--ink)}
+.lp-vals span{display:block;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--slate)}
+.lp-vals b{font-family:var(--disp);font-weight:800;font-size:20px;color:var(--ink)}
+.lp-none{background:var(--paper);border:2px dashed var(--ink);border-radius:12px;padding:12px;font-weight:600;font-size:14px;color:var(--slate)}
+.lp-load{color:var(--slate);font-weight:600;font-size:14px}
+.lp-lock{display:flex;align-items:center;gap:9px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-family:var(--disp);font-weight:700;font-size:14px;color:var(--ink);text-decoration:none;box-shadow:2px 2px 0 var(--ink)}
+.lp-lock:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
+.lp-lock .lp-pro{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px}
 .loading{text-align:center;padding:34px;font-weight:700;color:var(--slate)}
 
 /* ---- loading skeleton + progress bar ---- */

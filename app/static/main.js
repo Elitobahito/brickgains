@@ -180,6 +180,7 @@ function cardHTML(d){
       <div class="cell"><div class="k">${T.newavg}</div><div class="v">${money(d.newAvg)}</div></div>
       <div class="cell"><div class="k">${T.range}</div><div class="v" style="font-size:16px">${money(d.newMin)}${T.to}${money(d.newMax)}</div></div>
     </div>
+    <div class="localbox" data-set="${String(d.set||'').replace('-1','')}"></div>
     <div class="verdict ${d.retired?'retired':''}">${verdict}</div>
     <div class="vcta">
       <a class="btn" href="/app?add=${encodeURIComponent(String(d.set||'').replace('-1',''))}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" style="flex-shrink:0"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>${T.track}</a>
@@ -187,6 +188,45 @@ function cardHTML(d){
     </div>
   </div>`;
 }
+
+// ---- Pro: "value in your country" (real BrickLink prices, local currency) ----
+var LP_CO=[["US","US United States"],["GB","GB United Kingdom"],["DE","DE Germany"],["FR","FR France"],["IT","IT Italy"],["ES","ES Spain"],["NL","NL Netherlands"],["BE","BE Belgium"],["SE","SE Sweden"],["DK","DK Denmark"],["NO","NO Norway"],["CH","CH Switzerland"],["PL","PL Poland"],["AT","AT Austria"],["IE","IE Ireland"],["PT","PT Portugal"],["FI","FI Finland"],["CA","CA Canada"],["AU","AU Australia"],["JP","JP Japan"]];
+var LP_T={
+  en:{t:'Value in your country',nw:'New',us:'Used',none:'No recent sales in',lock:'See the value in your country'},
+  fr:{t:'Valeur dans ton pays',nw:'Neuf',us:'Occasion',none:'Aucune vente récente en',lock:'Vois la valeur dans ton pays'},
+  de:{t:'Wert in deinem Land',nw:'Neu',us:'Gebraucht',none:'Keine Verkäufe in',lock:'Wert in deinem Land ansehen'},
+  es:{t:'Valor en tu país',nw:'Nuevo',us:'Usado',none:'Sin ventas recientes en',lock:'Ver el valor en tu país'},
+  it:{t:'Valore nel tuo paese',nw:'Nuovo',us:'Usato',none:'Nessuna vendita in',lock:'Vedi il valore nel tuo paese'},
+  nl:{t:'Waarde in jouw land',nw:'Nieuw',us:'Gebruikt',none:'Geen verkopen in',lock:'Bekijk de waarde in jouw land'},
+  sv:{t:'Värde i ditt land',nw:'Nytt',us:'Begagnat',none:'Inga försäljningar i',lock:'Se värdet i ditt land'},
+  da:{t:'Værdi i dit land',nw:'Ny',us:'Brugt',none:'Ingen salg i',lock:'Se værdien i dit land'}
+};
+function lpL(){ var l=(document.documentElement.getAttribute('lang')||'en').slice(0,2); return LP_T[l]||LP_T.en; }
+function lpName(cc){ var m=LP_CO.filter(function(c){return c[0]===cc;})[0]; return m?m[1].slice(3):cc; }
+function lpFmt(v,cur){ if(v==null) return '—'; try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:cur,maximumFractionDigits:0}).format(v); }catch(e){ return Math.round(v)+' '+cur; } }
+function localHTML(d){
+  var L=lpL();
+  var opts=LP_CO.map(function(c){return '<option value="'+c[0]+'"'+(c[0]===d.country?' selected':'')+'>'+c[1]+'</option>';}).join('');
+  var body;
+  if(d.newAvg==null && d.usedAvg==null){ body='<div class="lp-none">'+L.none+' '+lpName(d.country)+'</div>'; }
+  else { body='<div class="lp-vals"><div><span>'+L.nw+'</span><b>'+lpFmt(d.newAvg,d.currency)+'</b></div><div><span>'+L.us+'</span><b>'+lpFmt(d.usedAvg,d.currency)+'</b></div></div>'; }
+  return '<div class="lp-head"><span class="lp-ttl">'+L.t+'</span>'+
+    '<select class="lp-sel" aria-label="Country" onchange="loadLocal(this.closest(\'.localbox\').getAttribute(\'data-set\'),this.value)">'+opts+'</select></div>'+body;
+}
+function lockedHTML(){
+  var L=lpL();
+  return '<a class="lp-lock" href="#pricing"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'+L.lock+' <span class="lp-pro">Pro</span></a>';
+}
+function loadLocal(sn,cc){
+  var box=document.querySelector('.localbox[data-set="'+sn+'"]'); if(!box) return;
+  if(!cc) box.innerHTML='<div class="lp-load">…</div>';
+  fetch('/api/local-price?set='+encodeURIComponent(sn)+(cc?'&cc='+encodeURIComponent(cc):''))
+    .then(function(r){return r.json();})
+    .then(function(d){ if(!box) return; if(d&&d.locked){box.innerHTML=lockedHTML();} else if(d&&!d.error){box.innerHTML=localHTML(d);} else {box.innerHTML='';} })
+    .catch(function(){ if(box) box.innerHTML=''; });
+}
+function initLocalbox(){ var b=document.querySelector('.localbox[data-set]:not([data-done])'); if(b){ b.setAttribute('data-done','1'); loadLocal(b.getAttribute('data-set'),''); } }
+window.loadLocal=loadLocal;
 
 function skeletonHTML(){
   return `<div class="vcard skloading" aria-busy="true" aria-label="Loading">
@@ -226,7 +266,7 @@ async function doSearch(){
     const d = await r.json();
     if(d.limit){ done(); box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
     done();
-    setTimeout(function(){ box.innerHTML = cardHTML(d); }, 200); // let the bar visibly complete, then swap
+    setTimeout(function(){ box.innerHTML = cardHTML(d); initLocalbox(); }, 200); // let the bar visibly complete, then swap
     if(!d.error) setFree(freeUsed()+1);
   }catch(e){ done(); box.innerHTML = `<div class="vcard"><div class="loading">${T.wrong}</div></div>`; }
 }
@@ -263,6 +303,7 @@ async function loadDemo(){
     const d = await fetch('/api/value?set=10276').then(r=>r.json());
     if(d.error) return;
     box.innerHTML = `<div class="demo-tag">${T.demo}</div>` + cardHTML(d);
+    initLocalbox();
   }catch(e){}
 }
 

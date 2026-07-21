@@ -34,6 +34,8 @@ if os.path.exists(CACHE_FILE):
     try: CACHE = json.load(open(CACHE_FILE))
     except Exception: CACHE = {}
 
+LOCAL_CACHE = {}   # per-country price cache: "setnum|CC" -> {country,currency,newAvg,...,_ts}
+
 def save_cache():
     try: json.dump(CACHE, open(CACHE_FILE, "w"))
     except Exception: pass
@@ -617,19 +619,30 @@ def _bl_num(x):
     except Exception:
         return None
 
+def _bl_guide(g):
+    """(avg, min, max, lots) for one guide; all None if 0 lots (BrickLink returns 0.0 with no sales)."""
+    try:
+        q = int(g.get("unit_quantity") or 0)
+    except Exception:
+        q = 0
+    if q <= 0:
+        return None, None, None, 0
+    return (_bl_num(g.get("qty_avg_price") or g.get("avg_price")),
+            _bl_num(g.get("min_price")), _bl_num(g.get("max_price")), q)
+
 def bricklink_price(sn, country=None, currency="USD"):
     """Official BrickLink sold-price guide (new + used). Returns apify-shaped dict, or {} if no data."""
     snid = sn if "-" in str(sn) else str(sn) + "-1"
     n = _bl_one(snid, "N", country, currency)
     u = _bl_one(snid, "U", country, currency)
-    navg = _bl_num(n.get("qty_avg_price") or n.get("avg_price"))
-    uavg = _bl_num(u.get("qty_avg_price") or u.get("avg_price"))
+    navg, nmin, nmax, nq = _bl_guide(n)
+    uavg, umin, umax, uq = _bl_guide(u)
     if navg is None and uavg is None:
         return {}
-    return {"newMin": _bl_num(n.get("min_price")), "newAvg": navg, "newMax": _bl_num(n.get("max_price")),
-            "usedMin": _bl_num(u.get("min_price")), "usedAvg": uavg, "usedMax": _bl_num(u.get("max_price")),
+    return {"newMin": nmin, "newAvg": navg, "newMax": nmax,
+            "usedMin": umin, "usedAvg": uavg, "usedMax": umax,
             "currency": n.get("currency_code") or u.get("currency_code") or currency,
-            "newLots": n.get("unit_quantity"), "usedLots": u.get("unit_quantity")}
+            "newLots": nq, "usedLots": uq}
 
 def apify_price(sn):
     try:
@@ -1406,6 +1419,31 @@ class H(BaseHTTPRequestHandler):
                             "error": "You have used your %d free checks for today. Subscribe for unlimited." % FREE_CHECKS_PER_DAY}))
                     check_inc(ip)
             return self._send(200, json.dumps(get_value(q)))
+        if u.path == "/api/local-price":
+            # Pro-only "value in your country" (real BrickLink sold prices in the local currency)
+            qs = urllib.parse.parse_qs(u.query)
+            sn = _norm((qs.get("set") or [""])[0])
+            if not sn:
+                return self._send(400, json.dumps({"error": "set manquant"}))
+            me = self._me()
+            if not (me and me.get("plan") in PAID_PLANS):
+                return self._send(200, json.dumps({"locked": True}))
+            cc = ((qs.get("cc") or [""])[0] or self.headers.get("CF-IPCountry", "")).upper()[:2]
+            if cc not in CC_CUR:
+                cc = "US"
+            cur = CC_CUR.get(cc, "USD")
+            ck = "%s|%s" % (sn, cc)
+            hit = LOCAL_CACHE.get(ck)
+            if hit and time.time() - hit.get("_ts", 0) < CACHE_TTL:
+                return self._send(200, json.dumps(hit))
+            p = bricklink_price(sn, country=cc, currency=cur)
+            out = {"country": cc, "currency": cur,
+                   "newAvg": p.get("newAvg"), "usedAvg": p.get("usedAvg"),
+                   "newMin": p.get("newMin"), "newMax": p.get("newMax"),
+                   "lots": (p.get("newLots") or 0) + (p.get("usedLots") or 0),
+                   "_ts": time.time()}
+            LOCAL_CACHE[ck] = out
+            return self._send(200, json.dumps(out))
         if u.path == "/api/history":
             s = urllib.parse.parse_qs(u.query).get("set", [""])[0].replace("-1", "")
             if not s: return self._send(400, json.dumps({"error": "set manquant"}))
