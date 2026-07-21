@@ -161,7 +161,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 .vcta-link:hover{color:var(--ink);text-decoration:underline}
 @media(max-width:520px){.vcta{gap:12px}.vcta .btn{width:100%}}
 /* Pro: "value in your country" block inside the result card */
-.localbox{margin:16px 22px 0;padding-top:16px;border-top:2px solid var(--line)}
+.localbox{margin:16px 22px 0;padding:16px 0 20px;border-top:2px solid var(--line)}
 .localbox:empty{display:none;margin:0;padding:0;border:0}
 .lp-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .lp-ttl{font-family:var(--disp);font-weight:800;font-size:15px;color:var(--ink)}
@@ -298,7 +298,7 @@ section{padding:78px 0}
 .c-mid{color:var(--yellow-d);font-weight:900;font-size:19px}
 .cmp-hint{display:none}
 @media(max-width:820px){.cmp-hint{display:block;text-align:center;font-family:var(--disp);font-weight:700;font-size:13px;color:var(--slate);margin-top:12px}}
-@media(max-width:560px){.cmp-scroll{margin-top:22px}.cmp-table th:first-child,.cmp-table td.crit{min-width:132px;font-size:13px}.cmp-table th,.cmp-table td{padding:12px 10px}.cmp-table thead th{font-size:13.5px}.cmp-table thead th.cmp-us{font-size:14px}}
+@media(max-width:560px){.cmp-scroll{margin-top:22px}.cmp-table{min-width:600px}.cmp-table th:first-child,.cmp-table td.crit{min-width:100px;font-size:12.5px}.cmp-table th,.cmp-table td{padding:12px 8px}.cmp-table thead th{font-size:12.5px}.cmp-table thead th.cmp-us{font-size:13.5px}}
 /* ---- problem -> solution section ---- */
 .problem{background:#fff}
 .eyebrow-red{background:var(--red);color:#fff}
