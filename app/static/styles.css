@@ -677,6 +677,12 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .add-row input{border:2.5px solid var(--ink);border-radius:11px;padding:12px 14px;font-size:15px;font-weight:600;font-family:var(--font)}
 .add-row input#pset{flex:2;min-width:150px}
 .add-row input#pprice{flex:1;min-width:110px}
+/* app tables scroll inside their card on mobile → the page never scrolls sideways */
+#tableWrap,#moversTable,#watchWrap,#cmpOut{overflow-x:auto;-webkit-overflow-scrolling:touch}
+@media(max-width:640px){
+  table.pf th,table.pf td,table.mv th,table.mv td{padding:10px 9px;font-size:13px}
+  table.pf,table.mv{min-width:560px}
+}
 table.pf{width:100%;border-collapse:separate;border-spacing:0;margin-top:22px;background:#fff;border:3px solid var(--ink);border-radius:16px;overflow:hidden;box-shadow:var(--sh)}
 table.pf th,table.pf td{padding:15px;text-align:left;border-bottom:2px solid var(--line);font-size:15px}
 table.pf tr:last-child td{border-bottom:none}
