@@ -2,6 +2,7 @@
    Native BarcodeDetector API (Chrome/Android). No external library.
    Safari/iOS has no support -> graceful fallback to manual set entry. */
 (function () {
+  var T = window.T || function(k,f){ return f!==undefined?f:k; };
   var stream = null, detector = null, raf = 0, busy = false, lastCode = "", lastAt = 0;
 
   function el(id) { return document.getElementById(id); }
@@ -28,7 +29,7 @@
     var now = Date.now();
     if (code === lastCode && now - lastAt < 2500) return;
     lastCode = code; lastAt = now; busy = true;
-    msg("Looking up " + code + "…");
+    msg(T('scan.msg.lookup') + code + "…");
     try {
       var r = await fetch("/api/scan?code=" + encodeURIComponent(code));
       var d = await r.json();
@@ -40,10 +41,10 @@
         var pp = el("pprice"); if (pp) setTimeout(function () { pp.focus(); }, 700);
         return;
       }
-      msg("Barcode not in our tracked sets yet. Type the set number instead.", "warn");
+      msg(T('scan.msg.notfound'), "warn");
       busy = false;
     } catch (e) {
-      msg("Network error. Try again or type the set number.", "warn");
+      msg(T('scan.msg.neterr'), "warn");
       busy = false;
     }
   }
@@ -63,14 +64,13 @@
 
   async function openScanner() {
     if (!supported()) {
-      alert("Camera scanning isn't supported on this browser (e.g. iPhone Safari). " +
-            "Type the set number instead - it's printed on the box next to the barcode.");
+      alert(T('scan.msg.unsupported'));
       var i = el("pset"); if (i) { i.focus(); i.scrollIntoView({ behavior: "smooth", block: "center" }); }
       return;
     }
     var o = el("scanOverlay"); if (o) o.style.display = "flex";
     busy = false; lastCode = "";
-    msg("Point your camera at the barcode on the box.");
+    msg(T('scan.ov.msg'));
     try {
       var fmts = [];
       try { fmts = await window.BarcodeDetector.getSupportedFormats(); } catch (e) {}
@@ -84,7 +84,7 @@
       var v = el("scanVideo"); v.srcObject = stream; await v.play();
       raf = requestAnimationFrame(tick);
     } catch (e) {
-      msg("Couldn't access the camera. Check permissions, or type the set number.", "warn");
+      msg(T('scan.msg.noaccess'), "warn");
     }
   }
 

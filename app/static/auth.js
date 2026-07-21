@@ -332,3 +332,14 @@
     if(document.getElementById('promoWall') && !location.pathname.startsWith('/app')) BG.maybePromo();
   });
 })();
+
+/* Remember the visitor's language from the localized marketing pages so the
+   global (non-localized) dashboard /app can render in the same language. */
+(function(){
+  try{
+    var p=location.pathname;
+    if(/^\/(app|u|elitobahito|admin)/.test(p)) return;   // don't let app pages set the lang
+    var m=p.match(/^\/(fr|de|es|it|nl|sv|da)(\/|$)/);
+    localStorage.setItem('bg_lang', m?m[1]:'en');
+  }catch(e){}
+})();

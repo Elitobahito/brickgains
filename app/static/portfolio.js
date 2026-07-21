@@ -1,3 +1,4 @@
+var T=window.T||function(k,f){return f!==undefined?f:k;};
 function money(v){ if(v==null) return '-'; var c=window.BGCUR||{rate:1,symbol:'$'}; return c.symbol+Math.round(v*(c.rate||1)).toLocaleString('en-US'); }
 
 // account state: ME=null => local (localStorage) mode; ME set => server (DB) mode
@@ -56,7 +57,7 @@ async function addSet(){
     const r = await fetch('/api/portfolio/add',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({set,paid,condition:cond,qty})});
     const d = await r.json().catch(()=>({}));
-    if(d && d.limit){ alert(d.error||'Free plan limit reached. Upgrade to Pro for unlimited.'); location.href='/pricing'; return; }
+    if(d && d.limit){ alert(d.error||T('pf.limit')); location.href='/pricing'; return; }
   } else { const pf=lload(); pf.push({set,paid,condition:cond}); lsave(pf); }
   if(qi) qi.value='1';
   document.getElementById('pset').value=''; document.getElementById('pprice').value='';
@@ -73,7 +74,7 @@ function toggleImport(){ const b=document.getElementById('importBox'); b.style.d
 async function doImport(){
   const raw = document.getElementById('importRaw').value.trim();
   if(!raw) return;
-  if(ME){ const r = await fetch('/api/portfolio/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw})}); const d = await r.json().catch(()=>({})); if(d && d.limit){ alert(d.error||'Free plan limit reached. Upgrade to Pro for unlimited.'); } }
+  if(ME){ const r = await fetch('/api/portfolio/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raw})}); const d = await r.json().catch(()=>({})); if(d && d.limit){ alert(d.error||T('pf.limit')); } }
   else {
     const pf=lload(); const seen=new Set(pf.map(x=>x.set));
     raw.split(/[\s,;\n]+/).forEach(t=>{const s=t.trim().replace('-1',''); if(s&&!seen.has(s)){seen.add(s); pf.push({set:s,paid:null,condition:'sealed'});}});
@@ -108,7 +109,7 @@ async function render(){
   const wrap = document.getElementById('tableWrap');
   document.getElementById('stCount').textContent = pf.length;
   if(!pf.length){
-    wrap.innerHTML = '<div class="empty">No sets yet. Add your first set above to see its value.</div>';
+    wrap.innerHTML = '<div class="empty">'+T('pf.empty')+'</div>';
     document.getElementById('stPaid').textContent='$0';
     document.getElementById('stValue').textContent='$0';
     document.getElementById('stRoi').textContent='0%';
@@ -118,10 +119,10 @@ async function render(){
   var inv = ME && ME.plan==='investor';
   var pts=document.getElementById('pfTools'); if(pts) pts.style.display = pf.length>1 ? 'flex' : 'none';
   wrap.innerHTML = `<table class="pf"><thead><tr>
-    <th>Set</th><th>Condition</th><th>Status</th>${inv?'<th style="text-align:center">Qty</th>':''}<th style="text-align:right">Paid</th>
-    <th style="text-align:right">Value (new)</th><th style="text-align:right">Gain</th><th></th>
+    <th>${T('tbl.set')}</th><th>${T('tbl.condition')}</th><th>${T('tbl.status')}</th>${inv?'<th style="text-align:center">Qty</th>':''}<th style="text-align:right">${T('tbl.paid')}</th>
+    <th style="text-align:right">${T('tbl.valuenew')}</th><th style="text-align:right">${T('tbl.gain')}</th><th></th>
     </tr></thead><tbody id="tb">
-    ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="${inv?8:7}" style="color:#999">Loading…</td></tr>`).join('')}
+    ${pf.map((_,i)=>`<tr id="r${i}"><td colspan="${inv?8:7}" style="color:#999">${T('pf.loading')}</td></tr>`).join('')}
     </tbody></table>`;
 
   let paidTot=0, valTot=0, realizedPL=0, soldCount=0; PF_LAST=[]; var themesSeen={};
@@ -142,18 +143,18 @@ async function render(){
       const pl=(item.sold-(paid||0))*q; gain=(pl>=0?'+':'')+money(pl); gcls=pl>=0?'up-t':'down-t';
       realizedPL+=pl; soldCount++;
     } else if(paid && val){ const g=(val-paid)*q; gain=(g>=0?'+':'')+money(g); gcls=g>=0?'up-t':'down-t'; }
-    const status = sold ? `<span class="chip sold">Sold${item.soldDate?' · '+item.soldDate:''}</span>`
-                        : (d.retired ? `<span class="chip ret">Retired</span>` : `<span class="chip av">Available</span>`);
-    const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?'Opened':'Sealed'}</span>`;
+    const status = sold ? `<span class="chip sold">${T('tbl.sold')}${item.soldDate?' · '+item.soldDate:''}</span>`
+                        : (d.retired ? `<span class="chip ret">${T('tbl.retired')}</span>` : `<span class="chip av">${T('tbl.available')}</span>`);
+    const cond = `<span class="cond ${item.condition}">${item.condition==='opened'?T('pf.cond.opened'):T('pf.cond.sealed')}</span>`;
     const rm = `removeSet(${item.sid?item.sid:'null'},'${item.set}')`;
-    const sellBtn = item.sid ? `<button class="del sell${inv?'':' feat-locked'}" title="${inv?(sold?'Edit sale price':'Mark as sold'):'Sold-set P&L: upgrade to Investor'}" onclick="sellSet(${item.sid},${sold?item.sold:''})">${inv?'💰':'🔒'}</button>` : '';
+    const sellBtn = item.sid ? `<button class="del sell${inv?'':' feat-locked'}" title="${inv?(sold?T('pf.editsale'):T('pf.marksold')):T('pf.upsell.investor')}" onclick="sellSet(${item.sid},${sold?item.sold:''})">${inv?'💰':'🔒'}</button>` : '';
     const valCell = sold ? `${money(item.sold)} <span style="color:#999;font-size:11px">sold</span>` : money(val);
-    const paidCell = item.sid ? `<span class="editable" title="Edit purchase price" onclick="editPaid(${item.sid},${paid==null?"''":paid})">${money(paid)}</span>` : money(paid);
+    const paidCell = item.sid ? `<span class="editable" title="${T('pf.editprice')}" onclick="editPaid(${item.sid},${paid==null?"''":paid})">${money(paid)}</span>` : money(paid);
     if(d.theme) themesSeen[d.theme]=1;
     const qtyCell = inv ? `<td class="num" style="text-align:center">${item.sid?`<span class="qty-step"><button onclick="setQty(${item.sid},${q-1})">−</button><b>${q}</b><button onclick="setQty(${item.sid},${q+1})">+</button></span>`:q}</td>` : '';
     const row = document.getElementById('r'+i);
     if(row) row.innerHTML = (d.error||!d.name)
-      ? `<td>${item.set}</td><td colspan="${inv?6:5}" style="color:#999">Not found</td><td><button class="del" onclick="${rm}">✕</button></td>`
+      ? `<td>${item.set}</td><td colspan="${inv?6:5}" style="color:#999">${T('pf.notfound')}</td><td><button class="del" onclick="${rm}">✕</button></td>`
       : `<td><b>${d.name}</b><br><span style="color:#999;font-size:13px">${d.set}</span></td>
          <td>${cond}</td>
          <td>${status}</td>
@@ -190,11 +191,11 @@ async function render(){
 
 async function editPaid(id, current){
   if(!(ME && id)) return;
-  var v = prompt('Purchase price you paid for this set ($):', (current===''||current==null)?'':current);
+  var v = prompt(T('pf.prompt.price'), (current===''||current==null)?'':current);
   if(v===null) return;
   v=String(v).trim();
   var price=(v==='')?null:parseFloat(v);
-  if(v!=='' && !(price>=0)){ alert('Enter a valid price.'); return; }
+  if(v!=='' && !(price>=0)){ alert(T('pf.invalidprice')); return; }
   await fetch('/api/portfolio/edit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,paid:price})});
   render();
 }
@@ -225,11 +226,11 @@ window.pfApply = pfApply;
 
 async function sellSet(id, current){
   if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
-  var v = prompt('Sale price ($), leave empty to un-mark as sold:', (current===''||current==null)?'':current);
+  var v = prompt(T('pf.prompt.sale'), (current===''||current==null)?'':current);
   if(v===null) return;
   v = String(v).trim();
   var price = (v==='') ? null : parseFloat(v);
-  if(v!=='' && !(price>=0)){ alert('Enter a valid sale price.'); return; }
+  if(v!=='' && !(price>=0)){ alert(T('pf.invalidsale')); return; }
   await fetch('/api/portfolio/sell',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id, sold_price:price})});
   render();
 }
@@ -253,7 +254,7 @@ async function setQty(id, qty){
 
 function pdfReport(){
   if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
-  if(!PF_LAST.length){ alert('Add sets first.'); return; }
+  if(!PF_LAST.length){ alert(T('pf.addfirst')); return; }
   var paidT=0,valT=0,rows='';
   PF_LAST.forEach(function(r){
     var q=r.qty||1; var pv=(r.paid||0)*q, vv=(r.value||0)*q; paidT+=pv; valT+=vv;
@@ -275,7 +276,7 @@ function pdfReport(){
 
 function exportCSV(){
   if(!(ME && ME.plan==='investor')){ location.href='/pricing'; return; }
-  if(!PF_LAST.length){ alert('Add sets first.'); return; }
+  if(!PF_LAST.length){ alert(T('pf.addfirst')); return; }
   var head=['Set','Name','Condition','Paid','Value','Status'];
   var lines=[head.join(',')];
   PF_LAST.forEach(function(r){
@@ -336,7 +337,7 @@ async function loadMovers(){
     const r = await fetch('/api/movers');
     const d = await r.json();
     if(d && d.locked){
-      const tbl=document.getElementById('moversTable'); if(tbl) tbl.innerHTML=upsellHTML('Market Movers is a Pro feature','See the biggest LEGO gainers, laggards and retiring winners updated weekly.');
+      const tbl=document.getElementById('moversTable'); if(tbl) tbl.innerHTML=upsellHTML(T('mv.pro'),T('mv.pro.sub'));
       const top=document.getElementById('moversTop'); if(top) top.innerHTML='';
       const up=document.getElementById('moversUpdated'); if(up) up.textContent='';
       const tabs=document.querySelector('.mv-tabs'); if(tabs) tabs.style.display='none';
@@ -377,7 +378,7 @@ function moversView(view){
     </tr>`;
   }).join('');
   document.getElementById('moversTable').innerHTML =
-    `<table class="mv"><thead><tr><th>Set</th><th>Theme</th><th style="text-align:right">Retail</th><th style="text-align:right">Value (new)</th><th style="text-align:right">Gain vs retail</th></tr></thead><tbody>${rows}</tbody></table>`;
+    `<table class="mv"><thead><tr><th>${T('tbl.set')}</th><th>${T('tbl.theme')}</th><th style="text-align:right">${T('tbl.retail')}</th><th style="text-align:right">${T('tbl.valuenew')}</th><th style="text-align:right">${T('tbl.gainretail')}</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 loadMovers();
@@ -406,21 +407,21 @@ async function removeWatch(set){
 }
 function verdict(d){
   const a=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null);
-  if(d.retired){ if(a!=null&&a>=25) return['HOLD','Retired winner. Hold or sell into strength.','hold'];
-                 return['HOLD','Retired. Value should climb as supply dries up.','hold']; }
-  if(a!=null&&a>=10) return['BUY','Available and already above retail. Grab before retirement.','buy'];
-  return['WATCH','Still at retail. Buy on a promo, then hold to retirement.','watch'];
+  if(d.retired){ if(a!=null&&a>=25) return[T('vb.hold'),T('vd.holdwin'),'hold'];
+                 return[T('vb.hold'),T('vd.holdclimb'),'hold']; }
+  if(a!=null&&a>=10) return[T('vb.buy'),T('vd.buyabove'),'buy'];
+  return[T('vb.watch'),T('vd.buy'),'watch'];
 }
 async function renderWatch(){
   const w=await getWatch(); const wrap=document.getElementById('watchWrap');
-  if(!w.length){ wrap.innerHTML='<div class="empty">No sets watched yet. Add a set above to track it.</div>'; return; }
-  wrap.innerHTML=`<table class="mv"><thead><tr><th>Set</th><th>Status</th><th style="text-align:right">Value (new)</th><th style="text-align:right">Target</th><th>Verdict</th><th></th></tr></thead><tbody>${w.map(it=>`<tr id="w_${it.set}"><td colspan="6" style="color:#999">Loading…</td></tr>`).join('')}</tbody></table>`;
+  if(!w.length){ wrap.innerHTML='<div class="empty">'+T('watch.empty')+'</div>'; return; }
+  wrap.innerHTML=`<table class="mv"><thead><tr><th>${T('tbl.set')}</th><th>${T('tbl.status')}</th><th style="text-align:right">${T('tbl.valuenew')}</th><th style="text-align:right">${T('tbl.target')}</th><th>${T('tbl.verdict')}</th><th></th></tr></thead><tbody>${w.map(it=>`<tr id="w_${it.set}"><td colspan="6" style="color:#999">${T('pf.loading')}</td></tr>`).join('')}</tbody></table>`;
   for(const it of w){
     const s=it.set;
     let d={}; try{ d=await fetch('/api/value?set='+encodeURIComponent(s)).then(r=>r.json()); }catch(e){ d={error:1}; }
     const row=document.getElementById('w_'+s); if(!row) continue;
-    if(d.error||!d.name){ row.innerHTML=`<td>${s}</td><td colspan="4" style="color:#999">Not found</td><td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`; continue; }
-    const st=d.retired?`<span class="mv-chip">Retired</span>`:`<span class="mv-chip av">Available</span>`;
+    if(d.error||!d.name){ row.innerHTML=`<td>${s}</td><td colspan="4" style="color:#999">${T('pf.notfound')}</td><td><button class="del" onclick="removeWatch('${s}')">✕</button></td>`; continue; }
+    const st=d.retired?`<span class="mv-chip">${T('tbl.retired')}</span>`:`<span class="mv-chip av">${T('tbl.available')}</span>`;
     const[vb,,vc]=verdict(d);
     let tgt='<span style="color:#bbb">-</span>';
     if(it.target!=null){ const hit=d.newAvg!=null && d.newAvg<=it.target; tgt=money(it.target)+(hit?' <span class="mv-chip av">🎯 hit</span>':''); }
@@ -438,18 +439,18 @@ async function compareSets(){
   var a=(document.getElementById('cmpA').value||'').trim().replace('-1','');
   var b=(document.getElementById('cmpB').value||'').trim().replace('-1','');
   var out=document.getElementById('cmpOut');
-  if(!a||!b){ out.innerHTML='<div class="empty">Enter two set numbers.</div>'; return; }
-  out.innerHTML='<div class="empty">Loading…</div>';
+  if(!a||!b){ out.innerHTML='<div class="empty">'+T('cmp.err.two')+'</div>'; return; }
+  out.innerHTML='<div class="empty">'+T('pf.loading')+'</div>';
   async function val(s){ try{ return await fetch('/api/value?set='+encodeURIComponent(s)).then(r=>r.json()); }catch(e){ return {error:1}; } }
   var da=await val(a), db=await val(b);
-  if(da.error||!da.name){ out.innerHTML='<div class="empty">Set '+a+' not found.</div>'; return; }
-  if(db.error||!db.name){ out.innerHTML='<div class="empty">Set '+b+' not found.</div>'; return; }
+  if(da.error||!da.name){ out.innerHTML='<div class="empty">'+T('pf.notfoundset').replace('{n}',a)+'</div>'; return; }
+  if(db.error||!db.name){ out.innerHTML='<div class="empty">'+T('pf.notfoundset').replace('{n}',b)+'</div>'; return; }
   function ppp(d){ return (d.newAvg&&d.pieces)?('$'+(d.newAvg/d.pieces).toFixed(2)):'-'; }
   function appr(d){ var x=d.appreciation!=null?d.appreciation:(d.rrp&&d.newAvg?Math.round((d.newAvg-d.rrp)/d.rrp*100):null); return x; }
   function col(d){
     return '<div class="cmp-col"><img src="'+(d.image||'')+'" onerror="this.style.display=\'none\'">'
       +'<h4>'+d.name+'</h4><span class="cmp-num">'+d.set+'</span>'
-      +(d.retired?'<span class="mv-chip">Retired</span>':'<span class="mv-chip av">Available</span>')+'</div>';
+      +(d.retired?'<span class="mv-chip">'+T('tbl.retired')+'</span>':'<span class="mv-chip av">'+T('tbl.available')+'</span>')+'</div>';
   }
   function rowM(label,va,vb,hi){
     return '<tr><td class="cmp-k">'+label+'</td><td class="'+(hi==='a'?'cmp-win':'')+'">'+va+'</td><td class="'+(hi==='b'?'cmp-win':'')+'">'+vb+'</td></tr>';
@@ -457,12 +458,12 @@ async function compareSets(){
   var aa=appr(da), ab=appr(db);
   out.innerHTML='<div class="cmp-heads">'+col(da)+col(db)+'</div>'
     +'<table class="mv cmp-tbl"><tbody>'
-    +rowM('Value (new)', money(da.newAvg), money(db.newAvg), (da.newAvg||0)>(db.newAvg||0)?'a':'b')
-    +rowM('Appreciation', aa!=null?pct(aa):'-', ab!=null?pct(ab):'-', (aa||-999)>(ab||-999)?'a':'b')
-    +rowM('Original RRP', money(da.rrp), money(db.rrp))
-    +rowM('Pieces', da.pieces||'-', db.pieces||'-')
-    +rowM('Price / piece', ppp(da), ppp(db))
-    +rowM('Year', da.year||'-', db.year||'-')
+    +rowM(T('tbl.valuenew'), money(da.newAvg), money(db.newAvg), (da.newAvg||0)>(db.newAvg||0)?'a':'b')
+    +rowM(T('tbl.appreciation'), aa!=null?pct(aa):'-', ab!=null?pct(ab):'-', (aa||-999)>(ab||-999)?'a':'b')
+    +rowM(T('tbl.rrp'), money(da.rrp), money(db.rrp))
+    +rowM(T('tbl.pieces'), da.pieces||'-', db.pieces||'-')
+    +rowM(T('tbl.ppp'), ppp(da), ppp(db))
+    +rowM(T('tbl.year'), da.year||'-', db.year||'-')
     +'</tbody></table>';
 }
 

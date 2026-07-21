@@ -11,6 +11,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles.css">
+<script src="/i18n.js"></script>
+
+
 
 
 
@@ -208,7 +211,7 @@ body.bg-gated .tour-ov{display:none!important}
       <div><button class="btn" onclick="doImport()">Import all</button> <button class="linkish" onclick="toggleImport()">Cancel</button></div>
     </div>
     <div class="pf-tools" id="pfTools" style="display:none">
-      <input id="pfSearch" placeholder="🔍 Search your sets…" oninput="pfApply()">
+      <input id="pfSearch" placeholder="Search your sets…" oninput="pfApply()">
       <select id="pfSort" onchange="pfApply()" title="Sort">
         <option value="added">Recently added</option>
         <option value="gain">Biggest gain</option>
@@ -221,7 +224,7 @@ body.bg-gated .tour-ov{display:none!important}
     </div>
     <div id="tableWrap"></div>
     <div id="pfChartCard" class="pf-chart-card" style="display:none">
-      <h3>📈 Portfolio value over time</h3>
+      <h3>Portfolio value over time</h3>
       <div id="pfChart"></div>
     </div>
   </section>
@@ -248,7 +251,7 @@ body.bg-gated .tour-ov{display:none!important}
         </div>
       </div>
       <button class="btn lg" onclick="openScanner()" style="margin-top:6px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Open camera &amp; scan</button>
-      <p class="scan-note">Works best on <b>Android Chrome</b>. On <b>iPhone</b>, Safari doesn't support live camera scanning yet, so tap the button and type the set number instead (it's printed right next to the barcode).</p>
+      <p class="scan-note" data-i18n="scan.note">Works best on <b>Android Chrome</b>. On <b>iPhone</b>, Safari doesn't support live camera scanning yet, so tap the button and type the set number instead (it's printed right next to the barcode).</p>
     </div>
   </section>
 
@@ -260,9 +263,9 @@ body.bg-gated .tour-ov{display:none!important}
         <p>Biggest gains and laggards versus retail price across popular collectible sets. Click any set to open it. <span class="mv-note" id="moversUpdated"></span></p>
       </div>
       <div class="mv-tabs">
-        <button class="mv-tab on" data-view="gainers" onclick="moversView('gainers')">🚀 Top gainers</button>
-        <button class="mv-tab" data-view="losers" onclick="moversView('losers')">🧊 Laggards</button>
-        <button class="mv-tab" data-view="retiring" onclick="moversView('retiring')">⏰ Still available</button>
+        <button class="mv-tab on" data-view="gainers" onclick="moversView('gainers')">Top gainers</button>
+        <button class="mv-tab" data-view="losers" onclick="moversView('losers')">Laggards</button>
+        <button class="mv-tab" data-view="retiring" onclick="moversView('retiring')">Still available</button>
       </div>
       <div class="excards" id="moversTop"></div>
       <div id="moversTable"></div>
@@ -348,21 +351,22 @@ body.bg-gated .tour-ov{display:none!important}
       function render(){
         var box=document.getElementById('gaAction'); if(!box) return;
         var P=window.BGPWA||{};
-        if(P.isStandalone){ box.innerHTML='<div class="ga-ok">You are using the installed app ✓</div>'; return; }
+        var T=window.T||function(k,f){return f!==undefined?f:k;};
+        if(P.isStandalone){ box.innerHTML='<div class="ga-ok">'+T('ga.installed')+' ✓</div>'; return; }
         if(P.isIOS){
           box.innerHTML='<ol class="ga-steps">'+
-            '<li><b>1</b><span>Tap the <b style="background:none;border:none;min-width:0;height:auto">Share</b> icon '+
-            '<svg class="shr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> at the bottom of Safari</span></li>'+
-            '<li><b>2</b><span>Choose <b style="background:none;border:none;min-width:0;height:auto">Add to Home Screen</b></span></li>'+
-            '<li><b>3</b><span>Tap <b style="background:none;border:none;min-width:0;height:auto">Add</b>, done!</span></li></ol>';
+            '<li><b>1</b><span>'+T('ga.ios1')+' '+
+            '<svg class="shr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v13"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span></li>'+
+            '<li><b>2</b><span>'+T('ga.ios2a')+' <b style="background:none;border:none;min-width:0;height:auto">'+T('ga.ios2b')+'</b></span></li>'+
+            '<li><b>3</b><span>'+T('ga.ios3a')+' <b style="background:none;border:none;min-width:0;height:auto">'+T('ga.ios3b')+'</b></span></li></ol>';
           return;
         }
         if(P.canInstall && P.canInstall()){
-          box.innerHTML='<button class="btn lg" id="gaInstall">Install app</button>';
+          box.innerHTML='<button class="btn lg" id="gaInstall">'+T('ga.install')+'</button>';
           document.getElementById('gaInstall').onclick=function(){ if(!P.install()){ render(); } };
           return;
         }
-        box.innerHTML='<div class="ga-hint">Open your browser menu (⋮) and choose <b>Install app</b> or <b>Add to Home Screen</b>. On desktop Chrome, use the install icon in the address bar.</div>';
+        box.innerHTML='<div class="ga-hint">'+T('ga.hint')+'</div>';
       }
       document.addEventListener('bgpwa-change', render);
       if(document.readyState!=='loading') render(); else document.addEventListener('DOMContentLoaded', render);
@@ -433,7 +437,7 @@ body.bg-gated .tour-ov{display:none!important}
 <div class="scan-overlay" id="scanOverlay" style="display:none">
   <div class="scan-box">
     <div class="scan-head">
-      <b>📷 Scan a LEGO box</b>
+      <b>Scan a LEGO box</b>
       <button class="scan-x" onclick="closeScanner()" aria-label="Close">✕</button>
     </div>
     <div class="scan-video-wrap">
@@ -485,7 +489,7 @@ async function fillAccount(){
     var ao=document.getElementById('alertOptin'), am=document.getElementById('alertMsg');
     if(ao){
       ao.checked=!!u.alert_email; ao.disabled=!paid;
-      if(!paid && am){ am.className='acct-msg'; am.innerHTML='<a href="/pricing" style="color:var(--red)">Upgrade to Pro</a> to turn on email alerts.'; }
+      if(!paid && am){ am.className='acct-msg'; am.innerHTML='<a href="/pricing" style="color:var(--red)">'+(window.T?T('ac.alerts.upgrade'):'Upgrade to Pro to turn on email alerts.')+'</a>'; }
     }
   }catch(e){}
 }
@@ -496,8 +500,8 @@ async function saveAlerts(){
     var r=await fetch('/api/alert-prefs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({on:ao.checked})});
     var d=await r.json().catch(function(){return {};});
     m.className='acct-msg '+(d.ok?'ok':'err');
-    m.textContent=d.ok?(ao.checked?'Alerts on.':'Alerts off.'):'Could not save.';
-  }catch(e){ m.className='acct-msg err'; m.textContent='Network error'; }
+    m.textContent=d.ok?(ao.checked?T('ac.alerts.on'):T('ac.alerts.off')):T('ac.alerts.savefail');
+  }catch(e){ m.className='acct-msg err'; m.textContent=T('ac.neterr'); }
 }
 async function changePw(e){
   e.preventDefault();
@@ -506,9 +510,9 @@ async function changePw(e){
   try{
     var r=await fetch('/api/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({current:cur,new_password:nw})});
     var d=await r.json().catch(function(){return {};});
-    m.className='acct-msg '+(d.ok?'ok':'err'); m.textContent=d.ok?'Password updated.':(d.error||'Something went wrong.');
+    m.className='acct-msg '+(d.ok?'ok':'err'); m.textContent=d.ok?T('ac.pw.ok'):(d.error||T('ac.pw.fail'));
     if(d.ok){ document.getElementById('pwCur').value=''; document.getElementById('pwNew').value=''; }
-  }catch(err){ m.className='acct-msg err'; m.textContent='Network error'; }
+  }catch(err){ m.className='acct-msg err'; m.textContent=T('ac.neterr'); }
   return false;
 }
 // appbar account icon -> Account tab. Open on the right tab if a hash is present.
@@ -527,6 +531,8 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+
+
 
 
 
