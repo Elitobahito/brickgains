@@ -312,9 +312,10 @@
   function renderGSI(){
     if(!_gsiReady){ initGSI(); return; }
     var c = el('gsiBtn'); if(!c) return;
-    var orEl = el('authOr');
-    if(orEl){ var lg=(location.pathname.match(/^\/(fr|de|es|it|nl|sv|da)(\/|$)/)||[])[1]||'en'; orEl.textContent = OR[lg]||'or'; }
-    try{ c.innerHTML=''; google.accounts.id.renderButton(c,{theme:'outline',size:'large',width:320,text:'continue_with',shape:'rectangular'}); }catch(e){}
+    var lg=(location.pathname.match(/^\/(fr|de|es|it|nl|sv|da)(\/|$)/)||[])[1] || (document.documentElement.getAttribute('lang')||'en').slice(0,2).toLowerCase();
+    var orEl = el('authOr'); if(orEl){ orEl.textContent = OR[lg]||'or'; }
+    // theme outline = white button; locale forces the label into the page language (was defaulting to the browser locale)
+    try{ c.innerHTML=''; google.accounts.id.renderButton(c,{theme:'outline',size:'large',width:300,text:'continue_with',shape:'rectangular',locale:lg}); }catch(e){}
   }
 
   document.addEventListener('DOMContentLoaded', async ()=>{

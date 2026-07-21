@@ -513,6 +513,8 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .gbtn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#fff;border:2.5px solid var(--ink);
   border-radius:12px;padding:12px;font-family:var(--disp);font-weight:700;font-size:15px;cursor:pointer;box-shadow:var(--sh-sm);transition:transform .06s,box-shadow .06s}
 .gbtn:hover{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--ink)}.gbtn:active{transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
+/* Google Sign-In: frame the white button so it stands out (was low-contrast on the modal) */
+#gsiBtn{background:#fff;border:2px solid var(--ink);border-radius:12px;box-shadow:2px 2px 0 var(--ink);padding:4px 6px;overflow:hidden}
 .ordiv{display:flex;align-items:center;gap:12px;color:var(--slate);font-weight:600;font-size:13px;margin:16px 0}
 .ordiv::before,.ordiv::after{content:"";flex:1;height:2px;background:var(--line)}
 .authmsg{font-weight:700;font-size:13.5px;text-align:left;margin-top:2px}
