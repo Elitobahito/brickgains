@@ -295,7 +295,7 @@
   };
   // Stripe billing portal: manage / cancel subscription. Free users go to pricing.
   BG.billingPortal = async function(){
-    if(!me || me.plan==='free' || !me.plan){ location.href = (LANG && LANG!=='en' ? '/'+LANG : '')+'/pricing'; return; }
+    if(!me || me.plan==='free' || !me.plan){ if(window.showTab){ showTab('upgrade'); return; } location.href = (LANG && LANG!=='en' ? '/'+LANG : '')+'/pricing'; return; }
     try{
       var r = await fetch('/api/billing-portal',{method:'POST'});
       var d = await r.json();

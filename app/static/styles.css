@@ -437,6 +437,12 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .side-item .si-ic svg{width:19px;height:19px;display:block}
 .side-item:hover{background:var(--paper);color:var(--ink)}
 .side-item.on{background:var(--ink);color:#fff}
+/* dashboard in-app upgrade CTA + plans */
+.side-upgrade{color:var(--red-d,#b3000a);border-color:var(--red,#E3000B)!important;background:#FFF3F3}
+.side-upgrade.on{background:var(--red,#E3000B);color:#fff;border-color:var(--ink)!important}
+#panel-upgrade .up-plans{grid-template-columns:1fr 1fr;max-width:760px;margin:26px auto 0}
+#panel-upgrade .bill-toggle{margin:24px auto 0}
+@media(max-width:820px){#panel-upgrade .up-plans{grid-template-columns:1fr;max-width:440px}}
 .side-foot{margin-top:auto;display:flex;flex-direction:column;gap:4px;border-top:2px solid var(--line);padding-top:10px}
 .side-foot .side-item{font-size:14px}
 .app-main{flex:1;min-width:0;padding:32px 40px 72px;max-width:1100px}
