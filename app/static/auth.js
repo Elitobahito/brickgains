@@ -216,6 +216,7 @@
         const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
         const d = await r.json();
         if(d.ok){ me = d.user; msg.className='authmsg ok'; msg.textContent=S.success;
+          if(BG.mode!=='login'){ try{ if(window.gtag) gtag('event','conversion',{send_to:'AW-18303479328/hzN3CO3QidQcEKDc45dE'}); }catch(e){} } // Ads: account created
           const intent = sessionStorage.getItem('bg_intent');
           if(intent){ sessionStorage.removeItem('bg_intent'); const ip=intent.split('|'); setTimeout(()=>BG.checkout(ip[0], ip[1]||'monthly'), 400); }
           else { setTimeout(()=>{ location.href = '/app'; }, 500); } }
@@ -294,7 +295,13 @@
       var r = await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({credential:(resp&&resp.credential)||''})});
       var d = await r.json();
-      if(d && d.ok){ location.href = '/app'; return; }
+      if(d && d.ok){
+        if(d.new){ // Ads: account created (only for a brand-new Google account, not a re-login)
+          try{ if(window.gtag) gtag('event','conversion',{send_to:'AW-18303479328/hzN3CO3QidQcEKDc45dE'}); }catch(e){}
+          setTimeout(function(){ location.href='/app'; }, 400); return;
+        }
+        location.href = '/app'; return;
+      }
       if(m){ m.textContent = (d&&d.error)||'Google sign-in failed.'; m.className='authmsg err'; }
     }catch(e){ if(m){ m.textContent='Network error. Try again.'; m.className='authmsg err'; } }
   };

@@ -664,6 +664,7 @@ class H(BaseHTTPRequestHandler):
             if not email:
                 return self._send(401, json.dumps({"ok": False, "error": "Google sign-in failed. Please try again."}))
             row = q1("SELECT id,plan FROM users WHERE email=?", (email,))
+            is_new = row is None
             if row:
                 uid, plan = row["id"], row["plan"]
             else:
@@ -678,7 +679,7 @@ class H(BaseHTTPRequestHandler):
                         "Add my first set", SITE_URL + "/app"))
                 except Exception: pass
             tok = make_session(uid)
-            return self._send(200, json.dumps({"ok": True, "user": {"email": email, "plan": plan}}),
+            return self._send(200, json.dumps({"ok": True, "new": is_new, "user": {"email": email, "plan": plan}}),
                               cookie=self._sess_cookie(tok))
 
         if u.path == "/api/login":
