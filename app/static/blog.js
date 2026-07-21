@@ -35,29 +35,7 @@
   };
   var T = STR[lang] || STR.en;
 
-  /* ---------- 10s product popup (once per session, all blog pages) ---------- */
-  setTimeout(function () {
-    try {
-      if (sessionStorage.getItem("bg_blogpop")) return;
-      sessionStorage.setItem("bg_blogpop", "1");
-    } catch (e) {}
-    var bg = document.createElement("div");
-    bg.className = "popup-bg on";
-    bg.id = "blogPop";
-    bg.innerHTML =
-      '<div class="promo"><span class="x" aria-label="Close">✕</span>' +
-      '<div class="promo-badge">🧱 BrickGains</div>' +
-      "<h3>" + T.ptitle + "</h3><p>" + T.psub + "</p>" +
-      '<div class="blogpop-cta">' +
-      '<a class="btn lg" href="' + base + '/pricing">' + T.pc1 + "</a>" +
-      '<a class="btn ghost" href="' + (base || "/") + '">' + T.pc2 + "</a></div>" +
-      '<div class="promo-fine"><a class="bp-later" style="cursor:pointer;text-decoration:underline">' + T.later + "</a></div></div>";
-    document.body.appendChild(bg);
-    function close() { bg.classList.remove("on"); setTimeout(function () { if (bg.parentNode) bg.parentNode.removeChild(bg); }, 220); }
-    bg.querySelector(".x").onclick = close;
-    bg.querySelector(".bp-later").onclick = close;
-    bg.addEventListener("click", function (e) { if (e.target === bg) close(); });
-  }, 10000);
+  /* Blog popup: replaced by the site-wide email+promo-code popup (auth.js maybePromo, now enabled on /blog). */
 
   /* ---------- index only: search + suggestions + pagination ---------- */
   var grid = document.querySelector(".bloggrid:not(.rel-grid)");

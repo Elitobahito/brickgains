@@ -246,7 +246,7 @@
     goPricing(){ el('promoWall').classList.remove('on'); const p=document.getElementById('pricing'); if(p) p.scrollIntoView({behavior:'smooth'}); },
     maybePromo(){
       if(localStorage.getItem('bg_promo') || me) return;
-      setTimeout(()=>{ if(!me && !localStorage.getItem('bg_promo')) el('promoWall').classList.add('on'); }, 18000);
+      setTimeout(()=>{ if(!me && !localStorage.getItem('bg_promo')) el('promoWall').classList.add('on'); }, 9000);
     }
   };
   // Stripe checkout: POST /api/checkout -> redirect to hosted page. If not logged in, open auth then resume.
@@ -328,6 +328,6 @@
       if(a){ e.preventDefault(); BG.checkout(a.getAttribute('data-plan'), window.__bgBilling||'monthly'); }
     });
     await BG.refreshMe();
-    if(document.getElementById('promoWall') && !location.pathname.startsWith('/app') && !/\/blog(\/|$)/.test(location.pathname)) BG.maybePromo();
+    if(document.getElementById('promoWall') && !location.pathname.startsWith('/app')) BG.maybePromo();
   });
 })();
