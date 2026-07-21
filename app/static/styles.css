@@ -907,7 +907,7 @@ table.mv tr.clik:hover td{background:#fbf7ea}
   .hamb{display:inline-flex}           /* mobile: hamburger */
   .steps,.feats,.excards,.plans,.reviews{grid-template-columns:1fr}
   .alertbox{grid-template-columns:1fr;padding:28px}
-  .plan.pop{transform:none;margin-top:0}
+  .plan.pop{transform:none;margin-top:28px}
   .vcard .top{flex-direction:column;align-items:center;text-align:center}
   .hero .brick{display:none!important}
 }
