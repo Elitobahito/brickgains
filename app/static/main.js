@@ -267,7 +267,12 @@ async function doSearch(){
     if(d.limit){ done(); box.innerHTML=''; setFree(FREE_LIMIT); openWall(); return; }
     done();
     setTimeout(function(){ box.innerHTML = cardHTML(d); initLocalbox(); }, 200); // let the bar visibly complete, then swap
-    if(!d.error) setFree(freeUsed()+1);
+    if(!d.error){
+      setFree(freeUsed()+1);
+      // Micro-conversion: a visitor estimated a set (the core action). Feeds GA4 -> importable
+      // into Google Ads so its bidding optimizes toward people who actually use the tool.
+      try{ if(window.gtag) gtag('event','check_set',{ set_number:String(d.set||'').replace('-1',''), value:1 }); }catch(e){}
+    }
   }catch(e){ done(); box.innerHTML = `<div class="vcard"><div class="loading">${T.wrong}</div></div>`; }
 }
 
