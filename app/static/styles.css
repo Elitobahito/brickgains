@@ -138,6 +138,7 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 /* ---- value card ---- */
 #result{max-width:660px;margin:30px auto 0;text-align:left}
 .demo-tag{text-align:center;font-weight:700;font-size:13.5px;color:var(--slate);margin-bottom:12px}
+.demo-click{cursor:pointer}
 .vcard{background:var(--card);border:3px solid var(--ink);border-radius:var(--radius);box-shadow:var(--sh-lg);overflow:hidden;animation:pop .22s ease}
 @keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 .vcard .top{display:flex;gap:18px;padding:22px;border-bottom:3px solid var(--ink)}

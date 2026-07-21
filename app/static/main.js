@@ -302,10 +302,18 @@ async function loadDemo(){
   try{
     const d = await fetch('/api/value?set=10276').then(r=>r.json());
     if(d.error) return;
-    box.innerHTML = `<div class="demo-tag">${T.demo}</div>` + cardHTML(d);
+    box.innerHTML = `<div class="demo-tag">${T.demo}</div><div class="demo-click" onclick="demoToSearch(event)">` + cardHTML(d) + `</div>`;
     initLocalbox();
   }catch(e){}
 }
+// The example card looked clickable but did nothing (Clarity: dead clicks on the homepage).
+// Now a click on it sends the visitor straight to the search box to try their own set.
+function demoToSearch(e){
+  if(e && e.target && e.target.closest && e.target.closest('.lp-lock,.lp-sel,select,a,button')) return;
+  var i=document.getElementById('setInput');
+  if(i){ i.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(function(){ try{i.focus();}catch(_){} }, 420); }
+}
+window.demoToSearch = demoToSearch;
 
 refreshFree();
 loadExamples();
