@@ -2,6 +2,22 @@
  "updated": "2026-07-21",
  "sets": [
   {
+   "set": "10190-1",
+   "name": "Market Street",
+   "year": 2007,
+   "theme": "Factory",
+   "image": "https://brickgains.com/img/sets/10190.webp",
+   "rrp": 89.99,
+   "newMin": 1397.95,
+   "newAvg": 2323.81,
+   "newMax": 2749.95,
+   "usedMin": 428.81,
+   "usedAvg": 663.73,
+   "usedMax": 1409.73,
+   "appreciation": 2482,
+   "retired": "2009-04-14"
+  },
+  {
    "set": "10182-1",
    "name": "Cafe Corner",
    "year": 2007,
@@ -66,6 +82,22 @@
    "retired": "2010-11-28"
   },
   {
+   "set": "7662-1",
+   "name": "Trade Federation MTT",
+   "year": 2007,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/7662-1/144.jpg",
+   "rrp": 99.99,
+   "newMin": 719.09,
+   "newAvg": 1095.33,
+   "newMax": 1399.99,
+   "usedMin": 159.99,
+   "usedAvg": 336.6,
+   "usedMax": 461.48,
+   "appreciation": 995,
+   "retired": "2008-12-18"
+  },
+  {
    "set": "2507-1",
    "name": "Fire Temple",
    "year": 2011,
@@ -96,6 +128,22 @@
    "usedMax": 1490.71,
    "appreciation": 975,
    "retired": "2011-11-25"
+  },
+  {
+   "set": "10175-1",
+   "name": "Vader's TIE Advanced",
+   "year": 2006,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/10175-1/7144.jpg",
+   "rrp": 99.99,
+   "newMin": 1000.0,
+   "newAvg": 1038.62,
+   "newMax": 1080.0,
+   "usedMin": 387.99,
+   "usedAvg": 492.65,
+   "usedMax": 696.86,
+   "appreciation": 939,
+   "retired": "2009-02-13"
   },
   {
    "set": "7676-1",
@@ -1232,6 +1280,22 @@
    "usedMax": 285.25,
    "appreciation": 287,
    "retired": "2010-10-22"
+  },
+  {
+   "set": "8674-1",
+   "name": "Ferrari F1 Racer 1:8",
+   "year": 2006,
+   "theme": "Racers",
+   "image": "https://cdn.rebrickable.com/media/sets/8674-1/2811.jpg",
+   "rrp": 139.99,
+   "newMin": 385.0,
+   "newAvg": 536.67,
+   "newMax": 840.0,
+   "usedMin": 164.26,
+   "usedAvg": 184.97,
+   "usedMax": 197.28,
+   "appreciation": 283,
+   "retired": "2008-03-13"
   },
   {
    "set": "41179-1",
@@ -6530,6 +6594,22 @@
    "retired": "2017-11-20"
   },
   {
+   "set": "76956-1",
+   "name": "T. rex Breakout",
+   "year": 2022,
+   "theme": "Jurassic World",
+   "image": "https://cdn.rebrickable.com/media/sets/76956-1/142003.jpg",
+   "rrp": 99.99,
+   "newMin": 94.0,
+   "newAvg": 138.97,
+   "newMax": 175.63,
+   "usedMin": 64.59,
+   "usedAvg": 94.21,
+   "usedMax": 125.0,
+   "appreciation": 39,
+   "retired": "2024-03-01"
+  },
+  {
    "set": "76405-1",
    "name": "Hogwarts Express - Collectors' Edition",
    "year": 2022,
@@ -8866,6 +8946,22 @@
    "retired": "2026-01-20"
   },
   {
+   "set": "71423-1",
+   "name": "Dry Bowser Castle Battle",
+   "year": 2023,
+   "theme": "Super Mario",
+   "image": "https://cdn.rebrickable.com/media/sets/71423-1/118697.jpg",
+   "rrp": 109.99,
+   "newMin": 60.0,
+   "newAvg": 123.37,
+   "newMax": 173.26,
+   "usedMin": 73.99,
+   "usedAvg": 100.79,
+   "usedMax": 127.6,
+   "appreciation": 12,
+   "retired": "2024-11-29"
+  },
+  {
    "set": "10306-1",
    "name": "Atari 2600",
    "year": 2022,
@@ -9088,6 +9184,22 @@
    "usedMax": 162.99,
    "appreciation": 10,
    "retired": "2024-11-12"
+  },
+  {
+   "set": "42604-1",
+   "name": "Heartlake City Shopping Mall",
+   "year": 2024,
+   "theme": "Friends",
+   "image": "https://cdn.rebrickable.com/media/sets/42604-1/129192.jpg",
+   "rrp": 119.99,
+   "newMin": 131.28,
+   "newAvg": 131.63,
+   "newMax": 131.7,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": 10,
+   "retired": "2025-10-20"
   },
   {
    "set": "71794-1",
@@ -9890,6 +10002,38 @@
    "retired": "2024-02-05"
   },
   {
+   "set": "31132-1",
+   "name": "Viking Ship and the Midgard Serpent",
+   "year": 2022,
+   "theme": "Creator",
+   "image": "https://cdn.rebrickable.com/media/sets/31132-1/102073.jpg",
+   "rrp": 119.99,
+   "newMin": 70.15,
+   "newAvg": 118.01,
+   "newMax": 150.0,
+   "usedMin": 86.6,
+   "usedAvg": 100.77,
+   "usedMax": 115.7,
+   "appreciation": -2,
+   "retired": "2024-03-01"
+  },
+  {
+   "set": "71813-1",
+   "name": "Wolf Mask Shadow Dojo",
+   "year": 2024,
+   "theme": "Ninjago",
+   "image": "https://cdn.rebrickable.com/media/sets/71813-1/136957.jpg",
+   "rrp": 119.99,
+   "newMin": 86.9,
+   "newAvg": 117.31,
+   "newMax": 148.0,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": -2,
+   "retired": "2025-11-02"
+  },
+  {
    "set": "42154-1",
    "name": "2022 Ford GT",
    "year": 2023,
@@ -10338,6 +10482,22 @@
    "retired": "2025-12-05"
   },
   {
+   "set": "75574-1",
+   "name": "Toruk Makto & Tree of Souls",
+   "year": 2022,
+   "theme": "Avatar",
+   "image": "https://cdn.rebrickable.com/media/sets/75574-1/104065.jpg",
+   "rrp": 149.99,
+   "newMin": 101.22,
+   "newAvg": 136.06,
+   "newMax": 249.99,
+   "usedMin": 62.27,
+   "usedAvg": 100.64,
+   "usedMax": 131.86,
+   "appreciation": -9,
+   "retired": "2024-11-03"
+  },
+  {
    "set": "60271-1",
    "name": "Main Square",
    "year": 2020,
@@ -10386,6 +10546,22 @@
    "retired": null
   },
   {
+   "set": "60422-1",
+   "name": "Harbour",
+   "year": 2024,
+   "theme": "City",
+   "image": "https://cdn.rebrickable.com/media/sets/60422-1/140639.jpg",
+   "rrp": 109.99,
+   "newMin": 78.38,
+   "newAvg": 98.77,
+   "newMax": 142.5,
+   "usedMin": 84.56,
+   "usedAvg": 84.56,
+   "usedMax": 84.56,
+   "appreciation": -10,
+   "retired": "2025-11-29"
+  },
+  {
    "set": "71411-1",
    "name": "The Mighty Bowser",
    "year": 2022,
@@ -10432,6 +10608,22 @@
    "usedMax": 94.0,
    "appreciation": -11,
    "retired": "2025-12-18"
+  },
+  {
+   "set": "76440-1",
+   "name": "Triwizard Tournament: The Arrival",
+   "year": 2024,
+   "theme": "Harry Potter",
+   "image": "https://cdn.rebrickable.com/media/sets/76440-1/140012.jpg",
+   "rrp": 139.99,
+   "newMin": 66.0,
+   "newAvg": 125.02,
+   "newMax": 165.2,
+   "usedMin": 99.0,
+   "usedAvg": 113.17,
+   "usedMax": 131.65,
+   "appreciation": -11,
+   "retired": "2026-02-20"
   },
   {
    "set": "42129-1",
@@ -10512,6 +10704,22 @@
    "usedMax": null,
    "appreciation": -13,
    "retired": "2024-01-19"
+  },
+  {
+   "set": "42638-1",
+   "name": "Castle Bed and Breakfast",
+   "year": 2024,
+   "theme": "Friends",
+   "image": "https://cdn.rebrickable.com/media/sets/42638-1/140699.jpg",
+   "rrp": 99.99,
+   "newMin": 69.3,
+   "newAvg": 87.27,
+   "newMax": 99.59,
+   "usedMin": 49.0,
+   "usedAvg": 58.43,
+   "usedMax": 67.86,
+   "appreciation": -13,
+   "retired": "2025-12-21"
   },
   {
    "set": "41839-1",
@@ -10658,6 +10866,38 @@
    "retired": "2024-03-01"
   },
   {
+   "set": "41737-1",
+   "name": "Beach Amusement Park",
+   "year": 2023,
+   "theme": "Friends",
+   "image": "https://cdn.rebrickable.com/media/sets/41737-1/122841.jpg",
+   "rrp": 119.99,
+   "newMin": 92.48,
+   "newAvg": 99.86,
+   "newMax": 112.15,
+   "usedMin": 48.53,
+   "usedAvg": 48.53,
+   "usedMax": 48.53,
+   "appreciation": -17,
+   "retired": "2024-11-29"
+  },
+  {
+   "set": "71461-1",
+   "name": "Fantastical Tree House",
+   "year": 2023,
+   "theme": "Dreamzzz",
+   "image": "https://cdn.rebrickable.com/media/sets/71461-1/121835.jpg",
+   "rrp": 109.99,
+   "newMin": 65.0,
+   "newAvg": 91.52,
+   "newMax": 110.19,
+   "usedMin": 65.57,
+   "usedAvg": 65.57,
+   "usedMax": 65.57,
+   "appreciation": -17,
+   "retired": "2024-12-14"
+  },
+  {
    "set": "10333-1",
    "name": "The Lord of the Rings: Barad-d\u00fbr",
    "year": 2024,
@@ -10704,6 +10944,22 @@
    "usedMax": 180.0,
    "appreciation": -18,
    "retired": "2024-12-07"
+  },
+  {
+   "set": "75374-1",
+   "name": "The Onyx Cinder",
+   "year": 2024,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75374-1/143588.jpg",
+   "rrp": 139.99,
+   "newMin": 81.48,
+   "newAvg": 114.83,
+   "newMax": 143.97,
+   "usedMin": 85.0,
+   "usedAvg": 93.44,
+   "usedMax": 100.0,
+   "appreciation": -18,
+   "retired": "2025-11-23"
   },
   {
    "set": "21061-1",
@@ -10768,6 +11024,22 @@
    "usedMax": 70.0,
    "appreciation": -19,
    "retired": "2025-11-14"
+  },
+  {
+   "set": "71438-1",
+   "name": "Super Mario World: Mario & Yoshi",
+   "year": 2024,
+   "theme": "Super Mario",
+   "image": "https://cdn.rebrickable.com/media/sets/71438-1/143271.jpg",
+   "rrp": 129.99,
+   "newMin": 98.09,
+   "newAvg": 105.21,
+   "newMax": 115.0,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": -19,
+   "retired": null
   },
   {
    "set": "21349-1",
@@ -10848,6 +11120,38 @@
    "usedMax": 74.22,
    "appreciation": -21,
    "retired": "2026-02-11"
+  },
+  {
+   "set": "71485-1",
+   "name": "Mateo and Z-Blob the Knight Battle Mech",
+   "year": 2024,
+   "theme": "Dreamzzz",
+   "image": "https://cdn.rebrickable.com/media/sets/71485-1/139541.jpg",
+   "rrp": 129.99,
+   "newMin": 47.99,
+   "newAvg": 102.62,
+   "newMax": 150.0,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": -21,
+   "retired": "2025-12-02"
+  },
+  {
+   "set": "71478-1",
+   "name": "The Never Witch's Midnight Raven",
+   "year": 2024,
+   "theme": "Dreamzzz",
+   "image": "https://cdn.rebrickable.com/media/sets/71478-1/139565.jpg",
+   "rrp": 99.99,
+   "newMin": 64.0,
+   "newAvg": 78.74,
+   "newMax": 89.85,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": -21,
+   "retired": "2025-11-28"
   },
   {
    "set": "42177-1",
@@ -10978,6 +11282,22 @@
    "retired": "2014-11-21"
   },
   {
+   "set": "10340-1",
+   "name": "Wreath",
+   "year": 2024,
+   "theme": "Icons",
+   "image": "https://cdn.rebrickable.com/media/sets/10340-1/144814.jpg",
+   "rrp": 99.99,
+   "newMin": 65.0,
+   "newAvg": 75.13,
+   "newMax": 86.63,
+   "usedMin": 59.68,
+   "usedAvg": 59.68,
+   "usedMax": 59.68,
+   "appreciation": -25,
+   "retired": null
+  },
+  {
    "set": "76215-1",
    "name": "Black Panther",
    "year": 2022,
@@ -11010,6 +11330,38 @@
    "retired": "2025-11-24"
   },
   {
+   "set": "80116-1",
+   "name": "Trotting Lantern",
+   "year": 2025,
+   "theme": "Seasonal",
+   "image": "https://cdn.rebrickable.com/media/sets/80116-1/147434.jpg",
+   "rrp": 129.99,
+   "newMin": 86.41,
+   "newAvg": 94.31,
+   "newMax": 96.74,
+   "usedMin": 52.83,
+   "usedAvg": 52.83,
+   "usedMax": 52.83,
+   "appreciation": -27,
+   "retired": "2025-11-28"
+  },
+  {
+   "set": "71819-1",
+   "name": "Dragon Stone Shrine",
+   "year": 2024,
+   "theme": "Ninjago",
+   "image": "https://cdn.rebrickable.com/media/sets/71819-1/136974.jpg",
+   "rrp": 119.99,
+   "newMin": 59.49,
+   "newAvg": 87.49,
+   "newMax": 162.15,
+   "usedMin": 64.99,
+   "usedAvg": 72.83,
+   "usedMax": 80.67,
+   "appreciation": -27,
+   "retired": "2025-11-23"
+  },
+  {
    "set": "75367-1",
    "name": "Venator-class Republic Attack Cruiser",
    "year": 2023,
@@ -11040,6 +11392,22 @@
    "usedMax": 55.25,
    "appreciation": -28,
    "retired": null
+  },
+  {
+   "set": "21265-1",
+   "name": "The Crafting Table",
+   "year": 2024,
+   "theme": "Minecraft",
+   "image": "https://cdn.rebrickable.com/media/sets/21265-1/141367.jpg",
+   "rrp": 89.99,
+   "newMin": 49.3,
+   "newAvg": 64.46,
+   "newMax": 107.3,
+   "usedMin": 40.6,
+   "usedAvg": 46.83,
+   "usedMax": 50.38,
+   "appreciation": -28,
+   "retired": "2026-02-03"
   },
   {
    "set": "43224-1",
@@ -11090,6 +11458,38 @@
    "retired": "2024-03-01"
   },
   {
+   "set": "71408-1",
+   "name": "Peach's Castle",
+   "year": 2022,
+   "theme": "Super Mario",
+   "image": "https://cdn.rebrickable.com/media/sets/71408-1/105728.jpg",
+   "rrp": 129.99,
+   "newMin": 72.0,
+   "newAvg": 90.36,
+   "newMax": 116.67,
+   "usedMin": null,
+   "usedAvg": null,
+   "usedMax": null,
+   "appreciation": -30,
+   "retired": "2024-10-29"
+  },
+  {
+   "set": "75392-1",
+   "name": "Creative Play Droid Builder",
+   "year": 2024,
+   "theme": "Star Wars",
+   "image": "https://cdn.rebrickable.com/media/sets/75392-1/142151.jpg",
+   "rrp": 99.99,
+   "newMin": 0.49,
+   "newAvg": 70.01,
+   "newMax": 105.63,
+   "usedMin": 70.0,
+   "usedAvg": 74.83,
+   "usedMax": 84.32,
+   "appreciation": -30,
+   "retired": "2025-12-17"
+  },
+  {
    "set": "42171-1",
    "name": "Mercedes-AMG F1 W14 E Performance",
    "year": 2024,
@@ -11136,6 +11536,22 @@
    "usedMax": 67.34,
    "appreciation": -36,
    "retired": "2026-07-07"
+  },
+  {
+   "set": "41838-1",
+   "name": "Travel Moments",
+   "year": 2024,
+   "theme": "Miscellaneous",
+   "image": "https://cdn.rebrickable.com/media/sets/41838-1/142785.jpg",
+   "rrp": 149.99,
+   "newMin": 94.87,
+   "newAvg": 95.51,
+   "newMax": 96.15,
+   "usedMin": 59.87,
+   "usedAvg": 59.87,
+   "usedMax": 59.87,
+   "appreciation": -36,
+   "retired": "2025-12-10"
   },
   {
    "set": "31141-1",
