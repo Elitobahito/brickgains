@@ -56,6 +56,8 @@
 
 
 
+
+
 <!--bg-analytics--><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var _bc;try{_bc=localStorage.getItem('bg_consent')==='granted'?'granted':'denied';}catch(e){_bc='denied';}gtag('consent','default',{ad_storage:_bc,analytics_storage:_bc,ad_user_data:_bc,ad_personalization:_bc,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('js',new Date());gtag('config','G-BRDK3Q41YF');gtag('config','AW-18303479328'); window.BG_CLARITY="xpeqecccdw";</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-BRDK3Q41YF"></script><script src="/consent.js" defer></script><!--/bg-analytics-->
 <!--bg-pwa--><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#E3000B"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="BrickGains"><script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><!--/bg-pwa-->
 </head>
@@ -77,6 +79,7 @@
 #appGate .ag-signin{display:block;width:100%;margin-top:12px;background:none;border:none;color:var(--ink,#141414);font-family:var(--disp,'Baloo 2'),sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;text-decoration:underline}
 #appGate .ag-back{display:inline-block;margin-top:16px;color:var(--slate,#565b62);font-size:13.5px;text-decoration:none;font-weight:600}
 #appGate .ag-note{margin-top:14px;font-size:12.5px;color:var(--slate,#565b62)}
+body.bg-gated .tour-ov{display:none!important}
 </style>
 <div id="appGate">
   <div class="ag-card">
@@ -96,8 +99,9 @@
 </div>
 <script>(function(){
   var g=document.getElementById('appGate');
-  function hide(){ if(g){g.style.display='none';} }
-  // default: gate visible for logged-out visitors; hide as soon as we confirm a session, fail-open on error.
+  function hide(){ if(g){g.style.display='none';} document.body.classList.remove('bg-gated'); }
+  // logged-out: keep the gate AND suppress the product tour (bg-gated hides .tour-ov, cache-independent).
+  document.body.classList.add('bg-gated');
   fetch('/api/me',{headers:{'Accept':'application/json'}}).then(function(r){return r.json();})
     .then(function(d){ if(d&&d.user){ hide(); } })
     .catch(function(){ hide(); });
@@ -432,6 +436,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+
 
 
 
