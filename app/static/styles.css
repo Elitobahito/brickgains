@@ -25,6 +25,7 @@ body{font-family:var(--font);color:var(--ink);background:var(--paper);line-heigh
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1140px;margin:0 auto;padding:0 22px}
 h1,h2,h3,h4,.h2,.logo,.price,.badge,.stat .v,.plan .price{font-family:var(--disp)}
+h1,h2,h3,h4{line-height:1.15}
 
 /* ---- header ---- */
 header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdrop-filter:blur(10px);border-bottom:3px solid var(--ink)}
@@ -190,7 +191,7 @@ section{padding:78px 0}
   text-transform:uppercase;letter-spacing:1px;font-size:13px;padding:6px 15px;border-radius:999px;border:2.5px solid var(--ink);box-shadow:var(--sh-sm)}
 .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red)}
 .center{text-align:center}
-.h2{font-size:clamp(30px,4.4vw,48px);font-weight:800;letter-spacing:-.8px;text-align:center;margin-top:16px}
+.h2{font-size:clamp(30px,4.4vw,48px);font-weight:800;letter-spacing:-.8px;text-align:center;margin-top:16px;line-height:1.12}
 .sec-sub{text-align:center;color:var(--slate);max-width:580px;margin:16px auto 0;font-weight:500;font-size:17px}
 .head-c{text-align:center}
 
@@ -235,7 +236,7 @@ section{padding:78px 0}
 
 /* ---- pricing ---- */
 #pricing{background:linear-gradient(180deg,#fff,var(--paper))}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:56px;align-items:stretch}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:30px;align-items:stretch}
 .plan{position:relative;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:36px 30px 30px;box-shadow:var(--sh);display:flex;flex-direction:column;transition:transform .12s ease,box-shadow .12s ease}
 .plan:hover{transform:translateY(-4px);box-shadow:var(--sh-lg)}
 .plan.pop{background:var(--ink);color:#fff;box-shadow:var(--sh-lg)}
@@ -393,7 +394,7 @@ footer .disc{margin-top:36px;padding-top:22px;border-top:2px solid var(--line);c
 .scan-frame{position:absolute;left:10%;right:10%;top:38%;height:24%;border:3px solid #fff;border-radius:12px;box-shadow:0 0 0 100vmax rgba(0,0,0,.35)}
 .scan-hint{position:absolute;left:0;right:0;bottom:26px;text-align:center;color:#fff;font-weight:700;font-size:15px;padding:0 20px}
 .scan-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:999px;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:20px;font-weight:800;cursor:pointer}
-.bill-toggle{display:inline-flex;gap:4px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px;margin:0 auto 26px;box-shadow:var(--sh)}
+.bill-toggle{display:inline-flex;gap:4px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px;margin:28px auto 0;box-shadow:var(--sh)}
 .bill-toggle .bt-opt{border:0;background:none;font-family:var(--disp);font-weight:800;font-size:14px;padding:9px 18px;border-radius:999px;cursor:pointer;color:var(--slate);display:inline-flex;align-items:center;gap:7px}
 .bill-toggle .bt-opt.on{background:var(--ink);color:#fff}
 .bill-toggle .bt-save{background:var(--yellow);color:var(--ink);font-size:11px;font-weight:800;padding:2px 7px;border-radius:999px}
@@ -810,6 +811,15 @@ table.mv tr.clik:hover td{background:#fbf7ea}
 .ec-inputs input{width:100%;box-sizing:border-box;min-width:0}
 @media(max-width:520px){ .ec-inputs{grid-template-columns:1fr} }
 
+@media(max-width:600px){
+  section{padding:54px 0}                       /* was 78px: cleaner vertical rhythm on mobile */
+  .h2{font-size:28px;line-height:1.1;margin-top:12px}
+  .sec-sub{font-size:15.5px;margin-top:12px;line-height:1.5}
+  .head-c .eyebrow{margin-bottom:4px}
+  .bill-toggle{margin:22px auto 0}              /* keep title-to-toggle breathing on mobile */
+  .plans{margin-top:24px}
+  .vcard .meta h3{line-height:1.12}
+}
 @media(max-width:820px){
   .ebay-calc{grid-template-columns:1fr}
   .ec-inputs{grid-template-columns:1fr 1fr}
