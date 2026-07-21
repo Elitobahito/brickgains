@@ -3,20 +3,40 @@
    - iOS Safari (no prompt API): shows the Share → Add to Home Screen hint.
    Only in the dashboard, hidden once installed or dismissed. */
 (function () {
-  // already running as an installed app?
   var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
-  if (standalone) return;
-  if (location.pathname.indexOf('/app') !== 0) return;
   var KEY = 'bg_pwa_dismiss';
-  try { if (localStorage.getItem(KEY)) return; } catch (e) {}
-
   var ua = navigator.userAgent;
   var isIOS = /iphone|ipad|ipod/i.test(ua);
   var isSafari = /safari/i.test(ua) && !/crios|fxios|android|chrome/i.test(ua);
   var deferred = null;
 
-  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; show('prompt'); });
-  if (isIOS && isSafari) { setTimeout(function () { show('ios'); }, 1800); }
+  // Global API so the dashboard "Get the app" panel can trigger install anytime.
+  window.BGPWA = {
+    isStandalone: standalone,
+    isIOS: isIOS,
+    canInstall: function () { return !!deferred; },
+    install: function () {
+      if (!deferred) return false;
+      deferred.prompt();
+      deferred.userChoice.then(function () { deferred = null; document.dispatchEvent(new Event('bgpwa-change')); });
+      return true;
+    }
+  };
+
+  function autoBarAllowed() {
+    if (standalone) return false;
+    if (location.pathname.indexOf('/app') !== 0) return false;
+    try { if (localStorage.getItem(KEY)) return false; } catch (e) {}
+    return true;
+  }
+
+  // capture the install prompt (kept even if the auto-bar was dismissed, so the panel button still works)
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferred = e;
+    document.dispatchEvent(new Event('bgpwa-change'));
+    if (autoBarAllowed()) show('prompt');
+  });
+  if (isIOS && isSafari && autoBarAllowed()) { setTimeout(function () { show('ios'); }, 1800); }
 
   function dismiss(bar) { try { localStorage.setItem(KEY, '1'); } catch (e) {} if (bar) { bar.style.transform = 'translateY(140%)'; setTimeout(function () { if (bar.parentNode) bar.remove(); }, 260); } }
 
