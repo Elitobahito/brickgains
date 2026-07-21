@@ -93,6 +93,8 @@
 
 
 
+
+
 <!--bg-analytics--><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var _bc;try{_bc=localStorage.getItem('bg_consent')==='granted'?'granted':'denied';}catch(e){_bc='denied';}gtag('consent','default',{ad_storage:_bc,analytics_storage:_bc,ad_user_data:_bc,ad_personalization:_bc,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('js',new Date());gtag('config','G-BRDK3Q41YF');gtag('config','AW-18303479328'); window.BG_CLARITY="xpeqecccdw";</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-BRDK3Q41YF"></script><script src="/consent.js" defer></script><!--/bg-analytics-->
 <!--bg-pwa--><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#E3000B"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="BrickGains"><script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><!--/bg-pwa-->
 </head>
@@ -126,8 +128,8 @@
   <span class="brick b3"></span><span class="brick b4"></span>
   <div class="wrap">
     <span class="pill">🧱 Real market prices, not guesses</span>
-    <h1>What is your LEGO <span class="hl">really worth?</span></h1>
-    <p class="sub">Type any set number and see its real resale value, its gain since retail, and whether it's time to sell.</p>
+    <h1>Never sell your LEGO <span class="hl">too cheap</span>.</h1>
+    <p class="sub">See what your sets actually sold for, real prices in your country, and know exactly what you can get before you sell.</p>
     <div class="searchbar">
       <input id="setInput" placeholder="Set number or name (e.g. 10276)" autocomplete="off"
              onkeydown="if(event.key==='Enter')doSearch()">
@@ -274,6 +276,8 @@
 </section>
 
 <!-- PRICING -->
+
+<section id="compare" class="compare"><div class="wrap"><div class="head-c"><span class="eyebrow">Comparison</span><h2 class="h2">Why BrickGains, not the others</h2><p class="sec-sub">Everyone shows a number. We show you what your LEGO really sells for, so you never sell too cheap.</p></div><div class="cmp-scroll"><table class="cmp-table"><thead><tr><th></th><th class="cmp-us">BrickGains</th><th>BrickEconomy</th><th>Other trackers</th></tr></thead><tbody><tr><td class="crit">Real sold prices (not asking or AI)</td><td class="c-us"><span class="c-ok">&#10003;</span></td><td><span class="c-ko">&#10005;</span></td><td><span class="c-mid">~</span></td></tr><tr><td class="crit">Value in your country & currency</td><td class="c-us"><span class="c-ok">&#10003;</span></td><td><span class="c-ko">&#10005;</span></td><td><span class="c-ko">&#10005;</span></td></tr><tr><td class="crit">Built to help you sell</td><td class="c-us"><span class="c-ok">&#10003;</span></td><td><span class="c-ko">&#10005;</span></td><td><span class="c-ko">&#10005;</span></td></tr><tr><td class="crit">After-fees profit calculator</td><td class="c-us"><span class="c-ok">&#10003;</span></td><td><span class="c-ko">&#10005;</span></td><td><span class="c-mid">~</span></td></tr><tr><td class="crit">Simple, no expertise needed</td><td class="c-us"><span class="c-ok">&#10003;</span></td><td><span class="c-mid">~</span></td><td><span class="c-mid">~</span></td></tr><tr><td class="crit">Price to start</td><td class="c-us"><b>Free &rarr; $4.99</b></td><td>Paid</td><td>$7-40/mo</td></tr></tbody></table></div></div></section>
 <section id="pricing">
   <div class="wrap">
     <div class="head-c">
@@ -394,6 +398,8 @@
 <script src="/main.js"></script>
 <script src="/suggest.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where do the prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "Live listings from the BrickLink marketplace (the world's biggest LEGO secondary market), plus official retail prices and retirement dates. Updated regularly."}}, {"@type": "Question", "name": "Is it accurate?", "acceptedAnswer": {"@type": "Answer", "text": "We show real market prices (new and used, min, average and max), not a black-box estimate. You always see the range."}}, {"@type": "Question", "name": "How do \"sell now\" alerts work?", "acceptedAnswer": {"@type": "Answer", "text": "When a set you own retires or hits a new price high, we ping you. That's usually the best window to sell."}}, {"@type": "Question", "name": "Can I import my whole collection?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Bulk CSV import is available on the Investor plan, with multi-copy tracking for resellers."}}, {"@type": "Question", "name": "Can I cancel anytime?", "acceptedAnswer": {"@type": "Answer", "text": "Anytime, in one click. No lock-in."}}]}</script>
+
+
 
 
 
