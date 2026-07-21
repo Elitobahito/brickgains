@@ -174,7 +174,34 @@ header{position:sticky;top:0;z-index:50;background:rgba(255,247,230,.92);backdro
 .lp-load{color:var(--slate);font-weight:600;font-size:14px}
 .lp-lock{display:flex;align-items:center;gap:9px;background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-family:var(--disp);font-weight:700;font-size:14px;color:var(--ink);text-decoration:none;box-shadow:2px 2px 0 var(--ink)}
 .lp-lock:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--ink)}
-.lp-lock .lp-pro{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px}
+.lp-lock .lp-pro{margin-left:auto;background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;flex-shrink:0}
+.lp-lock .lp-txt{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---- mobile fixes: header fits with right breathing + tidy result card ---- */
+@media(max-width:560px){
+  .nav{gap:10px;justify-content:space-between;height:64px}
+  .logo{font-size:20px}
+  .navcta{gap:8px}
+  .see-prices{font-size:13px;padding:9px 13px}
+  .hamb{width:44px;height:44px}
+  .hamb svg{width:22px;height:22px}
+  .mobmenu{top:64px}
+  /* result card */
+  .vcard .top{padding:18px 16px 16px}
+  .vcard .top img{max-width:150px;height:auto}
+  .grid3 .cell{padding:14px 8px}
+  .cell .k{font-size:11px}
+  .cell .v{font-size:19px}
+  .localbox{margin:14px 16px 0}
+  .lp-head{gap:8px}
+  .lp-sel{font-size:12px;padding:6px 7px;max-width:48%}
+  .lp-vals{gap:8px}
+  .lp-vals>div{padding:8px 10px}
+  .lp-vals b{font-size:18px}
+  .lp-lock{padding:11px 12px;font-size:13.5px;gap:8px}
+  .lp-lock .lp-pro{font-size:10.5px;padding:3px 8px}
+  .vcta{padding:2px 16px 18px}
+}
 .loading{text-align:center;padding:34px;font-weight:700;color:var(--slate)}
 
 /* ---- loading skeleton + progress bar ---- */

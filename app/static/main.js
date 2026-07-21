@@ -192,14 +192,14 @@ function cardHTML(d){
 // ---- Pro: "value in your country" (real BrickLink prices, local currency) ----
 var LP_CO=[["US","US United States"],["GB","GB United Kingdom"],["DE","DE Germany"],["FR","FR France"],["IT","IT Italy"],["ES","ES Spain"],["NL","NL Netherlands"],["BE","BE Belgium"],["SE","SE Sweden"],["DK","DK Denmark"],["NO","NO Norway"],["CH","CH Switzerland"],["PL","PL Poland"],["AT","AT Austria"],["IE","IE Ireland"],["PT","PT Portugal"],["FI","FI Finland"],["CA","CA Canada"],["AU","AU Australia"],["JP","JP Japan"]];
 var LP_T={
-  en:{t:'Value in your country',nw:'New',us:'Used',none:'No recent sales in',lock:'See the value in your country'},
-  fr:{t:'Valeur dans ton pays',nw:'Neuf',us:'Occasion',none:'Aucune vente récente en',lock:'Vois la valeur dans ton pays'},
-  de:{t:'Wert in deinem Land',nw:'Neu',us:'Gebraucht',none:'Keine Verkäufe in',lock:'Wert in deinem Land ansehen'},
-  es:{t:'Valor en tu país',nw:'Nuevo',us:'Usado',none:'Sin ventas recientes en',lock:'Ver el valor en tu país'},
-  it:{t:'Valore nel tuo paese',nw:'Nuovo',us:'Usato',none:'Nessuna vendita in',lock:'Vedi il valore nel tuo paese'},
-  nl:{t:'Waarde in jouw land',nw:'Nieuw',us:'Gebruikt',none:'Geen verkopen in',lock:'Bekijk de waarde in jouw land'},
-  sv:{t:'Värde i ditt land',nw:'Nytt',us:'Begagnat',none:'Inga försäljningar i',lock:'Se värdet i ditt land'},
-  da:{t:'Værdi i dit land',nw:'Ny',us:'Brugt',none:'Ingen salg i',lock:'Se værdien i dit land'}
+  en:{t:'Value in your country',nw:'New',us:'Used',none:'No recent sales in',lock:'Value in your country'},
+  fr:{t:'Valeur dans ton pays',nw:'Neuf',us:'Occasion',none:'Aucune vente récente en',lock:'Valeur dans ton pays'},
+  de:{t:'Wert in deinem Land',nw:'Neu',us:'Gebraucht',none:'Keine Verkäufe in',lock:'Wert in deinem Land'},
+  es:{t:'Valor en tu país',nw:'Nuevo',us:'Usado',none:'Sin ventas recientes en',lock:'Valor en tu país'},
+  it:{t:'Valore nel tuo paese',nw:'Nuovo',us:'Usato',none:'Nessuna vendita in',lock:'Valore nel tuo paese'},
+  nl:{t:'Waarde in jouw land',nw:'Nieuw',us:'Gebruikt',none:'Geen verkopen in',lock:'Waarde in jouw land'},
+  sv:{t:'Värde i ditt land',nw:'Nytt',us:'Begagnat',none:'Inga försäljningar i',lock:'Värde i ditt land'},
+  da:{t:'Værdi i dit land',nw:'Ny',us:'Brugt',none:'Ingen salg i',lock:'Værdi i dit land'}
 };
 function lpL(){ var l=(document.documentElement.getAttribute('lang')||'en').slice(0,2); return LP_T[l]||LP_T.en; }
 function lpName(cc){ var m=LP_CO.filter(function(c){return c[0]===cc;})[0]; return m?m[1].slice(3):cc; }
@@ -215,7 +215,7 @@ function localHTML(d){
 }
 function lockedHTML(){
   var L=lpL();
-  return '<a class="lp-lock" href="#pricing"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>'+L.lock+' <span class="lp-pro">Pro</span></a>';
+  return '<a class="lp-lock" href="#pricing"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span class="lp-txt">'+L.lock+'</span><span class="lp-pro">Pro</span></a>';
 }
 function loadLocal(sn,cc){
   var box=document.querySelector('.localbox[data-set="'+sn+'"]'); if(!box) return;
