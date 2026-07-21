@@ -557,6 +557,7 @@ class H(BaseHTTPRequestHandler):
             "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://*.clarity.ms https://accounts.google.com https://accounts.google.com/gsi/client; "
             "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com https://googleads.g.doubleclick.net https://www.google.com https://accounts.google.com https://oauth2.googleapis.com; "
             "frame-src https://td.doubleclick.net https://www.googletagmanager.com https://accounts.google.com; "
+            "worker-src 'self'; manifest-src 'self'; "
             "frame-ancestors 'self'; base-uri 'self'")
         if cookie: self.send_header("Set-Cookie", cookie)
         self.end_headers()
@@ -1347,11 +1348,19 @@ class H(BaseHTTPRequestHandler):
                  "svg": "image/svg+xml", "png": "image/png", "jpg": "image/jpeg",
                  "jpeg": "image/jpeg", "webp": "image/webp", "gif": "image/gif",
                  "ico": "image/x-icon", "json": "application/json", "xml": "application/xml",
-                 "txt": "text/plain", "woff": "font/woff", "woff2": "font/woff2"}.get(ext, "application/octet-stream")
-        # cache : assets = 1 an immutable ; pages HTML de contenu = 5 min ; app/u/admin = non caché
-        ASSET = ("css", "js", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "woff", "woff2")
-        if ext in ASSET:
+                 "txt": "text/plain", "woff": "font/woff", "woff2": "font/woff2",
+                 "webmanifest": "application/manifest+json"}.get(ext, "application/octet-stream")
+        # cache: images/fonts = 1 an immutable ; CSS/JS = 5 min (les deploys se propagent sans hard-refresh) ;
+        # HTML de contenu = 5 min ; service worker = revalidation ; manifest = 1h ; app/u/admin = non caché
+        ASSET_LONG = ("svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "woff", "woff2")
+        if fp.endswith("sw.js"):
+            cache = "no-cache"
+        elif ext == "webmanifest":
+            cache = "public, max-age=3600"
+        elif ext in ASSET_LONG:
             cache = "public, max-age=31536000, immutable"
+        elif ext in ("css", "js"):
+            cache = "public, max-age=300"
         elif ext == "html" and not fp.endswith(("app.html", "u.html", "admin.html")):
             cache = "public, max-age=300"
         else:
