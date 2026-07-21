@@ -34,6 +34,8 @@
 
 
 
+
+
 <!--bg-analytics--><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var _bc;try{_bc=localStorage.getItem('bg_consent')==='granted'?'granted':'denied';}catch(e){_bc='denied';}gtag('consent','default',{ad_storage:_bc,analytics_storage:_bc,ad_user_data:_bc,ad_personalization:_bc,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('js',new Date());gtag('config','G-BRDK3Q41YF');gtag('config','AW-18303479328'); window.BG_CLARITY="xpeqecccdw";</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-BRDK3Q41YF"></script><script src="/consent.js" defer></script><!--/bg-analytics-->
 <!--bg-pwa--><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#E3000B"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="BrickGains"><script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><!--/bg-pwa-->
 </head>
@@ -89,11 +91,11 @@
       <button class="btn" onclick="addSet()">Add to portfolio</button>
     </div>
     <div class="add-tools">
-      <button class="tbtn accent" id="scanBtn" onclick="openScanner()"><span class="ic">📷</span>Scan a box</button>
-      <button class="tbtn" onclick="toggleImport()"><span class="ic">📥</span>Import list</button>
+      <button class="tbtn accent" id="scanBtn" onclick="openScanner()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>Scan a box</button>
+      <button class="tbtn" onclick="toggleImport()"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg></span>Import list</button>
       <span class="tool-sep"></span>
-      <button class="tbtn" id="csvBtn" onclick="exportCSV()" title="Export your portfolio (Investor)"><span class="ic">⬇️</span>Export CSV</button>
-      <button class="tbtn" id="pdfBtn" onclick="pdfReport()" title="Insurance report PDF (Investor)"><span class="ic">🧾</span>Insurance PDF</button>
+      <button class="tbtn" id="csvBtn" onclick="exportCSV()" title="Export your portfolio (Investor)"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>Export CSV</button>
+      <button class="tbtn" id="pdfBtn" onclick="pdfReport()" title="Insurance report PDF (Investor)"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="18" x2="13" y2="18"/></svg></span>Insurance PDF</button>
       <span class="sync-note" id="syncNote"></span>
     </div>
     <div id="importBox" class="import-box" style="display:none">

@@ -754,7 +754,8 @@ table.mv tr.clik:hover td{background:#fbf7ea}
   box-shadow:var(--sh-sm);transition:transform .06s,box-shadow .06s;white-space:nowrap}
 .tbtn:hover{transform:translate(1px,2px);box-shadow:2px 2px 0 var(--ink)}
 .tbtn:active{transform:translate(3px,4px);box-shadow:0 0 0 var(--ink)}
-.tbtn .ic{font-size:15px;line-height:1}
+.tbtn .ic{display:inline-flex;align-items:center;line-height:1}
+.tbtn .ic svg{width:16px;height:16px;display:block}
 .tbtn.accent{background:var(--yellow)}
 .tbtn.feat-locked{opacity:.85}
 .tbtn.feat-locked::after{content:"🔒";font-size:12px;margin-left:1px}
