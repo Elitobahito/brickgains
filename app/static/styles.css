@@ -896,11 +896,10 @@ table.mv tr.clik:hover td{background:#fbf7ea}
   .bill-toggle{margin:22px auto 0}              /* keep title-to-toggle breathing on mobile */
   .plans{margin-top:24px}
   .vcard .meta h3{line-height:1.12}
-  /* hero trust line: 3 stacked checks -> one light inline strip (less heavy on mobile) */
-  .trustrow{margin-top:16px;gap:0;column-gap:9px;row-gap:2px}
-  .trustrow span{font-size:12.5px;font-weight:600;gap:0}
-  .trustrow span::before{display:none}
-  .trustrow span:not(:last-child)::after{content:"·";margin-left:9px;color:var(--slate);opacity:.55;font-weight:700}
+  /* hero trust line: keep the small check icon on each item, compact inline (wraps if needed) */
+  .trustrow{margin-top:16px;gap:7px 14px}
+  .trustrow span{font-size:12.5px;font-weight:600;gap:5px}
+  .trustrow span::before{display:block;width:14px;height:14px}
   /* more breathing room under the dashboard caption before the next section */
   section.product-shot{padding-bottom:38px}
 }
