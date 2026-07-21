@@ -7,7 +7,7 @@ qui fusionne Rebrickable + Brickset + Apify (BrickLink) avec cache 24h.
 Lancer :  python3 app/server.py   puis ouvrir http://localhost:8000
 """
 import json, os, time, re, urllib.request, urllib.parse, urllib.error, html
-import sqlite3, hashlib, secrets, hmac
+import sqlite3, hashlib, secrets, hmac, base64
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -572,6 +572,63 @@ def brickset(sn):
                 "pieces": s.get("pieces"), "rrp": rrp, "retired": retired, "image_bs": img}
     except Exception: return {}
 
+# ---------- BrickLink official API (OAuth1) : real sold-price guide, per-country ----------
+BL_CK = ENV.get("BRICKLINK_CONSUMER_KEY", ""); BL_CS = ENV.get("BRICKLINK_CONSUMER_SECRET", "")
+BL_TK = ENV.get("BRICKLINK_TOKEN", ""); BL_TS = ENV.get("BRICKLINK_TOKEN_SECRET", "")
+# country -> local currency for the "value in your country" (Pro) feature
+CC_CUR = {"US": "USD", "GB": "GBP", "DE": "EUR", "FR": "EUR", "IT": "EUR", "ES": "EUR", "NL": "EUR",
+          "BE": "EUR", "IE": "EUR", "AT": "EUR", "PT": "EUR", "FI": "EUR", "SE": "SEK", "DK": "DKK",
+          "NO": "NOK", "CH": "CHF", "PL": "PLN", "CA": "CAD", "AU": "AUD", "JP": "JPY", "MA": "USD"}
+
+def _bl_get(path, params):
+    if not (BL_CK and BL_TK):
+        return {}
+    oauth = {"oauth_consumer_key": BL_CK, "oauth_token": BL_TK, "oauth_signature_method": "HMAC-SHA1",
+             "oauth_timestamp": str(int(time.time())), "oauth_nonce": secrets.token_hex(8), "oauth_version": "1.0"}
+    allp = {**params, **oauth}
+    base = "&".join(["GET", urllib.parse.quote(path, safe=""),
+                     urllib.parse.quote("&".join("%s=%s" % (k, urllib.parse.quote(str(allp[k]), safe="")) for k in sorted(allp)), safe="")])
+    key = urllib.parse.quote(BL_CS, safe="") + "&" + urllib.parse.quote(BL_TS, safe="")
+    sig = base64.b64encode(hmac.new(key.encode(), base.encode(), hashlib.sha1).digest()).decode()
+    oauth["oauth_signature"] = sig
+    hdr = "OAuth " + ", ".join('%s="%s"' % (k, urllib.parse.quote(str(v), safe="")) for k, v in oauth.items())
+    req = urllib.request.Request(path + "?" + urllib.parse.urlencode(params), headers={"Authorization": hdr})
+    with urllib.request.urlopen(req, timeout=15) as r:
+        return json.loads(r.read()).get("data", {}) or {}
+
+def _bl_one(snid, nou, country, currency):
+    p = {"guide_type": "sold", "new_or_used": nou, "currency_code": currency}
+    if country:
+        p["country_code"] = country
+    url = "https://api.bricklink.com/api/store/v1/items/SET/%s/price" % snid
+    for attempt in range(2):   # retry once on transient throttle/timeout
+        try:
+            return _bl_get(url, p)
+        except Exception:
+            if attempt == 0:
+                time.sleep(0.6)
+    return {}
+
+def _bl_num(x):
+    try:
+        return round(float(x), 2) if x not in (None, "") else None
+    except Exception:
+        return None
+
+def bricklink_price(sn, country=None, currency="USD"):
+    """Official BrickLink sold-price guide (new + used). Returns apify-shaped dict, or {} if no data."""
+    snid = sn if "-" in str(sn) else str(sn) + "-1"
+    n = _bl_one(snid, "N", country, currency)
+    u = _bl_one(snid, "U", country, currency)
+    navg = _bl_num(n.get("qty_avg_price") or n.get("avg_price"))
+    uavg = _bl_num(u.get("qty_avg_price") or u.get("avg_price"))
+    if navg is None and uavg is None:
+        return {}
+    return {"newMin": _bl_num(n.get("min_price")), "newAvg": navg, "newMax": _bl_num(n.get("max_price")),
+            "usedMin": _bl_num(u.get("min_price")), "usedAvg": uavg, "usedMax": _bl_num(u.get("max_price")),
+            "currency": n.get("currency_code") or u.get("currency_code") or currency,
+            "newLots": n.get("unit_quantity"), "usedLots": u.get("unit_quantity")}
+
 def apify_price(sn):
     try:
         tok = ENV.get("APIFY_API_TOKEN", "")
@@ -601,7 +658,8 @@ def get_value(raw):
     if hit and time.time() - hit.get("_ts", 0) < CACHE_TTL:
         hit["image"] = local_webp(sn, hit.get("image"))  # upgrade cached entries to self-hosted WebP
         return hit
-    rb, bs, pr = rebrickable(sn), brickset(sn), apify_price(sn)
+    rb, bs = rebrickable(sn), brickset(sn)
+    pr = bricklink_price(sn) or apify_price(sn)   # official BrickLink API, fallback to scraper
     if not bs and not rb and not pr:
         return {"error": f"Set {sn} introuvable", "set": sn}
     rrp = bs.get("rrp")
