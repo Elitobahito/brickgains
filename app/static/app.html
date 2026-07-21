@@ -105,6 +105,8 @@
 
 
 
+
+
 <!--bg-analytics--><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}var _bc;try{_bc=localStorage.getItem('bg_consent')==='granted'?'granted':'denied';}catch(e){_bc='denied';}gtag('consent','default',{ad_storage:_bc,analytics_storage:_bc,ad_user_data:_bc,ad_personalization:_bc,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});gtag('js',new Date());gtag('config','G-BRDK3Q41YF');gtag('config','AW-18303479328'); window.BG_CLARITY="xpeqecccdw";</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-BRDK3Q41YF"></script><script src="/consent.js" defer></script><!--/bg-analytics-->
 <!--bg-pwa--><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#E3000B"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="BrickGains"><script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><!--/bg-pwa-->
 </head>
@@ -404,6 +406,13 @@ body.bg-gated .tour-ov{display:none!important}
             <option value="CAD">CA$ CAD</option><option value="AUD">A$ AUD</option>
           </select>
         </div>
+        <div class="acct-row"><span data-i18n="ac.language">Language</span>
+          <select id="langSel" onchange="if(this.value){try{localStorage.setItem('bg_lang',this.value);}catch(e){}location.reload();}" style="border:2px solid var(--ink);border-radius:8px;padding:5px 8px;font-weight:600;font-family:inherit;cursor:pointer">
+            <option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option><option value="de">🇩🇪 Deutsch</option>
+            <option value="es">🇪🇸 Español</option><option value="it">🇮🇹 Italiano</option><option value="nl">🇳🇱 Nederlands</option>
+            <option value="sv">🇸🇪 Svenska</option><option value="da">🇩🇰 Dansk</option>
+          </select>
+        </div>
       </div>
       <div class="acct-card">
         <h3>Subscription</h3>
@@ -488,6 +497,7 @@ async function fillAccount(){
     var inb=document.getElementById('acSignedIn'), outb=document.getElementById('acSignedOut');
     if(!u){ inb.style.display='none'; outb.style.display='block'; return; }
     outb.style.display='none'; inb.style.display='grid';
+    var ls=document.getElementById('langSel'); if(ls&&window.BGL) ls.value=window.BGL;
     document.getElementById('acEmail').textContent=u.email;
     var p=document.getElementById('acPlan'); p.textContent=u.plan||'free';
     p.className='planpill'+(u.plan && u.plan!=='free' ? ' paid' : '');
@@ -537,6 +547,8 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+
+
 
 
 
