@@ -158,8 +158,8 @@
       <div class="authlogo"><span class="studs"><i></i><i></i><i></i><i></i></span>BrickGains</div>
       <h3 id="authTitle">${S.welcome}</h3>
       <p id="authSub">${S.loginSub}</p>
-      <div id="gsiBtn" style="display:flex;justify-content:center;min-height:44px"></div>
-      <div class="ordiv" id="authOr">or</div>
+      <div id="gsiBtn" style="display:none"></div>
+      <div class="ordiv" id="authOr" style="display:none">or</div>
       <form onsubmit="BG.submit(event)">
         <input id="authEmail" type="email" placeholder="${S.email}" autocomplete="email" required>
         <input id="authPass" type="password" placeholder="${S.pass}" autocomplete="current-password" required>
@@ -206,7 +206,7 @@
 
   const BG = {
     mode: 'login',
-    openAuth(mode){ BG.mode = mode||'login'; BG.render(); el('authWall').classList.add('on'); renderGSI(); },
+    openAuth(mode){ BG.mode = mode||'login'; BG.render(); el('authWall').classList.add('on'); if(window.BGPwEye) BGPwEye(document); },
     closeAuth(){ el('authWall').classList.remove('on'); },
     openAcct(){ if(me){ el('acctEmail').textContent = me.email; el('acctPlan').textContent = S.plan+(me.plan||'free'); el('acctWall').classList.add('on'); } },
     closeAcct(){ el('acctWall').classList.remove('on'); },
@@ -381,4 +381,36 @@
     var m=p.match(/^\/(fr|de|es|it|nl|sv|da)(\/|$)/);
     localStorage.setItem('bg_lang', m?m[1]:'en');
   }catch(e){}
+})();
+
+/* Show/hide password toggle (eye icon) on every password field, site-wide */
+(function(){
+  function eye(off){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+
+      (off
+        ? '<path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 10 8 10 8a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 8 10 8a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/>'
+        : '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>')+
+      '</svg>';
+  }
+  function initPwToggles(root){
+    var list=(root||document).querySelectorAll('input[type="password"]');
+    Array.prototype.forEach.call(list, function(inp){
+      if(inp.getAttribute('data-pweye')) return;
+      inp.setAttribute('data-pweye','1');
+      var w=document.createElement('span'); w.className='pw-wrap';
+      inp.parentNode.insertBefore(w, inp); w.appendChild(inp);
+      var b=document.createElement('button'); b.type='button'; b.className='pw-eye';
+      b.setAttribute('aria-label','Afficher / masquer le mot de passe'); b.innerHTML=eye(false);
+      b.addEventListener('click', function(e){
+        e.preventDefault();
+        var show = inp.getAttribute('type')==='password';
+        inp.setAttribute('type', show?'text':'password');
+        b.innerHTML=eye(show);
+      });
+      w.appendChild(b);
+    });
+  }
+  window.BGPwEye=initPwToggles;
+  if(document.readyState!=='loading') initPwToggles(document);
+  else document.addEventListener('DOMContentLoaded', function(){ initPwToggles(document); });
 })();
