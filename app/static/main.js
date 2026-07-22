@@ -271,7 +271,10 @@ async function doSearch(){
       setFree(freeUsed()+1);
       // Micro-conversion: a visitor estimated a set (the core action). Feeds GA4 -> importable
       // into Google Ads so its bidding optimizes toward people who actually use the tool.
-      try{ if(window.gtag) gtag('event','check_set',{ set_number:String(d.set||'').replace('-1',''), value:1 }); }catch(e){}
+      try{ if(window.gtag){
+        gtag('event','check_set',{ set_number:String(d.set||'').replace('-1',''), value:1 });           // GA4 event
+        gtag('event','conversion',{ send_to:'AW-18303479328/X7BXCJvA29QcEKDc45dE' });                    // Google Ads: "Set estimé"
+      } }catch(e){}
     }
   }catch(e){ done(); box.innerHTML = `<div class="vcard"><div class="loading">${T.wrong}</div></div>`; }
 }
