@@ -31,3 +31,10 @@ jobs:
           curl -sS -m30 -X POST "https://api.render.com/v1/services/srv-d9br67ecjfls73cnktk0/deploys" \
             -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
             -H "Content-Type: application/json" -d '{}'
+          # notif email Elias (best-effort : marche une fois brickgain.com vérifié dans Resend)
+          NUM=$(python -c "import json;print(len(json.load(open('released_sets.json'))))")
+          curl -sS -m30 -X POST "https://api.resend.com/emails" \
+            -H "Authorization: Bearer ${{ secrets.RESEND_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"from\":\"BrickGain <notify@brickgain.com>\",\"to\":[\"elias.bahia@lumeagency.fr\"],\"subject\":\"BrickGain — nouvelle vague SEO ouverte ($NUM pages indexables)\",\"text\":\"Une vague vient de s'ouvrir automatiquement. Total de pages set indexables : $NUM / 1356. Le sitemap a été régénéré et redéployé, Google va crawler les nouvelles pages. — CI BrickGain\"}" \
+            || echo "notif email KO (brickgain.com pas encore vérifié dans Resend)"
