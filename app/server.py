@@ -238,7 +238,7 @@ STRIPE_WHSEC = ENV.get("STRIPE_WEBHOOK_SECRET", "")
 PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR", "")}
 ANNUAL_PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO_ANNUAL", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR_ANNUAL", "")}
 STRIPE_PORTAL_CONFIG = ENV.get("STRIPE_PORTAL_CONFIG", "")
-SITE_URL = ENV.get("SITE_URL", "https://brickgains.com")
+SITE_URL = ENV.get("SITE_URL", "https://brickgain.com")
 
 # Free-plan limits (enforced server-side)
 FREE_SETS_CAP = 10          # max sets a free account can track
@@ -293,9 +293,9 @@ def set_user_plan(uid, plan):
 
 # ---------- Email (Resend) ----------
 RESEND_API_KEY = ENV.get("RESEND_API_KEY", "")
-# Until brickgains.com is verified in Resend, sending is limited to the account owner.
-EMAIL_FROM = ENV.get("EMAIL_FROM", "BrickGains <no-reply@brickgains.com>")
-REPLY_TO_DEFAULT = ENV.get("REPLY_TO", "contact@brickgains.com")  # replies to no-reply mails land here
+# Until brickgain.com is verified in Resend, sending is limited to the account owner.
+EMAIL_FROM = ENV.get("EMAIL_FROM", "BrickGains <no-reply@brickgain.com>")
+REPLY_TO_DEFAULT = ENV.get("REPLY_TO", "contact@brickgain.com")  # replies to no-reply mails land here
 SUPPORT_NOTIFY = ENV.get("SUPPORT_NOTIFY", "")  # where contact-form messages are forwarded
 
 def send_email(to, subject, html, reply_to=None):
@@ -376,7 +376,7 @@ ACCOUNT
 - After paying, you get an instant confirmation email and your account unlocks immediately.
 
 REFUNDS & SUPPORT
-- See the Refunds page for the refund policy. For anything else, contact support@brickgains.com (Investor plan gets priority support). There is a contact form at /contact.
+- See the Refunds page for the refund policy. For anything else, contact support@brickgain.com (Investor plan gets priority support). There is a contact form at /contact.
 
 PRIVACY
 - BrickGains does not sell your data. Free plan needs no card. See the Privacy and Cookies pages for details.
@@ -392,7 +392,7 @@ def gemini_chat(messages):
         "plans, pricing, LEGO set values and how to use the app. (3) If asked about anything unrelated "
         "(general knowledge, coding, other products, politics, etc.), politely decline in one sentence and "
         "steer back to BrickGains. (4) Never invent features, prices or promises not in the knowledge base; "
-        "if you don't know, say so and suggest emailing support@brickgains.com. (5) Be concise (2-5 sentences), "
+        "if you don't know, say so and suggest emailing support@brickgain.com. (5) Be concise (2-5 sentences), "
         "warm, and action-oriented. (6) Reply in English BY DEFAULT. Only reply in another language if the user's "
         "message is clearly and fully written in French, German, Italian, Spanish, Dutch, Swedish or Danish; for a "
         "short, ambiguous, slang, or any other-language message, reply in English. Never guess an exotic language. "
@@ -662,7 +662,7 @@ def local_webp(sn, fallback):
     n = str(sn or "").replace("-1", "")
     try:
         if n and os.path.exists(os.path.join(STATIC, "img", "sets", n + ".webp")):
-            return "https://brickgains.com/img/sets/" + n + ".webp"
+            return "https://brickgain.com/img/sets/" + n + ".webp"
     except Exception:
         pass
     return fallback
@@ -779,7 +779,7 @@ class H(BaseHTTPRequestHandler):
             reply = gemini_chat(msgs)
             if not reply:
                 reply = ("I can't reach the assistant right now. Meanwhile you can browse our Help page at "
-                         "brickgains.com/help, or email support@brickgains.com and we'll get right back to you.")
+                         "brickgain.com/help, or email support@brickgain.com and we'll get right back to you.")
             return self._send(200, json.dumps({"reply": reply}))
 
         if u.path == "/api/subscribe":
@@ -1513,7 +1513,7 @@ class H(BaseHTTPRequestHandler):
             except Exception:
                 return self._send(200, json.dumps({"updated": None, "sets": []}))
         # static — locale-aware routing
-        LOCS = ("fr", "de", "es", "it", "nl", "sv", "da")
+        LOCS = ()  # EN-only (brickgain.com)
         def resolve(p):
             if len(p) > 1 and p.endswith("/"): p = p.rstrip("/")  # /admin/ -> /admin, /pricing/ -> /pricing
             noext = "." not in p.rsplit("/", 1)[-1]
