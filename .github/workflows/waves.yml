@@ -1,0 +1,33 @@
+name: SEO waves (auto noindex release)
+on:
+  schedule:
+    - cron: '17 6 * * *'   # tous les jours 06:17 UTC (idempotent, ne déploie que si une vague est due)
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Appliquer l'état des vagues (date-piloté)
+        run: python waves.py
+      - name: Déployer seulement si une vague vient de s'ouvrir
+        run: |
+          if git diff --quiet released_sets.json; then
+            echo "Aucune vague due aujourd'hui — no-op."
+            exit 0
+          fi
+          echo "Vague ouverte -> régénération sitemap + commit + deploy Render."
+          python gen_sitemap.py
+          git config user.name "brickgains-ci"
+          git config user.email "ci@brickgain.com"
+          git add -A
+          git commit -m "waves: auto-release $(date +%F)"
+          git push
+          curl -sS -m30 -X POST "https://api.render.com/v1/services/srv-d9br67ecjfls73cnktk0/deploys" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
+            -H "Content-Type: application/json" -d '{}'
