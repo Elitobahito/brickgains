@@ -239,6 +239,8 @@ PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO", ""), "investor": ENV.get("STRIPE
 ANNUAL_PRICE_IDS = {"pro": ENV.get("STRIPE_PRICE_PRO_ANNUAL", ""), "investor": ENV.get("STRIPE_PRICE_INVESTOR_ANNUAL", "")}
 STRIPE_PORTAL_CONFIG = ENV.get("STRIPE_PORTAL_CONFIG", "")
 SITE_URL = ENV.get("SITE_URL", "https://brickgain.com")
+# Old domain, kept pointed here only to 301 everything to SITE_URL (migration 2026-08-03).
+LEGACY_HOSTS = {"brickgains.com", "www.brickgains.com"}
 
 # Free-plan limits (enforced server-side)
 FREE_SETS_CAP = 10          # max sets a free account can track
@@ -735,6 +737,18 @@ class H(BaseHTTPRequestHandler):
     def _https(self):
         return self.headers.get("X-Forwarded-Proto", "") == "https"
 
+    def _legacy_redirect(self):
+        """301 the old brickgains.com domain to SITE_URL, path and query kept."""
+        host = (self.headers.get("Host") or "").split(":")[0].lower()
+        if host not in LEGACY_HOSTS:
+            return False
+        self.send_response(301)
+        self.send_header("Location", SITE_URL.rstrip("/") + (self.path or "/"))
+        self.send_header("Cache-Control", "public, max-age=86400")
+        self.send_header("Content-Length", "0")
+        self.end_headers()
+        return True
+
     def _sess_cookie(self, tok, clear=False):
         sec = "; Secure" if self._https() else ""
         if clear:
@@ -762,6 +776,7 @@ class H(BaseHTTPRequestHandler):
         return bool(ADMIN_TOKEN) and self._cookie("bg_admin") == ADMIN_TOKEN
 
     def do_POST(self):
+        if self._legacy_redirect(): return
         u = urllib.parse.urlparse(self.path)
         if u.path == "/api/chat":
             if not rate_ok("chat:" + self._ip(), 25, 300):
@@ -1298,6 +1313,7 @@ class H(BaseHTTPRequestHandler):
         return self._send(404, "Not found", "text/plain")
 
     def do_GET(self):
+        if self._legacy_redirect(): return
         u = urllib.parse.urlparse(self.path)
         if u.path == "/api/me":
             me = self._me()
